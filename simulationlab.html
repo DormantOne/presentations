@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulation gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Light: whiteprint (Prussian ink on pale paper). Dark: blueprint.
+   Yellow is the load and the main action; red pencil is the reviewer;
+   cyan is the machine. */
+:root{
+  color-scheme:light;
+  --ground:#EDF2F6; --panel:rgba(255,255,255,.66); --thumb:rgba(18,49,78,.035);
+  --line:#12314E; --line-2:#3F5D78; --line-3:#62798F;
+  --rule:rgba(18,49,78,.17); --rule-2:rgba(18,49,78,.34);
+  --grid:rgba(18,49,78,.055); --grid-2:rgba(18,49,78,.026);
+  --load:#E7AC2E; --load-text:#875800; --load-ink:#1C1606; --hole:#3A2F10;
+  --pencil:#C33F2C; --machine:#1C7AB2; --focus:#12314E;
+  --display:'Big Shoulders Display','Barlow Condensed','Avenir Next Condensed','Arial Narrow','Roboto Condensed',sans-serif;
+  --body:'IBM Plex Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    color-scheme:dark;
+    --ground:#0F2D4A; --panel:rgba(9,32,54,.5); --thumb:rgba(5,20,34,.4);
+    --line:#E4EEF5; --line-2:#A9C3D6; --line-3:#7E9BB3;
+    --rule:rgba(228,238,245,.2); --rule-2:rgba(228,238,245,.42);
+    --grid:rgba(200,225,245,.065); --grid-2:rgba(200,225,245,.03);
+    --load:#F6C445; --load-text:#F6C445; --pencil:#FF6F61; --machine:#7DD8FF; --focus:#F6C445;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--body);color:var(--line);line-height:1.5;-webkit-font-smoothing:antialiased;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+    linear-gradient(var(--grid-2) 1px,transparent 1px),linear-gradient(90deg,var(--grid-2) 1px,transparent 1px);
+  background-size:100px 100px,100px 100px,20px 20px,20px 20px;background-position:-1px -1px}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.page{max-width:1320px;margin:0 auto;padding:44px 32px 56px}
+.top{max-width:900px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(56px,7.6vw,112px);line-height:.92;margin:0;letter-spacing:-.004em}
+.lede{font-size:clamp(18px,1.7vw,22px);line-height:1.45;color:var(--line-2);max-width:58ch;margin:24px 0 0;text-wrap:pretty}
+
+.band{display:block;width:100%;height:48px;margin:30px 0 18px;overflow:visible}
+.band .bm{stroke:var(--line);stroke-width:1.6;stroke-linecap:round;opacity:.72}
+.band .bm.ghost{stroke:var(--rule-2);stroke-dasharray:3 5;opacity:1}
+.band .bn{fill:var(--ground);stroke:var(--line-2);stroke-width:1.3}
+.band .hatch{stroke:var(--rule-2);stroke-width:1.1}
+.band .gl{stroke:var(--line-2);stroke-width:1.3}
+.band .ball{fill:var(--load)} .band .hole{fill:var(--hole)}
+.band .nx{font-family:var(--body);font-size:12px;fill:var(--line-3)}
+
+.bar{display:flex;align-items:center;justify-content:space-between;gap:14px 24px;flex-wrap:wrap;margin-bottom:20px}
+.count{margin:0;font-size:16px;color:var(--line-2)}
+.count b{font-family:var(--display);font-weight:800;font-size:26px;color:var(--line);margin-right:4px}
+
+.btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:16px;line-height:1;padding:11px 15px;border-radius:3px;
+  text-decoration:none;white-space:nowrap;background:var(--load);color:var(--load-ink);border:1.5px solid var(--load)}
+.btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--line);border-color:var(--rule-2)}
+.btn.ghost:hover{border-color:var(--line);filter:none}
+.btn.ghost[aria-pressed="true"]{border-color:var(--load);color:var(--load-text)}
+.btn.sm{font-size:15px;padding:9px 13px}
+.ext{width:14px;height:14px;flex:none}
+
+.gallery{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:18px}
+.card{position:relative;display:flex;flex-direction:column;border:1px solid var(--rule);background:var(--panel)}
+.card:hover{border-color:var(--rule-2)}
+.card::before,.card::after{content:"";position:absolute;width:11px;height:11px;border:0 solid var(--line-2);opacity:.7;pointer-events:none}
+.card::before{left:-1px;top:-1px;border-width:2px 0 0 2px}
+.card::after{right:-1px;bottom:-1px;border-width:0 2px 2px 0}
+.thumb{position:relative;aspect-ratio:340/130;overflow:hidden;border-bottom:1px solid var(--rule);background:var(--thumb)}
+.thumb svg{position:absolute;inset:0;width:100%;height:100%}
+.thumb iframe{position:absolute;left:0;top:0;width:1280px;height:800px;border:0;transform:scale(var(--s,.25));transform-origin:0 0;
+  pointer-events:none;background:#fff}
+.thumb.is-live svg{visibility:hidden}
+.tl{fill:none;stroke:var(--line);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ta{fill:none;stroke:var(--load);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tp{fill:none;stroke:var(--pencil);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tc{fill:none;stroke:var(--machine);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tfill{fill:var(--load);stroke:none}
+.tt{font-family:var(--body);font-size:10px;fill:var(--line-3)}
+.tn{font-family:var(--display);font-weight:800;font-size:10px;fill:var(--load-ink)}
+.ekg-g{fill:none;stroke:var(--rule);stroke-width:.8}
+.card-b{display:flex;flex-direction:column;flex:1;padding:14px 16px 16px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 9px;padding:0;list-style:none}
+.tags li{font-size:12.5px;line-height:1;padding:4px 7px;border:1px solid var(--rule-2);border-radius:2px;color:var(--line-2)}
+.card h2{font-family:var(--display);font-weight:700;font-size:28px;line-height:1.02;margin:0}
+.desc{font-size:15px;line-height:1.48;color:var(--line-2);margin:8px 0 16px;text-wrap:pretty}
+.card-a{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
+
+.foot{margin-top:44px;padding-top:16px;border-top:1px solid var(--rule);font-size:14.5px;line-height:1.5;color:var(--line-3);display:grid;gap:4px}
+.foot p{margin:0;max-width:92ch}
+
+#modal{position:fixed;inset:0;z-index:40;background:rgba(2,9,15,.82);display:flex;align-items:center;justify-content:center;padding:3vh 3vw}
+#modal[hidden]{display:none}
+.m-win{width:100%;height:100%;display:flex;flex-direction:column;background:var(--ground);border:1px solid var(--rule-2)}
+.m-bar{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--rule)}
+.m-bar .t{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.x-btn{font-size:14px;font-weight:600;border:1px solid var(--rule-2);border-radius:3px;padding:7px 12px}
+.x-btn:hover{border-color:var(--line)}
+#m-body{flex:1;position:relative;background:#fff;min-height:0}
+#m-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.m-hint{font-size:13px;color:var(--line-3);padding:8px 14px;margin:0}
+
+@media (max-width:760px){
+  .page{padding:26px 18px 40px}
+  #modal{padding:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <h1>Simulation gallery</h1>
+    <p class="lede">Interactive teaching models. Open one in its own tab, or preview it right here.</p>
+  </header>
+
+  <svg class="band" id="band" aria-hidden="true"></svg>
+
+  <div class="bar">
+    <p class="count"><b id="count">7</b> simulations</p>
+    <button class="btn ghost" id="live-toggle" type="button" aria-pressed="false">Show live previews</button>
+  </div>
+
+  <main>
+    <!-- To add a simulation: copy one <li class="card"> block and change the two
+         URLs, the drawing, tags, title and description. The count and the
+         bridge above update themselves. -->
+    <ul class="gallery">
+
+      <li class="card">
+        <div class="thumb" data-live="https://dormantone.github.io/games/fallot.html"><svg viewBox="0 -12 340 130" aria-hidden="true">
+          <path class="tl" d="M112 94 C100 76 98 54 110 42 L230 42 C242 54 240 76 228 94 C200 106 140 106 112 94 Z"/>
+          <path class="tl" d="M122 90 C112 74 111 56 120 48"/><path class="tl" d="M129 88 C120 74 119 58 127 50" opacity=".6"/>
+          <path class="tl" d="M170 100 L170 60"/><path class="ta" d="M162 52 Q170 45 178 52"/>
+          <path class="tl" d="M156 42 L156 22 Q156 10 172 10 L212 10 Q226 10 228 22"/><path class="tl" d="M184 42 L184 28 Q184 22 192 22 L210 22 Q216 22 218 28"/>
+          <path class="tl" d="M118 42 C121 33 127 31 127 27 C127 23 121 19 121 8"/><path class="tl" d="M142 42 C139 33 133 31 133 27 C133 23 139 19 139 8"/>
+          <circle cx="196" cy="64" r="7" class="tfill"/><text class="tn" x="196" y="68" text-anchor="middle">1</text>
+          <circle cx="240" cy="14" r="7" class="tfill"/><text class="tn" x="240" y="18" text-anchor="middle">2</text>
+          <circle cx="104" cy="22" r="7" class="tfill"/><text class="tn" x="104" y="26" text-anchor="middle">3</text>
+          <circle cx="96" cy="72" r="7" class="tfill"/><text class="tn" x="96" y="76" text-anchor="middle">4</text>
+        </svg></div>
+        <div class="card-b">
+          <ul class="tags"><li>Cardiology</li><li>Congenital heart disease</li></ul>
+          <h2>Tetralogy of Fallot</h2>
+          <p class="desc">A beating, sectioned heart. Slide the knife through it to find the four features, then follow each repair from palliative shunt to valve replacement. Ends with a case quiz and a source-check prompt.</p>
+          <div class="card-a">
+            <a class="btn sm" href="https://dormantone.github.io/games/fallot.html" target="_blank" rel="noopener">Open<span class="vh"> Tetralogy of Fallot (opens in a new tab)</span> <svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <button class="btn sm ghost" type="button" data-peek="https://dormantone.github.io/games/fallot.html" data-peek-title="Tetralogy of Fallot: interactive cutaway heart">Preview here</button>
+          </div>
+        </div>
+      </li>
+
+      <li class="card">
+        <div class="thumb" data-live="https://dormantone.github.io/games/reflex.html"><svg viewBox="0 -12 340 130" aria-hidden="true">
+          <path class="tl" d="M24 54 H126"/><path class="tl" d="M40 47 H128"/>
+          <circle class="tl" cx="133" cy="49" r="5"/><path class="tl" d="M135 54 L150 96 L166 98"/>
+          <path class="ta" d="M156 100 A48 48 0 0 0 184 80"/><path class="ta" d="M178 78 L185 79 L183 86"/>
+          <path class="tl" d="M104 90 L128 68"/><path class="tl" d="M122 62 L134 57 L139 67 L127 72 Z"/>
+          <circle class="tl" cx="266" cy="52" r="34"/>
+          <path class="tl" d="M250 40 C256 46 260 46 266 44 C272 46 276 46 282 40 C286 48 282 56 276 58 C274 62 274 68 278 72 C270 70 268 66 266 62 C264 66 262 70 254 72 C258 68 258 62 256 58 C250 56 246 48 250 40 Z"/>
+          <path class="tc" d="M140 46 C182 18 222 20 252 38"/><path class="tl" d="M258 70 C224 94 182 92 140 60" opacity=".65"/>
+        </svg></div>
+        <div class="card-b">
+          <ul class="tags"><li>Neurology</li></ul>
+          <h2>Reflex arc lab</h2>
+          <p class="desc">Tap a tendon and watch one event three ways: the limb moves, the impulse crosses the cord in slow motion, and the synapse that decides the grade opens up. Change the disease state to see where the arc breaks.</p>
+          <div class="card-a">
+            <a class="btn sm" href="https://dormantone.github.io/games/reflex.html" target="_blank" rel="noopener">Open<span class="vh"> Reflex arc lab (opens in a new tab)</span> <svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <button class="btn sm ghost" type="button" data-peek="https://dormantone.github.io/games/reflex.html" data-peek-title="Reflex arc lab">Preview here</button>
+          </div>
+        </div>
+      </li>
+
+      <li class="card">
+        <div class="thumb" data-live="https://dormantone.github.io/games/musculoskeletal.html"><svg viewBox="0 -12 340 130" aria-hidden="true">
+          <path class="tl" d="M150 2 L152 40 C140 46 140 56 154 58 L186 58 C200 56 200 46 188 40 L190 2"/>
+          <path class="tl" d="M146 68 L194 68 L188 78 L186 104 M146 68 L152 78 L154 104"/>
+          <path class="ta" d="M162 57 L178 69 M178 57 L162 69"/>
+          <path class="tp" d="M198 88 H234 M227 83 L235 88 L227 93"/>
+          <path class="tc" d="M120 30 A44 44 0 0 0 120 90"/><path class="tc" d="M115 85 L120 91 L126 86"/>
+          <text class="tt" x="102" y="64" style="font-size:13px">τ</text>
+        </svg></div>
+        <div class="card-b">
+          <ul class="tags"><li>Musculoskeletal</li></ul>
+          <h2>Special Tests Atlas</h2>
+          <p class="desc">Twelve orthopedic maneuvers on a working skeleton, with muscles, ligaments, nerves and joint torques. Learn them, then take the quiz with the list hidden.</p>
+          <div class="card-a">
+            <a class="btn sm" href="https://dormantone.github.io/games/musculoskeletal.html" target="_blank" rel="noopener">Open<span class="vh"> Special Tests Atlas (opens in a new tab)</span> <svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <button class="btn sm ghost" type="button" data-peek="https://dormantone.github.io/games/musculoskeletal.html" data-peek-title="Special Tests Atlas">Preview here</button>
+          </div>
+        </div>
+      </li>
+
+      <li class="card">
+        <div class="thumb" data-live="https://dormantone.github.io/games/ventlab.html"><svg viewBox="0 -12 340 130" aria-hidden="true">
+          <text class="tt" x="14" y="26">Paw</text><text class="tt" x="14" y="61">Flow</text><text class="tt" x="14" y="96">Vol</text>
+          <polyline class="ta" points="46,30 54,30 58,12 64,10 74,13 82,13 86,30 124,30 128,30 132,12 138,10 148,13 156,13 160,30 198,30"/>
+          <path class="tc" d="M46 62 H54 V48 H82 V62 L86 77 C92 68 102 63 124 62 H128 V48 H156 V62 L160 77 C166 68 176 63 198 62"/>
+          <path class="tl" d="M46 98 H54 L82 74 C92 86 106 96 128 98 L156 74 C166 86 180 96 198 98"/>
+          <path class="tl" d="M246 92 H318 M246 92 V14"/>
+          <path class="ta" d="M250 88 C254 62 270 32 306 22 C300 42 278 72 250 88 Z"/>
+        </svg></div>
+        <div class="card-b">
+          <ul class="tags"><li>Critical care</li><li>Pulmonary</li></ul>
+          <h2>VentLab</h2>
+          <p class="desc">A ventilator and ICU physiology simulator: bedside monitor, pressure, flow and volume waveforms, pressure–volume and flow–volume loops, holds, a 24-hour forecast and board cases.</p>
+          <div class="card-a">
+            <a class="btn sm" href="https://dormantone.github.io/games/ventlab.html" target="_blank" rel="noopener">Open<span class="vh"> VentLab (opens in a new tab)</span> <svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <button class="btn sm ghost" type="button" data-peek="https://dormantone.github.io/games/ventlab.html" data-peek-title="VentLab: ventilator and ICU physiology simulator">Preview here</button>
+          </div>
+        </div>
+      </li>
+
+      <li class="card">
+        <div class="thumb" data-live="https://dormantone.github.io/games/freudgame2.html"><svg viewBox="0 -12 340 130" aria-hidden="true">
+          <circle class="tl" cx="170" cy="50" r="40"/><circle class="tl" cx="170" cy="50" r="34" opacity=".5"/><circle class="tl" cx="170" cy="50" r="5"/>
+          <path class="tl" d="M170 50 L210 50 M170 50 L198.3 78.3 M170 50 L170 90 M170 50 L141.7 78.3 M170 50 L130 50 M170 50 L141.7 21.7 M170 50 L170 10 M170 50 L198.3 21.7" opacity=".7"/>
+          <path class="ta" d="M206 52 h8 v7 h-8 z M194.3 80.3 h8 v7 h-8 z M166 92 h8 v7 h-8 z M137.7 80.3 h8 v7 h-8 z M126 52 h8 v7 h-8 z M137.7 23.7 h8 v7 h-8 z M194.3 23.7 h8 v7 h-8 z"/>
+          <path class="tl" d="M170 50 L140 102 M170 50 L200 102 M112 102 H228"/>
+          <path class="tfill" d="M163 1 L177 1 L170 9 Z"/>
+        </svg></div>
+        <div class="card-b">
+          <ul class="tags"><li>Psychiatry</li></ul>
+          <h2>Das Spiel des Lebens</h2>
+          <p class="desc">A Freudian Game of Life. Spin the wheel of fate and drive a Viennese fiaker from birth to the Day of Reckoning, with case notes, a notebook and a codex along the way.</p>
+          <div class="card-a">
+            <a class="btn sm" href="https://dormantone.github.io/games/freudgame2.html" target="_blank" rel="noopener">Open<span class="vh"> Das Spiel des Lebens (opens in a new tab)</span> <svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <button class="btn sm ghost" type="button" data-peek="https://dormantone.github.io/games/freudgame2.html" data-peek-title="Das Spiel des Lebens: a Freudian Game of Life">Preview here</button>
+          </div>
+        </div>
+      </li>
+
+      <li class="card">
+        <div class="thumb" data-live="https://dormantone.github.io/pedigree/pedigree2.html"><svg viewBox="0 -12 340 130" aria-hidden="true">
+          <text class="tt" x="86" y="25">I</text><text class="tt" x="86" y="66">II</text>
+          <rect class="tl" x="124" y="12" width="16" height="16"/><circle class="tl" cx="214" cy="20" r="8"/>
+          <path class="tl" d="M140 20 H206 M173 20 V44 M114 44 H232 M114 44 V54 M173 44 V54 M232 44 V54"/>
+          <rect class="tl" x="106" y="54" width="16" height="16"/>
+          <circle cx="173" cy="62" r="8" class="tfill"/>
+          <rect class="tl" x="224" y="54" width="16" height="16"/><path class="tl" d="M220 74 L244 50"/>
+          <path class="tp" d="M146 90 L162 72 M155 73 L163 71 L161 79"/>
+        </svg></div>
+        <div class="card-b">
+          <ul class="tags"><li>Genetics</li><li>Family history</li></ul>
+          <h2>Kindred</h2>
+          <p class="desc">Tell the family story in your own words; a Copilot JSON agent structures it and the studio draws the pedigree, then suggests topics to research. Experimental, and not for clinical use.</p>
+          <div class="card-a">
+            <a class="btn sm" href="https://dormantone.github.io/pedigree/pedigree2.html" target="_blank" rel="noopener">Open<span class="vh"> Kindred (opens in a new tab)</span> <svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <button class="btn sm ghost" type="button" data-peek="https://dormantone.github.io/pedigree/pedigree2.html" data-peek-title="Kindred: Family History Studio">Preview here</button>
+          </div>
+        </div>
+      </li>
+
+      <li class="card">
+        <div class="thumb" data-live="https://dormantone.github.io/games/caliper.html"><svg viewBox="0 -12 340 130" aria-hidden="true">
+          <defs><pattern id="ekg-grid" width="10" height="10" patternUnits="userSpaceOnUse"><path class="ekg-g" d="M10 0H0V10"/></pattern></defs>
+          <rect x="0" y="-12" width="340" height="130" fill="url(#ekg-grid)"/>
+          <polyline class="tl" points="16,74 40,74 46,70 52,74 60,74 64,78 70,32 76,86 80,74 92,74 104,66 116,74 150,74 156,70 162,74 170,74 174,78 180,32 186,86 190,74 202,74 214,66 226,74 260,74 266,70 272,74 280,74 284,78 290,32 296,86 300,74 312,74 324,66 334,74"/>
+          <path class="ta" d="M70 30 L125 9 L180 30 M70 30 V35 M180 30 V35"/>
+          <circle cx="125" cy="9" r="3.4" class="tfill"/>
+          <text class="tt" x="125" y="28" text-anchor="middle">RR</text>
+        </svg></div>
+        <div class="card-b">
+          <ul class="tags"><li>Cardiology</li><li>EKG</li></ul>
+          <h2>Caliper EKG Trainer</h2>
+          <p class="desc">72 diagnoses. Measure intervals with calipers, call rate, rhythm, axis, PR, QRS and QTc, then check your read. Paper speed, gain, noise and extra leads are adjustable.</p>
+          <div class="card-a">
+            <a class="btn sm" href="https://dormantone.github.io/games/caliper.html" target="_blank" rel="noopener">Open<span class="vh"> Caliper EKG Trainer (opens in a new tab)</span> <svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <button class="btn sm ghost" type="button" data-peek="https://dormantone.github.io/games/caliper.html" data-peek-title="Caliper EKG Trainer">Preview here</button>
+          </div>
+        </div>
+      </li>
+
+    </ul>
+  </main>
+
+  <footer class="foot">
+    <p>Teaching aids, not diagnostic or decision tools. Each model says what it does and does not claim; check that before you rely on anything it shows.</p>
+    <p>Previews need an internet connection. If one stays blank, that site doesn't allow embedding, so open it in a new tab instead.</p>
+  </footer>
+</div>
+
+<div id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <div class="m-win">
+    <div class="m-bar"><span class="t" id="m-title">Preview</span><a class="btn sm" id="m-open" href="#" target="_blank" rel="noopener">Open in a new tab</a><button type="button" class="x-btn" id="m-close">Close</button></div>
+    <div id="m-body"></div>
+    <p class="m-hint">If this stays blank, the site doesn't allow embedding. Open it in a new tab instead.</p>
+  </div>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const NS='http://www.w3.org/2000/svg';
+const models=$$('.card').length;
+$('#count').textContent=models;
+
+/* the bridge: one built panel per model, one ghost panel for the next */
+const band=$('#band');
+function drawBand(){
+  const W=Math.max(320,band.clientWidth),H=48,deck=38,top=14,x0=30,x1=W-30,panels=models,dx=(x1-x0)/panels,r=7;
+  const X=i=>x0+i*dx;
+  let g=`<defs><pattern id="bh" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="hatch" x1="0" y1="0" x2="0" y2="7"/></pattern></defs>`;
+  g+=`<rect x="0" y="${deck}" width="${x0}" height="10" fill="url(#bh)"/><rect x="${x1}" y="${deck}" width="${W-x1}" height="10" fill="url(#bh)"/>`;
+  g+=`<path class="gl" d="M0 ${deck}H${x0}M${x1} ${deck}H${W}"/>`;
+  for(let i=0;i<panels;i++){
+    const cls='bm',tx=X(i)+dx/2;
+    g+=`<line class="${cls}" x1="${X(i)}" y1="${deck}" x2="${X(i+1)}" y2="${deck}"/>`;
+    g+=`<line class="${cls}" x1="${X(i)}" y1="${deck}" x2="${tx}" y2="${top}"/><line class="${cls}" x1="${tx}" y1="${top}" x2="${X(i+1)}" y2="${deck}"/>`;
+    if(i<panels-1)g+=`<line class="bm" x1="${tx}" y1="${top}" x2="${tx+dx}" y2="${top}"/>`;
+  }
+  for(let i=0;i<=panels;i++)g+=`<circle class="bn" cx="${X(i)}" cy="${deck}" r="3.2"/>`;
+  const bx=x1+(W-x1)/2;
+  g+=`<g transform="translate(${bx} ${deck-r-1.5})"><circle class="ball" r="${r}"/><circle class="hole" cx="0" cy="-2.8" r="1.1"/><circle class="hole" cx="-2.4" cy="1.4" r="1.1"/><circle class="hole" cx="2.4" cy="1.4" r="1.1"/></g>`;
+  band.setAttribute('viewBox',`0 0 ${W} ${H}`);band.innerHTML=g;
+}
+
+/* live previews: scale a 1280-wide page into each thumbnail */
+const thumbs=$$('.thumb[data-live]');
+const fitThumb=t=>t.style.setProperty('--s',(t.clientWidth/1280).toFixed(4));
+const ro='ResizeObserver' in window?new ResizeObserver(es=>{es.forEach(e=>{if(e.target===band)drawBand();else fitThumb(e.target);});}):null;
+if(ro){ro.observe(band);thumbs.forEach(t=>ro.observe(t));}else{addEventListener('resize',()=>{drawBand();thumbs.forEach(fitThumb);});}
+drawBand();thumbs.forEach(fitThumb);
+let live=false;const toggle=$('#live-toggle');
+toggle.addEventListener('click',()=>{
+  live=!live;toggle.setAttribute('aria-pressed',String(live));toggle.textContent=live?'Show drawings':'Show live previews';
+  thumbs.forEach(t=>{let f=t.querySelector('iframe');
+    if(live&&!f){f=document.createElement('iframe');f.src=t.dataset.live;f.loading='lazy';f.tabIndex=-1;f.title='Live preview';
+      f.setAttribute('aria-hidden','true');f.setAttribute('sandbox','allow-scripts allow-same-origin');t.appendChild(f);t.classList.add('is-live');fitThumb(t);}
+    if(!live&&f){f.remove();t.classList.remove('is-live');}});
+});
+
+/* preview in a window on this page */
+const modal=$('#modal'),body=$('#m-body');let lastFocus=null;
+function peek(url,title){
+  lastFocus=document.activeElement;$('#m-title').textContent=title;$('#m-open').href=url;
+  body.innerHTML='';const f=document.createElement('iframe');f.src=url;f.title=title;f.setAttribute('allow','clipboard-write; fullscreen');body.appendChild(f);
+  modal.hidden=false;document.body.style.overflow='hidden';$('#m-close').focus();
+}
+function closeModal(){modal.hidden=true;body.innerHTML='';document.body.style.overflow='';if(lastFocus&&lastFocus.focus)lastFocus.focus();}
+document.addEventListener('click',e=>{const p=e.target.closest('[data-peek]');if(p){e.preventDefault();peek(p.dataset.peek,p.dataset.peekTitle||p.dataset.peek);}});
+$('#m-close').addEventListener('click',closeModal);
+modal.addEventListener('click',e=>{if(e.target===modal)closeModal();});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden){e.preventDefault();closeModal();}});
+})();
+</script>
+</body>
+</html>
