@@ -1,0 +1,2354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Horse Tonic</title>
+<meta name="description" content="A muscle-driven SVG film for the song Horse Tonic: a robot horse walks the blueprint, the grid goes dark, and a living horse walks on.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=B612:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+:root{--ui:#e8eef6;--dim:#9fb0c3;--accent:#ffb34a;--cyan:#7fe6ff;font-family:B612,"Avenir Next","Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:#0a1a2c;color:var(--ui);transition:background-color .6s linear}
+.theater{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:18px 16px 22px}
+.screen{position:relative;width:min(100%,calc((100vh - 120px)*16/9));aspect-ratio:16/9;overflow:hidden;border-radius:3px;background:#02060d;box-shadow:0 28px 90px rgba(0,0,0,.5);margin:0}
+#film{display:block;width:100%;height:100%}
+.poster{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-start;padding-left:9%;background:linear-gradient(90deg,rgba(2,8,16,.55),rgba(2,8,16,0) 55%)}
+.poster[hidden],.endcard[hidden]{display:none}
+.bigplay{display:flex;align-items:center;gap:18px;background:none;border:0;color:var(--ui);cursor:pointer;padding:10px 14px;border-radius:999px;font:inherit}
+.bigplay .disc{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#1a1206;box-shadow:0 0 0 10px rgba(255,179,74,.18)}
+.bigplay .disc svg{width:34px;height:34px;margin-left:5px;fill:currentColor}
+.bigplay .txt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.25}
+.bigplay .txt b{font-size:22px;font-weight:700;letter-spacing:.02em}
+.bigplay .txt span{font-size:14px;color:var(--dim)}
+.bigplay:hover .disc{background:#ffc874}
+.endcard{position:absolute;inset:auto 0 9% 0;display:flex;justify-content:center}
+.endcard button{font:inherit;font-size:16px;color:#1a1206;background:#f3e6c6;border:0;border-radius:999px;padding:12px 22px;cursor:pointer}
+.transport{width:min(100%,calc((100vh - 120px)*16/9));display:flex;align-items:center;gap:14px;font-size:14px}
+.tp{flex:none;width:40px;height:40px;border-radius:50%;border:1px solid rgba(232,238,246,.35);background:rgba(255,255,255,.06);color:var(--ui);display:grid;place-items:center;cursor:pointer}
+.tp svg{width:18px;height:18px;fill:currentColor}
+.time{font-variant-numeric:tabular-nums;min-width:96px;color:var(--ui)}
+.section{color:var(--dim);min-width:64px}
+.scrub{position:relative;flex:1;height:30px;cursor:pointer;touch-action:none;border-radius:4px}
+.scrub .seg{position:absolute;top:13px;height:4px;background:rgba(232,238,246,.22);border-left:2px solid transparent;background-clip:padding-box}
+.scrub .fill{position:absolute;top:13px;left:0;height:4px;background:var(--accent);pointer-events:none}
+.scrub .knob{position:absolute;top:8px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#fff;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.pill{flex:none;font:inherit;font-size:13px;color:var(--ui);background:transparent;border:1px solid rgba(232,238,246,.35);border-radius:999px;padding:7px 13px;cursor:pointer}
+.pill[aria-pressed="true"]{background:var(--ui);color:#0b1626;border-color:var(--ui)}
+button:focus-visible,.scrub:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.note{max-width:min(100%,calc((100vh - 120px)*16/9));margin:0;color:#ffd7a0;font-size:13px;line-height:1.5}
+.note[hidden]{display:none}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* blueprint line art */
+.bp{color:#e3f0ff;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+.bp text{fill:currentColor;stroke:none;font-family:B612,system-ui,sans-serif;letter-spacing:.12em}
+.bp .hd{font-weight:700}
+.bp .dimt{fill-opacity:.72}
+.bp .thin{stroke-opacity:.5}
+.bp .hot{stroke:#ffb34a}
+.bp .hot2{stroke:#7fe6ff}
+.bp .hotT{fill:#ffb34a}
+.bp .pkt{fill:#ffb34a;stroke:none}
+.bp .lnk{fill:#7fe6ff}
+.bp .cord{stroke-opacity:.8}
+.bp .stampR{stroke:#ff4b4b}
+.bp .stampT{fill:#ff4b4b;font-weight:700}
+.bp .beamF{fill:#7fe6ff;fill-opacity:.1;stroke:none}
+.bp .wins{fill:#ffd88a;stroke:none}
+.bp .cable{stroke:#ffd88a}
+.bp .avl{fill:#ff5040;stroke:none}
+.draw [pathLength]{stroke-dasharray:1 1;stroke-dashoffset:var(--d,0)}
+.bp .dash{stroke-dasharray:.02 .016}
+.draw text{opacity:calc(1 - var(--d,0))}
+.ruler text{fill:#ffb34a;fill-opacity:.8;font-family:B612,system-ui,sans-serif;letter-spacing:.08em}
+.mc{paint-order:stroke;stroke:#04101e;stroke-width:6;stroke-opacity:.55;stroke-linejoin:round}
+.lp{paint-order:stroke;stroke:#1d140c;stroke-width:5;stroke-opacity:.42;stroke-linejoin:round}
+@media (max-width:720px){
+  .transport{flex-wrap:wrap;gap:10px}
+  .scrub{order:5;flex-basis:100%}
+  .section{display:none}
+  .bigplay .disc{width:64px;height:64px}
+  .bigplay .txt b{font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){body{transition:none}}
+</style>
+</head>
+<body>
+<main class="theater">
+  <figure class="screen">
+    <svg id="film" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" role="img" aria-labelledby="filmTitle filmDesc">
+      <title id="filmTitle">Horse Tonic</title>
+      <desc id="filmDesc">An animated film set to the song. A muscle-driven robot horse walks across a blueprint of DARPA inventions until the power grid fails and it collapses. At dawn a living bay horse walks in, sniffs the machine, and carries on through Amish farm country to a barn where a jar of horse tonic glows.</desc>
+      <defs>
+        <linearGradient id="skyGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="400"><stop offset="0" stop-color="#0c2646"/><stop offset=".62" stop-color="#173f69"/><stop offset="1" stop-color="#2a5e8e"/></linearGradient>
+        <linearGradient id="gndGrad" gradientUnits="userSpaceOnUse" x1="0" y1="400" x2="0" y2="900"><stop offset="0" stop-color="#1d4a78"/><stop offset="1" stop-color="#0f2c4d"/></linearGradient>
+        <radialGradient id="sunGlow"><stop offset="0" stop-color="#fff3d6" stop-opacity=".9"/><stop offset=".25" stop-color="#ffd29a" stop-opacity=".35"/><stop offset="1" stop-color="#ffb070" stop-opacity="0"/></radialGradient>
+        <radialGradient id="jarGlow"><stop offset="0" stop-color="#ffe7a0" stop-opacity=".95"/><stop offset=".4" stop-color="#ffc85a" stop-opacity=".35"/><stop offset="1" stop-color="#ffb040" stop-opacity="0"/></radialGradient>
+        <radialGradient id="vig" cx="50%" cy="48%" r="75%"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></radialGradient>
+        <radialGradient id="redVig" cx="50%" cy="50%" r="72%"><stop offset=".35" stop-color="#ff2a2a" stop-opacity="0"/><stop offset="1" stop-color="#ff2a2a" stop-opacity="1"/></radialGradient>
+      </defs>
+      <rect width="1600" height="900" fill="url(#skyGrad)"/>
+      <g id="L-sky"></g><g id="L-stars"></g><g id="L-sun"></g>
+      <g id="L-gfill"></g><g id="L-far"></g><g id="L-jets"></g><g id="L-gbase"></g><g id="L-mid"></g>
+      <g id="L-shadow"></g><g id="L-actors"></g><g id="L-fx"></g><g id="L-near"></g>
+      <g id="L-hud"></g><g id="L-cap" aria-hidden="true"></g>
+      <rect id="gVig" width="1600" height="900" fill="url(#vig)" opacity=".45" pointer-events="none"/>
+      <rect id="gRed" width="1600" height="900" fill="url(#redVig)" opacity="0" pointer-events="none"/>
+      <rect id="gWhite" width="1600" height="900" fill="#fff" opacity="0" pointer-events="none"/>
+      <rect id="gBlack" width="1600" height="900" fill="#000" opacity="0" pointer-events="none"/>
+    </svg>
+    <div class="poster" id="poster">
+      <button class="bigplay" id="bigPlay"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg></span><span class="txt"><b>Play film</b><span>Horse Tonic, 3:03, with sound</span></span></button>
+    </div>
+    <div class="endcard" id="endCard" hidden><button id="replayBtn">Play again</button></div>
+  </figure>
+  <div class="transport">
+    <button class="tp" id="playBtn" aria-label="Play"></button>
+    <span class="time" id="time">0:00 / 3:03</span>
+    <span class="section" id="section">Intro</span>
+    <div class="scrub" id="scrub" role="slider" tabindex="0" aria-label="Position in film" aria-valuemin="0" aria-valuemax="183" aria-valuenow="0"></div>
+    <button class="pill" id="xrayBtn" aria-pressed="false" title="Show every agonist and antagonist (M)">Muscle view</button>
+    <button class="pill" id="capBtn" aria-pressed="true" title="Show lyrics (C)">Lyrics</button>
+  </div>
+  <p class="note" id="note" hidden></p>
+</main>
+<audio id="track" preload="auto">
+  <source src="https://dormantone.github.io/presentations/Tonic.m4a" type='audio/mp4; codecs="opus"'>
+  <source src="https://dormantone.github.io/presentations/Tonic_aac.m4a" type="audio/mp4">
+  <source src="https://dormantone.github.io/presentations/Tonic.m4a">
+</audio>
+<script>
+'use strict';
+/* =====================================================================
+   HORSE TONIC — an SVG film in one file
+   Architecture borrowed from Muscle Dance:
+     intent → agonist/antagonist activation → torque integrator → joint state
+            → forward kinematics (3D landmarks) → projected, shaded SVG polygons
+   Nothing ever writes a joint angle directly. Choreography only asks.
+   ===================================================================== */
+const TAU = Math.PI * 2, DEG = Math.PI / 180;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const lerp = (a, b, t) => a + (b - a) * t;
+const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const frac = x => x - Math.floor(x);
+const vadd = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+const vsub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+const vmul = (a, s) => [a[0] * s, a[1] * s, a[2] * s];
+const vdot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const vcross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const vlen = a => Math.hypot(a[0], a[1], a[2]);
+const vnorm = a => { const m = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / m, a[1] / m, a[2] / m]; };
+const vlerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+const hash = n => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+const noise1 = x => { const i = Math.floor(x), f = x - i, u = f * f * (3 - 2 * f); return lerp(hash(i), hash(i + 1), u) * 2 - 1; };
+
+/* ---------------- song: measured from the uploaded master ---------------- */
+// Tempo/phase fitted to onset strength (105.94 BPM, constant). Backbeat on odd beats.
+const SONG = { dur: 183.16, bpm: 105.94, t0: 0.35 };
+SONG.spb = 60 / SONG.bpm;
+const beatOf = t => (t - SONG.t0) / SONG.spb;
+const beatTime = b => SONG.t0 + b * SONG.spb;
+// pulse that peaks on each beat, decays over the beat
+const beatPulse = (t, sharp = 6) => { const b = beatOf(t); return b < 0 ? 0 : Math.exp(-sharp * frac(b)); };
+
+// Timed lyrics, from the file's own subtitle track.
+const LYRICS = [
+  [9.078, 11.497, 'In sixty-nine they wired ARPANET,'],
+  [11.497, 13.804, 'So packets found a route around a blast.'],
+  [13.804, 15.843, 'They laid the protocols, a daring bet,'],
+  [15.843, 18.046, 'And built the World Wide Web to last.'],
+  [18.046, 20.368, 'They funded Engelbart’s mouse and GPS,'],
+  [20.368, 22.845, 'Hypertext, MEMS—the whole electric sky.'],
+  [22.845, 24.837, 'Yet pull the plug on all that cleverness,'],
+  [24.837, 26.929, 'And watch the Pentagon reclassify.'],
+  [26.929, 31.256, 'Phytochemical metabolic adjuvant', 'R'],
+  [31.256, 36.916, 'For the polycellular carriage.', 'R'],
+  [36.916, 39.312, 'They flew Have Blue and Nighthawk past the beam,'],
+  [39.312, 41.558, 'Taught steel to tread with Boston Dynamics’ hand.'],
+  [41.558, 43.614, 'Sent LiDAR trucks across Mojave’s seam,'],
+  [43.614, 46.379, 'And hatched Siri from Kaye-Lo’s thinking strand.'],
+  [46.379, 48.237, 'They backed mRNA before the blight,'],
+  [48.237, 50.908, 'Gave steel prosthetics feeling at a touch.'],
+  [50.908, 52.644, 'Yet drop the power grid into the night,'],
+  [52.644, 55.255, 'And DARPA’s blackout briefing calls for such.'],
+  [55.255, 59.525, 'Phytochemical metabolic adjuvant', 'R'],
+  [59.525, 66.0, 'For the polycellular carriage.', 'R'],
+  [80.986, 83.406, 'Out where the high line’s copper tether ends,'],
+  [83.406, 85.704, 'No grant committee vets what stays or goes.'],
+  [85.704, 87.911, 'The Ordnung audits everything tech sends,'],
+  [87.911, 90.164, 'Then cuts the leash before the habit grows.'],
+  [90.164, 92.382, 'Keep carbide saws and planing mills in trim;'],
+  [92.382, 94.595, 'Strip software locks, the cloud, the lease.'],
+  [94.595, 96.957, 'Run air-line shops on diesel tanks, and still'],
+  [96.957, 99.255, 'Keep solar DC banks that charge in peace.'],
+  [99.255, 102.525, 'Hydraulic forecarts drive the PTOs,'],
+  [102.525, 106.188, 'Not fed by lithium, but by what grows.'],
+  [106.188, 110.496, 'Phytochemical metabolic adjuvant', 'R'],
+  [110.496, 113.929, 'For the polycellular carriage.', 'R'],
+  [113.929, 116.644, 'No distant server bricks to stall the plow,'],
+  [116.644, 119.028, 'No cleanroom shortage when a bearing falls.'],
+  [119.028, 121.294, 'What breaks at noon is forged and fitted now'],
+  [121.294, 123.685, 'By hands that know the blueprint through the walls.'],
+  [123.685, 125.715, 'DARPA built resilience out of sand,'],
+  [125.715, 128.208, 'Then hung our living on a brittle thread.'],
+  [128.208, 129.951, 'The Amish kept the leverage in their hand;'],
+  [129.951, 132.284, 'True resilience runs when grids are dead.'],
+  [132.284, 134.794, 'While in the barn one mason jar stands clear,'],
+  [134.794, 137.139, 'Steeped meadow grass and golden hay—no fuss.'],
+  [137.139, 139.377, 'What DARPA ought to fund next fiscal year,'],
+  [139.377, 141.409, 'And stamp across a phase-three syllabus:'],
+  [141.409, 145.622, 'Phytochemical metabolic adjuvant', 'R'],
+  [145.622, 149.528, 'For the polycellular carriage.', 'R'],
+  [149.528, 153.631, 'Let Arlington go supersonic.'],
+  [153.631, 155.219, 'The barn laconic'],
+  [155.219, 158.0, 'Will call it horse tonic.'],
+];
+const SECTIONS = [
+  [0, 9.078, 'Intro'], [9.078, 26.929, 'Verse 1'], [26.929, 36.916, 'Refrain'],
+  [36.916, 55.255, 'Verse 2'], [55.255, 69.525, 'Refrain'], [69.525, 80.986, 'Break'],
+  [80.986, 106.188, 'Verse 3'], [106.188, 113.929, 'Refrain'], [113.929, 141.409, 'Verse 4'],
+  [141.409, 149.528, 'Refrain'], [149.528, 158.1, 'Outro'], [158.1, 183.16, 'Coda'],
+];
+// Loudness of the master, 10 samples/s, base-36 (0..35)
+const ENV_STR = '079ankk50jlll00lkkb06kkmccqoom00nnm20fmmn00pqqpdeutsf2jqqq00qppn03rrrhdprpq43ppon32poob0cpwzwuuptuqrsppifmmkmcaoki00mqpqadoonlbdpnm00dhhj0frrokhhokk52jmnn87llmc8eooo97kmlk00nmmd06loslnusrsghsrqh9iomn8aonmm00klnhefkik99nmlk00mmme9hqqqgerqqp20llmb0dlprdboqqp62mlk70hnno18qtwwqltttobdmnwrswuuuklturmkqtsr93pprp97tttjemuuuekvwxvoovvumdmrsud9ssst9awwwnfoxxxgbwzzygaxxxo7jxxznlzzzzqowxysnqrqrdetstuhjvvunfmnorgjsqqn9dqrpcdmrttnhpmmmeirqoccostuhdppplbdpoqa7lmop5aqqssnpuuuokpmprkjqpnmdfpno9apppsbaqonf9fqpnc6nptwnputrohgpqqhhqrttjgpprqmhnnoffopop9grqnh3doqrjlrtvxrmutuqd4nntrqvtuwmovusrknvtrfcnoqqa9mllggisrrglvyzxqpvvvsjgppshfpnno58mlmgfhnqtoptwxynjtuwullttvljrtuvmmvuurilsuwmjtstukktvvrnpuuukhtuvwkiuuvqjnuvwnmuvvwkhstupjnstunmtuvvonuvvroqvwwoouvvwnltvwsnouuujgstvwkiuuvrkotuvnntvvwnlttuqmpwwwonsttumkuvvphkstujboruwonuvvrnqrrqhdponnbfqpoeajkjlbdpnmk61lll88knnk7epqpoggponcbhihk64nnooc8gdf79kihi59nlkicdpnojhppprggssttklsrqkjqspq97nnnnfirpo8amoopdepnpokmnnmeeprstjhqpomdgrqpd8ppqsffppmj8coqphgqqoqcbpooj89prqf9loopaeqqronntsrjkqrush647bcbd98745544b89qstmbhrtti8prrs66txzvsqwwwlanqtxqpwwwtkmuxwpowwvtd8rstocbsuujhtvwwhivxxtmpvwxqlrtuxnjuutnbbstwpnstswnovtspknuuuknvvtumnxwvqmqyyyqoyywxnnwvvojpvuujirrrpkmvtqjhpuutkjuutqfgtuuplqsqqhfrrtunnvutmkruttkkuuusonutsnlsvvvnmutrqkntsrjhqsrsiiusspnpxwujgqtttlkutsqigssuomrvvvmktttqjiqrskinsssknuvvtprwvvootutshfqqrninvvtkirttslluutneerrrkgppqriiqrtpifoppggssssd9nnme06oon50innn00psuuhbuvvi7jpptlmxvutcessrgcossp30noon33ooohepsrrbftvvtlluutlemrrsa4qrro00pppb0fmnqikpponfcnmj60ckki00ijjkacmlkd6fllm98kkjkdgopogbfjkk66ijjmechfh54489200quwxlftvxumotuwomuvwyrpxwwrkpuvxojstuwmjtwxurtxwwnkuvwxnkuvwrmqwxyqotttvnjtuwslotuwniuuwwnmuvvqjnsvxpltsuvonuwxsruyyyomwwxxqnuvxtruxxztuyyyxspvwwrmqvxyqnvwxxrowxwsmpvxzrnsuwvnjtvwtptwwwomtvxxqmtuvqkouwwpltuvuliruvqjorsumjstvvspvwvpkrvwwmkstttolruwtog000000000000000';
+const ENV = Array.from(ENV_STR, c => parseInt(c, 36) / 35);
+const loud = t => { const i = t * 10, a = Math.floor(i); if (a < 0) return 0; if (a >= ENV.length - 1) return 0; const f = i - a; return ENV[a] * (1 - f) + ENV[a + 1] * f; };
+
+/* ---------------- keyframe helper (eased segments) ---------------- */
+function KF(list) {
+  return t => {
+    if (t <= list[0][0]) return list[0][1];
+    for (let i = 1; i < list.length; i++) {
+      if (t < list[i][0]) {
+        const [t0, v0] = list[i - 1], [t1, v1] = list[i];
+        const u = (t - t0) / (t1 - t0), e = u * u * (3 - 2 * u);
+        return v0 + (v1 - v0) * e;
+      }
+    }
+    return list[list.length - 1][1];
+  };
+}
+
+/* =====================================================================
+   RIG — one skeleton, two species. Body frame: x forward, y up, z toward
+   the camera (the horse's right side). Metres.
+   ===================================================================== */
+const RIG = {
+  H0: 1.20, walkDrop: 0.045,
+  fore: { pivot: [0.50, 0.25], z: 0.155, hoofZ: 0.122, len: [0.48, 0.3673, 0.36, 0.24, 0.13],
+          rest: [-48 * DEG, -127.03 * DEG, -90 * DEG, -90 * DEG, -59.5 * DEG],
+          hoofLen: 0.0894, hoofOff: -25 * DEG, nomX: 0.6746, cf: 0.08, cfT: 0.02 },
+  hind: { root: [-0.68, 0.0], z: 0.165, hoofZ: 0.132, len: [0.444, 0.474, 0.32, 0.12],
+          rest: [-58.8 * DEG, -137.6 * DEG, -90 * DEG, -56 * DEG],
+          hoofLen: 0.0815, hoofOff: -25 * DEG, nomX: -0.7202, cf: 0.09, cfT: 0.05 },
+  neckRoot: [0.60, 0.10], neckLen: [0.30, 0.30, 0.30], neckRest: [40 * DEG, 53 * DEG, 63 * DEG],
+  headLen: 0.60, headRest: -55 * DEG,
+  tailRoot: [-1.00, 0.20],
+};
+const LEGS = [
+  { id: 'LF', fore: true, side: -1, walk: 0.25, trot: 0.0 },
+  { id: 'RF', fore: true, side: 1, walk: 0.75, trot: 0.5 },
+  { id: 'LH', fore: false, side: -1, walk: 0.0, trot: 0.5 },
+  { id: 'RH', fore: false, side: 1, walk: 0.5, trot: 0.0 },
+];
+const VWALK = 0.80 / 0.60 / (2 * SONG.spb);   // stance 0.80 m, duty .60, stride = 2 beats
+const VTROT = 1.90 / SONG.spb;                // stride = 1 beat
+const wrap = a => { while (a > Math.PI) a -= TAU; while (a < -Math.PI) a += TAU; return a; };
+
+/* ---- DOF table: inertia, strength, passive, damping, limits, collapse pose ---- */
+const DOFS = [], DI = {};
+function addDof(name, o) { DI[name] = DOFS.length; DOFS.push(Object.assign({ name, I: 1, amax: 650, k: 6, c: 2.2, cc: 0.4, co: 0.12, w: 40, z: 0.85, ta: 0.008, lo: -2, hi: 2, fold: 0, kl: 0, grp: 0 }, o)); }
+for (const L of LEGS) {
+  const g = L.fore ? 0 : 1;
+  if (L.fore) {
+    addDof(L.id + '.sc', { I: 1.3, lo: -40 * DEG, hi: 35 * DEG, fold: -14 * DEG, kl: 300, grp: g });
+    addDof(L.id + '.sh', { I: 1.1, lo: -70 * DEG, hi: 60 * DEG, fold: -19 * DEG, kl: 300, grp: g });
+    addDof(L.id + '.el', { I: 0.9, lo: -110 * DEG, hi: 45 * DEG, fold: -62 * DEG, kl: 300, grp: g });
+    addDof(L.id + '.ca', { I: 0.55, lo: -168 * DEG, hi: 6 * DEG, fold: -158 * DEG, kl: 240, grp: g });
+    addDof(L.id + '.fe', { I: 0.35, lo: -120 * DEG, hi: 45 * DEG, fold: -70 * DEG, kl: 160, grp: g });
+  } else {
+    addDof(L.id + '.hp', { I: 1.5, lo: -50 * DEG, hi: 62 * DEG, fold: 38 * DEG, kl: 330, grp: g });
+    addDof(L.id + '.st', { I: 1.1, lo: -112 * DEG, hi: 28 * DEG, fold: -71 * DEG, kl: 330, grp: g });
+    addDof(L.id + '.ho', { I: 0.7, lo: -28 * DEG, hi: 125 * DEG, fold: 112 * DEG, kl: 260, grp: g });
+    addDof(L.id + '.fe', { I: 0.35, lo: -120 * DEG, hi: 45 * DEG, fold: -54 * DEG, kl: 160, grp: g });
+  }
+  addDof(L.id + '.ab', { I: 0.8, lo: -0.25, hi: 0.25, w: 20, grp: g });
+}
+addDof('n1', { I: 2.2, amax: 220, w: 11, z: 0.8, ta: 0.03, lo: -85 * DEG, hi: 40 * DEG, fold: -30 * DEG, kl: 90, grp: 2 });
+addDof('n2', { I: 1.5, amax: 220, w: 12, z: 0.8, ta: 0.03, lo: -50 * DEG, hi: 50 * DEG, fold: -14 * DEG, kl: 60, grp: 2 });
+addDof('n3', { I: 1.0, amax: 240, w: 13, z: 0.8, ta: 0.03, lo: -55 * DEG, hi: 55 * DEG, fold: 14 * DEG, kl: 50, grp: 2 });
+addDof('ny', { I: 1.6, amax: 200, w: 8, z: 0.9, ta: 0.03, lo: -70 * DEG, hi: 70 * DEG, fold: 6 * DEG, kl: 30, grp: 2 });
+addDof('hd', { I: 0.8, amax: 260, w: 14, z: 0.75, ta: 0.025, lo: -65 * DEG, hi: 65 * DEG, fold: 44 * DEG, kl: 50, grp: 2 });
+addDof('eL', { I: 0.1, amax: 900, w: 22, z: 0.6, ta: 0.02, lo: -85 * DEG, hi: 45 * DEG, fold: -60 * DEG, kl: 20, grp: 2 });
+addDof('eR', { I: 0.1, amax: 900, w: 22, z: 0.6, ta: 0.02, lo: -85 * DEG, hi: 45 * DEG, fold: -60 * DEG, kl: 20, grp: 2 });
+addDof('tl', { I: 0.3, amax: 500, w: 9, z: 0.7, ta: 0.03, lo: -45 * DEG, hi: 85 * DEG, fold: -35 * DEG, kl: 30, grp: 2 });
+const NDOF = DOFS.length;
+const LEGBASE = [DI['LF.sc'], DI['RF.sc'], DI['LH.hp'], DI['RH.hp']];
+
+/* species tune how the same muscles behave */
+const SPECIES = {
+  robot: { wMul: 1.15, zMul: 0.55, coMul: 1.6 },   // stiff servo, a little ring after each step
+  real: { wMul: 0.85, zMul: 1.05, coMul: 0.8 },    // softer, organic follow-through
+};
+
+/* ---- planar IK helpers ---- */
+function ik2(tx, ty, a, b, bend) {
+  let d = Math.hypot(tx, ty);
+  const dmax = (a + b) * 0.998, dmin = Math.abs(a - b) + 1e-3;
+  if (d > dmax) { tx *= dmax / d; ty *= dmax / d; d = dmax; }
+  if (d < dmin) { const s = dmin / (d || 1e-6); tx *= s; ty *= s; d = dmin; }
+  const th1 = Math.atan2(ty, tx) + bend * Math.acos(clamp((a * a + d * d - b * b) / (2 * a * d), -1, 1));
+  return [th1, Math.atan2(ty - a * Math.sin(th1), tx - a * Math.cos(th1))];
+}
+function writeRel(abs, rest, out, o) {
+  let prev = 0;
+  for (let k = 0; k < abs.length; k++) { const rel = abs[k] - rest[k]; out[o + k] = wrap(rel - prev); prev = rel; }
+}
+function foreIK(sx, sy, sig, kap, thp, out, o) {
+  const c = RIG.fore, thS = c.rest[0] + sig;
+  const Sx = c.pivot[0] + c.len[0] * Math.cos(thS), Sy = c.pivot[1] + c.len[0] * Math.sin(thS);
+  const ha = thp + c.hoofOff;
+  const Fx = sx - c.hoofLen * Math.cos(ha) - c.len[4] * Math.cos(thp);
+  const Fy = sy - c.hoofLen * Math.sin(ha) - c.len[4] * Math.sin(thp);
+  const cx = c.len[2] + c.len[3] * Math.cos(kap), cy = -c.len[3] * Math.sin(kap);
+  const r = ik2(Fx - Sx, Fy - Sy, c.len[1], Math.hypot(cx, cy), -1);
+  const thR = r[1] - Math.atan2(cy, cx);
+  writeRel([thS, r[0], thR, thR - kap, thp], c.rest, out, o);
+}
+function hindIK(sx, sy, thp, hockX, out, o, guess) {
+  const c = RIG.hind, ha = thp + c.hoofOff;
+  const Fx = sx - c.hoofLen * Math.cos(ha) - c.len[3] * Math.cos(thp);
+  const Fy = sy - c.hoofLen * Math.sin(ha) - c.len[3] * Math.sin(thp);
+  const g0 = c.rest[2] - c.rest[1], s0 = c.rest[0] - c.rest[1];
+  let phh = guess, thF = 0, thT = 0, gam = 0;
+  for (let it = 0; it < 4; it++) {
+    gam = g0 + phh;
+    const cx = c.len[1] + c.len[2] * Math.cos(gam), cy = c.len[2] * Math.sin(gam);
+    const r = ik2(Fx - c.root[0], Fy - c.root[1], c.len[0], Math.hypot(cx, cy), 1);
+    thF = r[0]; thT = r[1] - Math.atan2(cy, cx);
+    phh = 0.9 * ((thF - thT) - s0) + hockX;      // reciprocal apparatus: hock follows stifle
+  }
+  writeRel([thF, thT, thT + gam, thp], c.rest, out, o);
+  return phh;
+}
+
+/* ---- forward kinematics (sagittal chains in body frame) ---- */
+function legChain(H, li, out) {
+  const L = LEGS[li], c = L.fore ? RIG.fore : RIG.hind, b = LEGBASE[li], n = c.len.length;
+  let x = L.fore ? c.pivot[0] : c.root[0], y = L.fore ? c.pivot[1] : c.root[1], cum = 0, a = 0;
+  out.length = 0; out.push([x, y]);
+  const ang = [];
+  for (let k = 0; k < n; k++) { cum += H.q[b + k]; a = c.rest[k] + cum; ang.push(a); x += c.len[k] * Math.cos(a); y += c.len[k] * Math.sin(a); out.push([x, y]); }
+  const ha = a + c.hoofOff; out.push([x + c.hoofLen * Math.cos(ha), y + c.hoofLen * Math.sin(ha)]);
+  out.ang = ang; out.hoofA = ha;
+  return out;
+}
+// neck + head: returns points in body frame (3D, yaw applied) plus absolute pitch angles
+function neckChain(H) {
+  const R = RIG, q = H.q, yaw = q[DI.ny];
+  const cy = Math.cos(yaw), sy = Math.sin(yaw);
+  const pts2 = [[R.neckRoot[0], R.neckRoot[1]]];
+  let x = R.neckRoot[0], y = R.neckRoot[1], cum = 0; const ang = [];
+  for (let k = 0; k < 3; k++) { cum += q[DI['n' + (k + 1)]]; const a = R.neckRest[k] + cum; ang.push(a); x += R.neckLen[k] * Math.cos(a); y += R.neckLen[k] * Math.sin(a); pts2.push([x, y]); }
+  const ha = R.headRest + cum + q[DI.hd]; ang.push(ha);
+  pts2.push([x + R.headLen * Math.cos(ha), y + R.headLen * Math.sin(ha)]);
+  const x0 = R.neckRoot[0];
+  const pts = pts2.map(p => [x0 + (p[0] - x0) * cy, p[1], -(p[0] - x0) * sy]);
+  return { pts, ang, yaw };
+}
+
+/* ---- body pose → rotation matrix (yaw · pitch · roll) ---- */
+function bodyMatrix(H) {
+  const cp = Math.cos(H.pitch), sp = Math.sin(H.pitch), cr = Math.cos(H.roll), sr = Math.sin(H.roll), cyw = Math.cos(H.yaw), syw = Math.sin(H.yaw);
+  // Rz(pitch) * Rx(roll)
+  const a = [cp, -sp * cr, sp * sr, sp, cp * cr, -cp * sr, 0, sr, cr];
+  // Ry(yaw) * a
+  return [cyw * a[0] + syw * a[6], cyw * a[1] + syw * a[7], cyw * a[2] + syw * a[8],
+          a[3], a[4], a[5],
+          -syw * a[0] + cyw * a[6], -syw * a[1] + cyw * a[7], -syw * a[2] + cyw * a[8]];
+}
+const mvec = (m, v) => [m[0] * v[0] + m[1] * v[1] + m[2] * v[2], m[3] * v[0] + m[4] * v[1] + m[5] * v[2], m[6] * v[0] + m[7] * v[1] + m[8] * v[2]];
+const mtvec = (m, v) => [m[0] * v[0] + m[3] * v[1] + m[6] * v[2], m[1] * v[0] + m[4] * v[1] + m[7] * v[2], m[2] * v[0] + m[5] * v[1] + m[8] * v[2]];
+const toWorld = (H, p) => { const r = mvec(H.M, p); return [H.x + r[0], H.y + r[1], H.z + r[2]]; };
+
+/* ---------------------------- the horse ---------------------------- */
+function makeHorse(kind, x0, z0) {
+  const H = {
+    kind, x: x0, z: z0, y: RIG.H0, pitch: 0, roll: 0, yaw: 0, v: 0, M: null,
+    q: new Float64Array(NDOF), dq: new Float64Array(NDOF), a: new Float64Array(NDOF).fill(0.1), b: new Float64Array(NDOF).fill(0.1),
+    tq: new Float64Array(NDOF), tqp: new Float64Array(NDOF), tvp: new Float64Array(NDOF), init: false,
+    legs: LEGS.map(L => { const c = L.fore ? RIG.fore : RIG.hind; return { st: 1, px: x0 + c.nomX, pz: z0 + L.side * c.hoofZ, lx: 0, lz: 0, tx: 0, tz: 0, s: 0, lf: 0, hk: 0, ph: 0 }; }),
+    sup: { on: false, fy: 0, fv: 0, ry: 0, rv: 0 },
+    tail: null, mane: null, events: [], impact: 0, effort: 0, glow: 1,
+  };
+  H.M = bodyMatrix(H);
+  return H;
+}
+
+/* body pose for a powered, walking horse */
+function bodyPose(H, t, P) {
+  const gw = P.gaitW, b = beatOf(t);
+  const g = b / (gw > 0.5 ? 1 : 2);
+  const wa = (1 - gw) * clamp(H.v / VWALK, 0, 1), ta = gw * clamp(H.v / VTROT, 0, 1);
+  H.y = RIG.H0 - RIG.walkDrop * wa - 0.07 * ta - 0.012 * wa * Math.cos(TAU * 2 * (g - 0.1)) - 0.024 * ta * Math.cos(TAU * 2 * (g - 0.18)) + (P.dy || 0);
+  H.pitch = 0.012 * wa * Math.sin(TAU * 2 * g) + 0.018 * ta * Math.sin(TAU * 2 * (g - 0.18)) + (P.dpitch || 0);
+  H.roll = 0.022 * wa * Math.sin(TAU * g) + 0.012 * ta * Math.sin(TAU * g);
+  return { g, wa, ta };
+}
+
+/* gait bookkeeping + IK targets for all DOFs */
+function legTargets(H, t, dt, P, G) {
+  const gw = P.gaitW, duty = gw > 0.5 ? 0.36 : 0.60, period = (gw > 0.5 ? 1 : 2) * SONG.spb;
+  const amp = Math.max(G.wa, G.ta);
+  const M = H.M;
+  for (let i = 0; i < 4; i++) {
+    const L = LEGS[i], c = L.fore ? RIG.fore : RIG.hind, leg = H.legs[i];
+    const ph = frac(G.g + (gw > 0.5 ? L.trot : L.walk)), stance = ph < duty;
+    if (leg.st && !stance) { leg.st = 0; leg.lx = leg.px; leg.lz = leg.pz; }
+    else if (!leg.st && stance) { leg.st = 1; leg.px = leg.tx; leg.pz = leg.tz; if (leg.lf > 0.25) H.events.push([t, i, leg.px, leg.pz, leg.lf]); }
+    leg.ph = ph;
+    let hx, hy, hz, s = 0, u = 0;
+    if (leg.st) {
+      u = ph / duty; hx = leg.px; hz = leg.pz; hy = 0;
+      if (amp > 0.05) hy += 0.022 * amp * sstep(0.84, 1, u);   // heel breaks over the toe
+    } else {
+      s = (ph - duty) / (1 - duty);
+      const remain = (1 - s) * (1 - duty) * period, half = H.v * period * duty / 2;
+      const cfx = gw > 0.5 ? c.cfT : c.cf;
+      leg.tx = H.x + H.v * remain + c.nomX + cfx * amp + half;
+      leg.tz = H.z + L.side * c.hoofZ;
+      leg.lf = clamp(Math.abs(leg.tx - leg.lx) / 0.42, 0, 1) * (P.lift ? P.lift[i] : 1);
+      const e = 0.5 - 0.5 * Math.cos(Math.PI * s);
+      hx = lerp(leg.lx, leg.tx, e); hz = lerp(leg.lz, leg.tz, e);
+      const lift = Math.pow(Math.sin(Math.PI * Math.pow(s, 0.8)), 2);
+      hy = (gw > 0.5 ? 0.17 : 0.11) * leg.lf * lift + 0.022 * amp * (1 - sstep(0, 0.3, s));
+    }
+    leg.s = s;
+    // into body frame
+    const rel = mtvec(M, [hx - H.x, hy - H.y, hz - H.z]);
+    const o = LEGBASE[i];
+    const bump = (x, k) => Math.pow(Math.sin(Math.PI * Math.pow(clamp(x, 0, 1), k)), 1.3);
+    if (L.fore) {
+      let kap = 0, thp = c.rest[4];
+      if (leg.st) { thp += 7 * DEG * amp * Math.sin(Math.PI * u) - 22 * DEG * amp * sstep(0.84, 1, u); }
+      else { const lf = leg.lf; kap = (gw > 0.5 ? 100 : 78) * DEG * lf * bump(s, 0.85); thp -= (gw > 0.5 ? 80 : 62) * DEG * lf * bump(s, 0.95) + 22 * DEG * amp * (1 - sstep(0, 0.25, s)); }
+      const sig = clamp(0.4 * (rel[0] - (c.nomX + (gw > 0.5 ? c.cfT : c.cf) * amp)), -0.3, 0.3) + (P.scap || 0);
+      foreIK(rel[0], rel[1], sig, kap, thp, H.tq, o);
+      const Sy = c.pivot[1] + c.len[0] * Math.sin(c.rest[0] + sig);
+      H.tq[o + 5] = clamp((L.side * c.z - rel[2]) * L.side / Math.max(0.4, Sy - rel[1]), -0.2, 0.2);
+    } else {
+      let thp = c.rest[3], hk = 0;
+      if (leg.st) { thp += 6 * DEG * amp * Math.sin(Math.PI * u) - 20 * DEG * amp * sstep(0.84, 1, u); }
+      else { const lf = leg.lf; hk = (gw > 0.5 ? 30 : 22) * DEG * lf * bump(s, 0.8); thp -= (gw > 0.5 ? 70 : 55) * DEG * lf * bump(s, 0.95) + 20 * DEG * amp * (1 - sstep(0, 0.25, s)); }
+      leg.hk = hindIK(rel[0], rel[1], thp, hk, H.tq, o, leg.hk);
+      H.tq[o + 4] = clamp((L.side * c.z - rel[2]) * L.side / Math.max(0.4, c.root[1] - rel[1]), -0.2, 0.2);
+    }
+  }
+}
+
+/* muscles: every joint is a pair of opposing actuators, integrated — never posed */
+function muscles(H, dt, P) {
+  const sp = SPECIES[H.kind];
+  for (let i = 0; i < NDOF; i++) {
+    const d = DOFS[i];
+    const tgt = H.tq[i];
+    let tv = (tgt - H.tqp[i]) / dt, tacc = (tv - H.tvp[i]) / dt;
+    if (!H.init) { tv = 0; tacc = 0; }
+    H.tqp[i] = tgt; H.tvp[i] = tv;
+    const pw = P.pow ? P.pow[d.grp] : 1;
+    const w = d.w * sp.wMul * (P.stiff || 1), z = d.z * sp.zMul, G = d.amax * d.I * (P.stiff || 1) * (P.stiff || 1);
+    const q = H.q[i], v = H.dq[i];
+    const lead = tgt + tv * d.ta;
+    const passive = d.k * q + (1 - pw) * d.kl * (q - d.fold);
+    const drag = d.c * v + d.cc * (H.a[i] + H.b[i]) * v;
+    const accDes = w * w * (lead - q) + 2 * z * w * (tv - v) + clamp(tacc, -600, 600);
+    const drive = pw * (d.I * accDes + drag + passive) / G;
+    const co = pw * d.co * sp.coMul * (P.tone == null ? 1 : P.tone);
+    const al = 1 - Math.exp(-dt / d.ta);
+    H.a[i] += (clamp(co + Math.max(0, drive), 0, 1) - H.a[i]) * al;
+    H.b[i] += (clamp(co + Math.max(0, -drive), 0, 1) - H.b[i]) * al;
+    const acc = (G * (H.a[i] - H.b[i]) - drag - passive) / d.I;
+    let nv = v + acc * dt, nq = q + nv * dt;
+    if (nq < d.lo) { nq = d.lo; if (nv < -1.5) H.impact = Math.max(H.impact, -nv); nv = Math.max(0, nv) * 0.2; }
+    if (nq > d.hi) { nq = d.hi; if (nv > 1.5) H.impact = Math.max(H.impact, nv); nv = Math.min(0, nv) * 0.2; }
+    H.dq[i] = nv; H.q[i] = nq;
+  }
+  H.init = true;
+}
+
+/* when the power is gone the body is held up only by whatever the legs still reach */
+const _tmp = [];
+function supportBody(H, dt, P) {
+  const S = H.sup, cp = Math.cos(H.pitch), sp = Math.sin(H.pitch);
+  let fore = 0.30, hind = 0.30;             // belly / sternum resting on the ground
+  for (let i = 0; i < 4; i++) {
+    const ch = legChain(H, i, _tmp);
+    let mn = 9;
+    for (const p of ch) { const y = p[0] * sp + p[1] * cp; if (y < mn) mn = y; }
+    if (LEGS[i].fore) fore = Math.max(fore, -mn); else hind = Math.max(hind, -mn);
+  }
+  const nk = neckChain(H);
+  for (const j of [3, 4]) { const p = nk.pts[j]; const y = p[0] * sp + p[1] * cp - 0.05; fore = Math.max(fore, -y - (p[0] - 0.65) * sp); }
+  const fReq = fore + 0.65 * sp, rReq = hind - 0.70 * sp;
+  if (!S.on) { S.on = true; S.fy = H.y + 0.65 * sp; S.ry = H.y - 0.70 * sp; S.fv = 0; S.rv = 0; }
+  for (const k of ['f', 'r']) {
+    const req = k === 'f' ? fReq : rReq;
+    let y = S[k + 'y'], v = S[k + 'v'];
+    v -= 9.8 * dt; y += v * dt;
+    if (y < req) { if (v < -0.8) H.impact = Math.max(H.impact, -v * 0.5); y = req; v = v < 0 ? -v * 0.12 : v; }
+    S[k + 'y'] = y; S[k + 'v'] = v;
+  }
+  H.pitch = Math.asin(clamp((S.fy - S.ry) / 1.35, -0.6, 0.6));
+  H.y = S.ry + (S.fy - S.ry) * 0.70 / 1.35;
+  H.roll *= 0.98;
+}
+
+/* tail: verlet strand hung from the dock; mane: damped springs along the crest */
+const TAIL_N = 11;
+function initSecondary(H) {
+  H.tail = { p: [], o: [] };
+  const root = toWorld(H, [RIG.tailRoot[0], RIG.tailRoot[1], 0]);
+  for (let i = 0; i < TAIL_N; i++) { const p = [root[0] - 0.05 * i, root[1] - 0.09 * i, root[2]]; H.tail.p.push(p); H.tail.o.push(p.slice()); }
+  H.mane = [];
+  for (let i = 0; i < 13; i++) H.mane.push({ p: null, v: [0, 0, 0] });
+}
+function tailSeg(i) { return i < 3 ? 0.085 : 0.085; }
+function secondary(H, dt, P) {
+  if (!H.tail) initSecondary(H);
+  const T = H.tail, robot = H.kind === 'robot';
+  const tl = H.q[DI.tl];
+  const dockA = -112 * DEG + tl + H.pitch;
+  const root = toWorld(H, [RIG.tailRoot[0], RIG.tailRoot[1], 0]);
+  const dir = [Math.cos(dockA), Math.sin(dockA), 0];
+  T.p[0] = root; T.o[0] = root;
+  const stiff = robot ? 0.92 : 0.0;
+  const drag = robot ? 0.86 : 0.965;
+  for (let i = 1; i < TAIL_N; i++) {
+    const p = T.p[i], o = T.o[i];
+    const vx = (p[0] - o[0]) * drag, vy = (p[1] - o[1]) * drag, vz = (p[2] - o[2]) * drag;
+    T.o[i] = p.slice();
+    p[0] += vx; p[1] += vy - 9.8 * dt * dt; p[2] += vz;
+  }
+  for (let it = 0; it < 4; it++) {
+    for (let i = 1; i < TAIL_N; i++) {
+      const a = T.p[i - 1], p = T.p[i];
+      // bending: the dock (first segments) is bone; the rest is hair
+      const bend = robot ? stiff : (i <= 3 ? 0.55 : i <= 5 ? 0.12 : 0.02);
+      const pd = i === 1 ? dir : vnorm(vsub(a, T.p[i - 2]));
+      const want = vadd(a, vmul(pd, tailSeg(i)));
+      p[0] += (want[0] - p[0]) * bend; p[1] += (want[1] - p[1]) * bend; p[2] += (want[2] - p[2]) * bend;
+      const d = vsub(p, a), l = vlen(d) || 1e-6, k = tailSeg(i) / l;
+      p[0] = a[0] + d[0] * k; p[1] = a[1] + d[1] * k; p[2] = a[2] + d[2] * k;
+      // keep hair behind the buttocks
+      const rel = mtvec(H.M, [p[0] - H.x, p[1] - H.y, p[2] - H.z]);
+      const lim = -1.03 - 0.06 * clamp(-rel[1] - 0.05, 0, 0.5);
+      if (rel[1] > -0.55 && rel[0] > lim) { rel[0] = lim; const w = toWorld(H, rel); p[0] = w[0]; p[1] = w[1]; p[2] = w[2]; }
+      if (p[1] < 0.02) p[1] = 0.02;
+    }
+  }
+  if (robot) return;
+  // mane springs
+  const nk = neckChain(H);
+  for (let i = 0; i < H.mane.length; i++) {
+    const m = H.mane[i], u = i / (H.mane.length - 1);
+    const a = maneRoot(H, nk, u);
+    const len = 0.13 + 0.09 * Math.sin(Math.PI * clamp(u * 1.1, 0, 1)) + 0.04 * hash(i * 3.1);
+    const rest = vadd(a.p, vadd(vmul(a.side, len * 0.55), vmul(a.down, len * 0.8)));
+    if (!m.p) m.p = rest.slice();
+    const k = 160, c = 9;
+    for (let j = 0; j < 3; j++) {
+      const acc = (rest[j] - m.p[j]) * k - m.v[j] * c + (j === 1 ? -3 : 0);
+      m.v[j] += acc * dt; m.p[j] += m.v[j] * dt;
+    }
+    const dd = vsub(m.p, a.p), l = vlen(dd);
+    if (l > len * 1.15) { const s = len * 1.15 / l; m.p = vadd(a.p, vmul(dd, s)); }
+    m.root = a.p; m.len = len;
+  }
+}
+// a point on the neck crest at fraction u (0 = poll, 1 = withers), with local side/down vectors (world)
+function maneRoot(H, nk, u) {
+  const P = nk.pts;                 // root, j1, j2, poll, muzzle
+  const t = 1 - u;                  // 0 at the withers side
+  const seg = clamp(t * 3, 0, 2.999), k = Math.floor(seg), f = seg - k;
+  const a = P[k], b = P[k + 1];
+  const c = vlerp(a, b, f);
+  const ang = nk.ang[k];
+  const yaw = nk.yaw;
+  const up = [-Math.sin(ang) * Math.cos(yaw), Math.cos(ang), Math.sin(ang) * Math.sin(yaw)];
+  const r = neckRadius(t);
+  const crest = vadd(c, vmul(up, r.h * 0.92 + r.off));
+  const side = [Math.sin(yaw), 0, Math.cos(yaw)];
+  return { p: toWorld(H, crest), side: mvec(H.M, side), down: mvec(H.M, vmul(up, -1)) };
+}
+function neckRadius(t) {        // t: 0 at neck root → 1 at poll
+  return { h: lerp(0.30, 0.13, Math.pow(t, 0.8)), w: lerp(0.16, 0.085, t), off: lerp(0.05, 0.0, t) };
+}
+
+function stepHorse(H, t, dt, P) {
+  const nx = P.x;
+  H.v = H.init ? (nx - H.x) / dt : 0;
+  H.x = nx; H.z = P.z;
+  const powered = !P.pow || Math.min(P.pow[0], P.pow[1]) > 0.999;
+  let G;
+  if (powered && !H.sup.on) G = bodyPose(H, t, P);
+  else { const b = beatOf(t); G = { g: b / 2, wa: 0, ta: 0 }; }
+  H.M = bodyMatrix(H);
+  legTargets(H, t, dt, P, G);
+  // neck, head, ears, tail
+  const wa = G.wa, ta = G.ta, g = G.g;
+  const N = P.neck || [0, 0, 0, 0, 0];
+  H.tq[DI.n1] = -0.05 * wa + 0.055 * wa * Math.sin(TAU * 2 * (g - 0.3)) + 0.015 * ta * Math.sin(TAU * 2 * g) + N[0];
+  H.tq[DI.n2] = 0.02 * wa * Math.sin(TAU * 2 * (g - 0.36)) + N[1];
+  H.tq[DI.n3] = 0.01 * wa * Math.sin(TAU * 2 * (g - 0.4)) + N[2];
+  H.tq[DI.ny] = N[3] + 0.02 * wa * Math.sin(TAU * g);
+  H.tq[DI.hd] = 0.035 * wa * Math.sin(TAU * 2 * (g - 0.45)) - 0.04 * ta + N[4];
+  H.tq[DI.eL] = P.ears ? P.ears[0] : 0; H.tq[DI.eR] = P.ears ? P.ears[1] : 0;
+  H.tq[DI.tl] = (P.tail || 0) + 0.25 * ta;
+  if (P.probe) for (let i = 0; i < NDOF; i++) H.tq[i] += P.probe[i] || 0;
+  muscles(H, dt, P);
+  if (!powered || H.sup.on) { supportBody(H, dt, P); H.M = bodyMatrix(H); }
+  secondary(H, dt, P);
+  H.impact *= 0.9;
+  let e = 0; for (let i = 0; i < NDOF; i++) e += H.a[i] + H.b[i]; H.effort = e / (2 * NDOF);
+}
+
+/* =====================================================================
+   RENDER3D — perspective camera, faceted lofts, painter's sort.
+   ===================================================================== */
+const VW = 1600, VH = 900;
+const CAM = { E: [0, 1.5, 10], f: [0, 0, -1], r: [1, 0, 0], u: [0, 1, 0], F: 1650, cx: 800, cy: 450, roll: 0, cr: 1, sr: 0, sx: 0, sy: 0 };
+function setCamera(T, az, el, dist, F, roll, shakeX = 0, shakeY = 0) {
+  const ca = Math.cos(el);
+  CAM.E = [T[0] + dist * Math.sin(az) * ca, T[1] + dist * Math.sin(el), T[2] + dist * Math.cos(az) * ca];
+  CAM.f = vnorm(vsub(T, CAM.E));
+  CAM.r = vnorm(vcross(CAM.f, [0, 1, 0]));
+  CAM.u = vcross(CAM.r, CAM.f);
+  CAM.F = F; CAM.roll = roll; CAM.cr = Math.cos(roll); CAM.sr = Math.sin(roll);
+  CAM.sx = shakeX; CAM.sy = shakeY; CAM.T = T;
+}
+function proj(p) {
+  const vx = p[0] - CAM.E[0], vy = p[1] - CAM.E[1], vz = p[2] - CAM.E[2];
+  let z = vx * CAM.f[0] + vy * CAM.f[1] + vz * CAM.f[2];
+  if (z < 0.05) z = 0.05;
+  const s = CAM.F / z;
+  const x = (vx * CAM.r[0] + vy * CAM.r[1] + vz * CAM.r[2]) * s;
+  const y = -(vx * CAM.u[0] + vy * CAM.u[1] + vz * CAM.u[2]) * s;
+  return { x: CAM.cx + CAM.sx + x * CAM.cr - y * CAM.sr, y: CAM.cy + CAM.sy + x * CAM.sr + y * CAM.cr, z, s };
+}
+const f1 = v => (Math.round(v * 10) / 10);
+
+/* lighting rig, set per frame by the director */
+const LIGHT = { dir: vnorm([-0.45, 0.8, 0.55]), col: [1, 1, 1], amb: [0.35, 0.38, 0.45], gnd: [0.18, 0.16, 0.14], rim: [0.6, 0.7, 0.9], rimK: 0.5, xray: 0 };
+function shadeRGB(base, n, c, emit = 0) {
+  const L = LIGHT, ndl = vdot(n, L.dir);
+  const dif = Math.max(0, ndl), wrapd = Math.max(0, (ndl + 0.35) / 1.35) * 0.25;
+  const up = n[1] * 0.5 + 0.5;
+  const vx = CAM.E[0] - c[0], vy = CAM.E[1] - c[1], vz = CAM.E[2] - c[2], vl = Math.hypot(vx, vy, vz) || 1;
+  const ndv = (n[0] * vx + n[1] * vy + n[2] * vz) / vl;
+  const rim = Math.pow(1 - clamp(ndv, 0, 1), 3) * L.rimK;
+  const out = [0, 0, 0];
+  for (let k = 0; k < 3; k++) {
+    const amb = L.amb[k] * up + L.gnd[k] * (1 - up);
+    out[k] = clamp(base[k] * (amb + (dif * 0.9 + wrapd) * L.col[k]) + rim * L.rim[k] * 255 * 0.55 + emit * base[k], 0, 255);
+  }
+  return out;
+}
+const rgbs = c => 'rgb(' + (c[0] | 0) + ',' + (c[1] | 0) + ',' + (c[2] | 0) + ')';
+
+/* polygon bucket */
+let POLYS = [];
+function pushPoly(pts2, z, fill, extra = '') {
+  let d = 'M' + f1(pts2[0].x) + ' ' + f1(pts2[0].y);
+  for (let i = 1; i < pts2.length; i++) d += 'L' + f1(pts2[i].x) + ' ' + f1(pts2[i].y);
+  POLYS.push({ z, h: '<path d="' + d + 'Z" fill="' + fill + '" stroke="' + fill + '" stroke-width=".7" stroke-linejoin="round"' + extra + '/>' });
+}
+function pushRaw(z, h) { POLYS.push({ z, h }); }
+
+/* loft: rings of world points → shaded, culled quads.  colorFn(i, k) → [r,g,b] */
+function loft(rings, colorFn, opt = {}) {
+  const nR = rings.length, nS = rings[0].length, alpha = opt.alpha == null ? 1 : opt.alpha;
+  const PR = rings.map(r => r.map(proj));
+  const ctr = rings.map(r => { let a = [0, 0, 0]; for (const p of r) a = vadd(a, p); return vmul(a, 1 / r.length); });
+  for (let i = 0; i < nR - 1; i++) {
+    const ax = vlerp(ctr[i], ctr[i + 1], 0.5);
+    for (let k = 0; k < nS; k++) {
+      const k2 = (k + 1) % nS;
+      const p0 = rings[i][k], p1 = rings[i][k2], p2 = rings[i + 1][k2], p3 = rings[i + 1][k];
+      const c = [(p0[0] + p1[0] + p2[0] + p3[0]) / 4, (p0[1] + p1[1] + p2[1] + p3[1]) / 4, (p0[2] + p1[2] + p2[2] + p3[2]) / 4];
+      let n = vcross(vsub(p2, p0), vsub(p3, p1));
+      const nl = vlen(n); if (nl < 1e-9) continue;
+      n = vmul(n, 1 / nl);
+      if (vdot(n, vsub(c, ax)) < 0) n = vmul(n, -1);
+      if (vdot(n, vsub(CAM.E, c)) < -0.002 * vlen(vsub(CAM.E, c))) continue;
+      const base = colorFn(i, k, n, c);
+      if (!base) continue;
+      const col = shadeRGB(base, n, c, base[3] || 0);
+      const z = (PR[i][k].z + PR[i][k2].z + PR[i + 1][k2].z + PR[i + 1][k].z) / 4 + (opt.bias || 0);
+      pushPoly([PR[i][k], PR[i][k2], PR[i + 1][k2], PR[i + 1][k]], z, rgbs(col), alpha < 1 ? ' fill-opacity="' + alpha + '" stroke-opacity="' + alpha * 0.6 + '"' : '');
+    }
+  }
+  if (opt.capEnd) cap(rings[nR - 1], ctr[nR - 1], ctr[nR - 2], colorFn(nR - 2, 0), opt);
+  if (opt.capStart) cap(rings[0], ctr[0], ctr[1], colorFn(0, 0), opt);
+}
+function cap(ring, c, inner, base, opt) {
+  let n = vnorm(vsub(c, inner));
+  if (vdot(n, vsub(CAM.E, c)) < 0) return;
+  const col = shadeRGB(opt.capColor || base, n, c);
+  const P = ring.map(proj);
+  pushPoly(P, P.reduce((s, p) => s + p.z, 0) / P.length + (opt.bias || 0) - 0.002, rgbs(col));
+}
+// ring around centre c in the plane (u, w); superellipse exponent e
+function ring(c, u, w, ru, rw, n, e = 2, phase = 0) {
+  const out = [];
+  for (let k = 0; k < n; k++) {
+    const a = phase + k / n * TAU, ca = Math.cos(a), sa = Math.sin(a);
+    const x = Math.sign(ca) * Math.pow(Math.abs(ca), 2 / e), y = Math.sign(sa) * Math.pow(Math.abs(sa), 2 / e);
+    out.push([c[0] + u[0] * ru * x + w[0] * rw * y, c[1] + u[1] * ru * x + w[1] * rw * y, c[2] + u[2] * ru * x + w[2] * rw * y]);
+  }
+  return out;
+}
+
+/* ---------------- species look ---------------- */
+const BAY = { coat: [126, 70, 38], belly: [142, 88, 54], dark: [34, 28, 26], hoof: [62, 55, 50], white: [236, 230, 220], muzzle: [70, 52, 46], mane: [26, 21, 20] };
+const STEEL = { shell: [176, 186, 198], shell2: [158, 169, 183], under: [74, 82, 96], joint: [38, 42, 50], foot: [30, 32, 36], amber: [255, 178, 64], cyan: [110, 232, 245], visor: [16, 20, 28] };
+// body stations: [x, top, bottom, halfWidth] in body frame
+const BODY_REAL = [
+  [-1.07, 0.05, -0.07, 0.05], [-1.03, 0.17, -0.19, 0.14], [-0.95, 0.27, -0.30, 0.21], [-0.81, 0.33, -0.37, 0.265],
+  [-0.63, 0.345, -0.40, 0.285], [-0.43, 0.30, -0.405, 0.285], [-0.18, 0.26, -0.40, 0.30], [0.08, 0.26, -0.41, 0.31],
+  [0.32, 0.30, -0.42, 0.30], [0.52, 0.36, -0.38, 0.265], [0.69, 0.28, -0.32, 0.23], [0.83, 0.15, -0.25, 0.18],
+  [0.91, 0.04, -0.16, 0.12], [0.95, -0.03, -0.10, 0.05]];
+const BODY_ROBOT = [
+  [-1.02, 0.10, -0.10, 0.10], [-0.97, 0.23, -0.24, 0.21], [-0.82, 0.28, -0.29, 0.245], [-0.55, 0.27, -0.31, 0.25],
+  [-0.20, 0.25, -0.32, 0.255], [0.18, 0.26, -0.32, 0.255], [0.50, 0.30, -0.30, 0.245], [0.72, 0.27, -0.26, 0.215],
+  [0.87, 0.16, -0.18, 0.17], [0.94, 0.05, -0.08, 0.09]];
+const HEAD_REAL = [[0.00, 0.115, 0.080, -0.01], [0.10, 0.160, 0.100, -0.045], [0.25, 0.165, 0.106, -0.05], [0.42, 0.122, 0.090, -0.015],
+  [0.60, 0.095, 0.078, 0.0], [0.78, 0.084, 0.071, -0.004], [0.90, 0.090, 0.075, -0.012], [0.97, 0.075, 0.066, -0.018], [1.00, 0.040, 0.045, -0.02]];
+const HEAD_ROBOT = [[0.00, 0.12, 0.10, 0.0], [0.16, 0.15, 0.115, -0.02], [0.45, 0.13, 0.105, -0.01], [0.78, 0.10, 0.09, 0.0], [0.95, 0.08, 0.08, 0.0], [1.0, 0.05, 0.06, 0.0]];
+// leg stations: [segmentIndex, fraction, ru, rw, material]  (0 coat, 1 points/dark)
+const FORE_ST = [[1, 0, 0.115, 0.135, 0], [1, 0.5, 0.105, 0.12, 0], [2, 0, 0.088, 0.10, 0], [2, 0.16, 0.08, 0.088, 0], [2, 0.6, 0.058, 0.064, 0],
+  [3, 0, 0.051, 0.058, 1], [3, 0.5, 0.033, 0.041, 1], [4, 0, 0.042, 0.050, 1], [4, 0.5, 0.032, 0.035, 1], [5, 0, 0.038, 0.042, 1]];
+const HIND_ST = [[0, 0, 0.16, 0.17, 0], [0, 0.5, 0.15, 0.165, 0], [1, 0, 0.105, 0.115, 0], [1, 0.25, 0.095, 0.11, 0], [1, 0.7, 0.058, 0.072, 0],
+  [2, 0, 0.05, 0.075, 1], [2, 0.5, 0.034, 0.045, 1], [3, 0, 0.042, 0.050, 1], [3, 0.5, 0.032, 0.035, 1], [4, 0, 0.038, 0.042, 1]];
+const FORE_ST_R = [[1, 0, 0.085, 0.10, 0], [1, 0.6, 0.07, 0.08, 0], [2, 0, 0.06, 0.066, 0], [2, 0.5, 0.048, 0.052, 0], [3, 0, 0.043, 0.047, 0],
+  [3, 0.6, 0.034, 0.038, 0], [4, 0, 0.036, 0.04, 0], [5, 0, 0.034, 0.036, 0]];
+const HIND_ST_R = [[0, 0, 0.11, 0.12, 0], [0, 0.6, 0.095, 0.105, 0], [1, 0, 0.075, 0.08, 0], [1, 0.5, 0.055, 0.062, 0], [2, 0, 0.046, 0.05, 0],
+  [2, 0.6, 0.036, 0.04, 0], [3, 0, 0.036, 0.04, 0], [4, 0, 0.034, 0.036, 0]];
+
+/* leg world points: returns {pts3: world points of chain, frames} */
+function legWorld(H, li) {
+  const L = LEGS[li], c = L.fore ? RIG.fore : RIG.hind, ch = legChain(H, li, []);
+  const ab = H.q[LEGBASE[li] + (L.fore ? 5 : 4)];
+  const z0 = L.side * c.z, y0 = L.fore ? ch[1][1] : ch[0][1];
+  const pts = ch.map((p, j) => {
+    const dy = p[1] - y0;
+    const z = (L.fore && j === 0) ? L.side * 0.12 : z0 + L.side * dy * Math.sin(ab);
+    return toWorld(H, [p[0], j === 0 && L.fore ? p[1] : y0 + dy * Math.cos(ab), z]);
+  });
+  return { ch, pts, ang: ch.ang, hoofA: ch.hoofA };
+}
+
+function drawLeg(H, li, robot, look) {
+  const L = LEGS[li], W = legWorld(H, li), P = W.pts;
+  const ST = robot ? (L.fore ? FORE_ST_R : HIND_ST_R) : (L.fore ? FORE_ST : HIND_ST);
+  const u = mvec(H.M, [0, 0, 1]);
+  const rings = [], mats = [];
+  const near = L.side > 0;
+  for (const s of ST) {
+    const [si, fr, ru, rw, mat] = s;
+    const a = P[si], b = P[Math.min(si + 1, P.length - 1)];
+    const c = vlerp(a, b, fr);
+    let tdir;
+    if (fr === 0 && si > 0) tdir = vnorm(vadd(vnorm(vsub(P[si], P[si - 1])), vnorm(vsub(b, a))));
+    else tdir = vnorm(vsub(b, a));
+    const w = vnorm(vcross(u, tdir));
+    const bulge = 1 + (robot ? 0 : 0.06 * (H.a[LEGBASE[li] + Math.min(si, 3)] || 0));
+    rings.push(ring(c, u, w, ru * bulge, rw * bulge, robot ? 10 : 10, robot ? 3.2 : 2.2));
+    mats.push(mat);
+  }
+  const white = !robot && look.sock === li;
+  loft(rings, (i) => {
+    if (robot) return i % 2 ? STEEL.shell : STEEL.shell2;
+    if (mats[i] === 1 || mats[i + 1] === 1) return white && i >= 7 ? BAY.white : BAY.dark;
+    return BAY.coat;
+  }, { bias: near ? -0.04 : 0.02, alpha: 1 - LIGHT.xray * 0.6 });
+  // hoof / foot
+  const K = P[P.length - 2], S = P[P.length - 1];
+  const hd = vnorm(vsub(S, K)), w = vnorm(vcross(u, hd));
+  const r1 = ring(K, u, w, 0.040, 0.044, 10, 2.2), r2 = ring(vlerp(K, S, 0.98), u, w, robot ? 0.07 : 0.056, robot ? 0.075 : 0.064, 10, robot ? 3 : 2.2);
+  loft([r1, r2], () => robot ? STEEL.foot : (white ? [196, 182, 160] : BAY.hoof), { bias: near ? -0.045 : 0.02, capEnd: true });
+  return W;
+}
+
+/* piston-muscle for the robot: barrel on the proximal bone, rod on the distal */
+function piston(A, B, act, col, z) {
+  const pa = proj(A), pb = proj(B);
+  const mx = lerp(pa.x, pb.x, 0.58), my = lerp(pa.y, pb.y, 0.58);
+  const s = (pa.s + pb.s) / 2;
+  const glow = clamp(act, 0, 1);
+  let h = '<line x1="' + f1(pa.x) + '" y1="' + f1(pa.y) + '" x2="' + f1(mx) + '" y2="' + f1(my) + '" stroke="#262c36" stroke-width="' + f1(0.034 * s) + '" stroke-linecap="round"/>';
+  h += '<line x1="' + f1(mx) + '" y1="' + f1(my) + '" x2="' + f1(pb.x) + '" y2="' + f1(pb.y) + '" stroke="#c9d3de" stroke-width="' + f1(0.014 * s) + '" stroke-linecap="round"/>';
+  h += '<line x1="' + f1(pa.x) + '" y1="' + f1(pa.y) + '" x2="' + f1(mx) + '" y2="' + f1(my) + '" stroke="' + col + '" stroke-opacity="' + (0.2 + 0.8 * glow).toFixed(2) + '" stroke-width="' + f1((0.008 + 0.012 * glow) * s) + '" stroke-linecap="round"/>';
+  pushRaw(z, h);
+}
+/* muscle ribbon (Muscle Dance style): three points swelling with activation */
+function ribbon(A, J, B, act, col, op, z) {
+  const P = [proj(A), proj(J), proj(B)];
+  const wv = (0.012 + 0.03 * clamp(act, 0, 1));
+  const L = [], R = [];
+  for (let i = 0; i < 3; i++) {
+    const pr = P[Math.max(0, i - 1)], nx = P[Math.min(2, i + 1)];
+    let dx = nx.x - pr.x, dy = nx.y - pr.y; const dl = Math.hypot(dx, dy) || 1; dx /= dl; dy /= dl;
+    const w = wv * P[i].s * (i === 1 ? 1 : 0.35);
+    L.push({ x: P[i].x - dy * w, y: P[i].y + dx * w }); R.push({ x: P[i].x + dy * w, y: P[i].y - dx * w });
+  }
+  const d = 'M' + f1(L[0].x) + ' ' + f1(L[0].y) + 'Q' + f1(L[1].x) + ' ' + f1(L[1].y) + ' ' + f1(L[2].x) + ' ' + f1(L[2].y) + 'L' + f1(R[2].x) + ' ' + f1(R[2].y) + 'Q' + f1(R[1].x) + ' ' + f1(R[1].y) + ' ' + f1(R[0].x) + ' ' + f1(R[0].y) + 'Z';
+  pushRaw(z, '<path d="' + d + '" fill="' + col + '" fill-opacity="' + op.toFixed(2) + '"/>');
+}
+// muscle pairs across leg joints; joint j sits between chain segments j-1 and j
+function legMuscles(H, li, W, robot) {
+  const L = LEGS[li], P = W.pts, base = LEGBASE[li], near = L.side > 0;
+  const xr = LIGHT.xray;
+  if (!robot && xr < 0.02) return;
+  if (robot && !near && xr < 0.5) return;
+  const joints = L.fore ? [[1, 1, 0.30, 0.09], [2, 2, 0.24, 0.07], [3, 3, 0.15, 0.05]] : [[1, 0, 0.30, 0.10], [2, 1, 0.26, 0.075], [3, 2, 0.15, 0.05]];
+  const out = mvec(H.M, [0, 0, L.side]);
+  for (const [pj, dofo, reach, r] of joints) {
+    const J = P[pj], A0 = P[pj - 1], B0 = P[pj + 1];
+    const dA = vnorm(vsub(A0, J)), dB = vnorm(vsub(B0, J));
+    const nB = vnorm(vcross(out, dB)), nA = vnorm(vcross(dA, out));
+    const qi = base + dofo, aA = H.a[qi], aB = H.b[qi];
+    const lat = vmul(out, r * 0.75);
+    for (const sgn of [1, -1]) {
+      const act = sgn > 0 ? aA : aB;
+      const A = vadd(vadd(vadd(J, vmul(dA, reach)), vmul(nA, sgn * r * 0.8)), lat);
+      const B = vadd(vadd(vadd(J, vmul(dB, reach * 0.62)), vmul(nB, sgn * r * 0.7)), lat);
+      const Jm = vadd(vadd(J, vmul(vnorm(vadd(nA, nB)), sgn * r * 1.15)), lat);
+      const z = proj(J).z + (near ? -0.11 : 0.03);
+      if (robot && xr < 0.5) piston(A, B, act, sgn > 0 ? '#ffb240' : '#6ee8f5', z);
+      else ribbon(A, Jm, B, act, sgn > 0 ? '#ff5f86' : '#5fe6e0', 0.35 + 0.6 * act, z - 0.01);
+    }
+  }
+}
+
+/* -------------------------- the whole animal -------------------------- */
+function drawHorse(H, look = {}) {
+  const robot = H.kind === 'robot', u = mvec(H.M, [0, 0, 1]), xr = LIGHT.xray;
+  const alpha = 1 - xr * 0.62;
+  // body
+  const BS = robot ? BODY_ROBOT : BODY_REAL, rings = [];
+  for (const s of BS) {
+    const [x, top, bot, hw] = s;
+    const c = toWorld(H, [x, (top + bot) / 2, 0]);
+    rings.push(ring(c, u, mvec(H.M, [0, 1, 0]), hw, (top - bot) / 2, robot ? 18 : 16, robot ? 5 : 2.35));
+  }
+  const glow = H.glow;
+  loft(rings, (i, k, n) => {
+    if (robot) {
+      if (n[1] < -0.35) return STEEL.under;
+      return (i % 2) ? STEEL.shell : STEEL.shell2;
+    }
+    return n[1] < -0.55 ? BAY.belly : BAY.coat;
+  }, { alpha });
+  if (robot) robotPack(H, u);
+  // neck + head
+  const nk = neckChain(H);
+  drawNeckHead(H, nk, robot, u, alpha, look);
+  // legs
+  const W = [];
+  for (let i = 0; i < 4; i++) W.push(drawLeg(H, i, robot, look));
+  for (let i = 0; i < 4; i++) legMuscles(H, i, W[i], robot);
+  // tail
+  drawTail(H, robot);
+  if (!robot) drawMane(H, nk);
+  return W;
+}
+
+function robotPack(H, u) {
+  const up = mvec(H.M, [0, 1, 0]);
+  const r = [];
+  for (const x of [-0.40, -0.38, 0.22, 0.24]) {
+    const hh = (x < -0.39 || x > 0.23) ? 0.04 : 0.055;
+    r.push(ring(toWorld(H, [x, 0.295, 0]), u, up, 0.15, hh, 12, 6));
+  }
+  loft(r, (i) => i === 1 ? [58, 64, 76] : [92, 100, 114], { capStart: true, capEnd: true });
+  const cells = 6, lvl = H.glow;
+  for (let k = 0; k < cells; k++) {
+    const x0 = -0.33 + k * 0.088, on = lvl * cells > k + 0.5;
+    const a = toWorld(H, [x0, 0.30, 0.153]), b = toWorld(H, [x0 + 0.062, 0.30, 0.153]);
+    const pa = proj(a), pb = proj(b);
+    pushRaw(pa.z - 0.03, '<line x1="' + f1(pa.x) + '" y1="' + f1(pa.y) + '" x2="' + f1(pb.x) + '" y2="' + f1(pb.y) + '" stroke="' + (on ? '#ffb240' : '#2c3340') + '" stroke-width="' + f1(0.02 * pa.s) + '" stroke-linecap="round"/>');
+  }
+  // near-flank panel seams, an amber service stripe, and a stencilled designation
+  const sd = 0.257, near = vdot(u, vsub(CAM.E, toWorld(H, [0, 0, 0]))) > 0 ? 1 : -1;
+  const seam = (x, y0, y1) => { const a = proj(toWorld(H, [x, y0, sd * near])), b = proj(toWorld(H, [x, y1, sd * near])); return 'M' + f1(a.x) + ' ' + f1(a.y) + 'L' + f1(b.x) + ' ' + f1(b.y); };
+  const zf = proj(toWorld(H, [0, 0, sd * near])).z - 0.05;
+  let d = seam(-0.55, 0.2, -0.24) + seam(-0.06, 0.2, -0.26) + seam(0.42, 0.22, -0.25);
+  const s1 = proj(toWorld(H, [-0.85, -0.12, sd * near])), s2 = proj(toWorld(H, [0.70, -0.12, sd * near]));
+  const g = H.glow;
+  pushRaw(zf, '<path d="' + d + '" stroke="#5d6878" stroke-width="1.2" fill="none" stroke-opacity=".7"/>' +
+    '<line x1="' + f1(s1.x) + '" y1="' + f1(s1.y) + '" x2="' + f1(s2.x) + '" y2="' + f1(s2.y) + '" stroke="#ffb240" stroke-opacity="' + (0.35 + 0.55 * g).toFixed(2) + '" stroke-width="' + f1(0.016 * s1.s) + '"/>');
+  if (near > 0) {
+    const o = proj(toWorld(H, [-0.40, 0.03, sd])), ex = proj(toWorld(H, [-0.30, 0.03, sd])), ey = proj(toWorld(H, [-0.40, 0.13, sd]));
+    const k = 1 / 100;
+    pushRaw(zf - 0.001, '<text transform="matrix(' + [(ex.x - o.x) * k, (ex.y - o.y) * k, -(ey.x - o.x) * k, -(ey.y - o.y) * k, o.x, o.y].map(f1).join(' ') + ')" font-family="B612,system-ui,sans-serif" font-weight="700" font-size="9" letter-spacing="1.5" fill="#3b4452">XQ-69  LS3</text>');
+  }
+}
+
+function drawNeckHead(H, nk, robot, u0, alpha, look) {
+  const P = nk.pts, yaw = nk.yaw;
+  const lat = mvec(H.M, [Math.sin(yaw), 0, Math.cos(yaw)]);
+  // neck rings
+  const rings = [];
+  const N = robot ? 8 : 9;
+  for (let j = 0; j <= N; j++) {
+    const t = j / N, seg = clamp(t * 3, 0, 2.9999), k = Math.floor(seg), f = seg - k;
+    const c0 = vlerp(P[k], P[k + 1], f), ang = nk.ang[k];
+    const up = [-Math.sin(ang) * Math.cos(yaw), Math.cos(ang), Math.sin(ang) * Math.sin(yaw)];
+    const r = neckRadius(t);
+    const c = vadd(c0, vmul(up, r.off));
+    const rr = robot ? { h: lerp(0.15, 0.10, t), w: lerp(0.12, 0.085, t) } : r;
+    rings.push(ring(toWorld(H, c), lat, mvec(H.M, up), rr.w, rr.h, robot ? 10 : 14, robot ? 3 : 2.2));
+  }
+  loft(rings, (i) => robot ? (i % 2 ? [120, 130, 146] : STEEL.shell2) : BAY.coat, { alpha, bias: 0.01 });
+  // head
+  const poll = P[3], ha = nk.ang[3];
+  const dir = [Math.cos(ha) * Math.cos(yaw), Math.sin(ha), -Math.cos(ha) * Math.sin(yaw)];
+  const front = [-Math.sin(ha) * Math.cos(yaw), Math.cos(ha), Math.sin(ha) * Math.sin(yaw)];
+  const HS = robot ? HEAD_ROBOT : HEAD_REAL, hr = [], NS = robot ? 12 : 14;
+  for (const s of HS) {
+    const c = vadd(vadd(poll, vmul(dir, s[0] * RIG.headLen)), vmul(front, s[3]));
+    hr.push(ring(toWorld(H, c), lat, mvec(H.M, front), s[2], s[1], NS, robot ? 4.5 : 2.3, Math.PI / 2));
+  }
+  const W = (b) => (k) => b;
+  loft(hr, (i, k, n, c) => {
+    if (robot) {
+      // visor band on the front faces near the eyes
+      if (i === 2 && Math.abs(k - NS / 2) > 2 && Math.abs(k - NS / 2) < NS / 2 - 1) return STEEL.visor;
+      return i % 2 ? STEEL.shell : STEEL.shell2;
+    }
+    const fwd = k === 0 || k === 1 || k === NS - 1;            // faces on the nasal ridge
+    if (fwd && i >= 1 && i <= 6 && look.blaze) return BAY.white;
+    if (i >= 6) return BAY.muzzle;
+    return BAY.coat;
+  }, { alpha, capEnd: true, capColor: robot ? STEEL.joint : BAY.muzzle });
+  // eyes, nostrils / camera eyes
+  const fe = robot ? 0.52 : 0.28;
+  for (const sd of [1, -1]) {
+    const hs = HS.find(s => s[0] >= fe) || HS[2];
+    const c = vadd(vadd(vadd(poll, vmul(dir, fe * RIG.headLen)), vmul(front, robot ? 0.03 : 0.035 + hs[3])), [0, 0, 0]);
+    const latv = [Math.sin(yaw) * sd, 0, Math.cos(yaw) * sd];
+    const pw = toWorld(H, vadd(c, vmul(latv, hs[2] * 0.97)));
+    const nrm = mvec(H.M, latv);
+    if (vdot(nrm, vsub(CAM.E, pw)) <= 0) continue;
+    const pp = proj(pw);
+    if (robot) {
+      const g = H.glow;
+      pushRaw(pp.z - 0.06, '<circle cx="' + f1(pp.x) + '" cy="' + f1(pp.y) + '" r="' + f1(0.03 * pp.s) + '" fill="#0d1118"/>' +
+        '<circle cx="' + f1(pp.x) + '" cy="' + f1(pp.y) + '" r="' + f1(0.018 * pp.s) + '" fill="#6ee8f5" fill-opacity="' + (0.15 + 0.85 * g).toFixed(2) + '"/>' +
+        (g > 0.3 ? '<circle cx="' + f1(pp.x) + '" cy="' + f1(pp.y) + '" r="' + f1(0.05 * pp.s) + '" fill="#6ee8f5" fill-opacity="' + (0.18 * g).toFixed(2) + '"/>' : ''));
+    } else {
+      pushRaw(pp.z - 0.06, '<ellipse cx="' + f1(pp.x) + '" cy="' + f1(pp.y) + '" rx="' + f1(0.024 * pp.s) + '" ry="' + f1(0.017 * pp.s) + '" fill="#160f0c"/>' +
+        '<circle cx="' + f1(pp.x - 0.006 * pp.s) + '" cy="' + f1(pp.y - 0.006 * pp.s) + '" r="' + f1(0.005 * pp.s) + '" fill="#fff" fill-opacity=".7"/>');
+      // nostril
+      const nc = vadd(vadd(poll, vmul(dir, 0.92 * RIG.headLen)), vmul(front, 0.0));
+      const nw = toWorld(H, vadd(nc, vmul(latv, 0.062)));
+      const np = proj(nw);
+      pushRaw(np.z - 0.05, '<ellipse cx="' + f1(np.x) + '" cy="' + f1(np.y) + '" rx="' + f1(0.016 * np.s) + '" ry="' + f1(0.011 * np.s) + '" fill="#1d1210" fill-opacity=".85"/>');
+    }
+  }
+  // ears / antenna stubs
+  for (const sd of [-1, 1]) {
+    const eq = H.q[sd < 0 ? DI.eL : DI.eR];
+    const ea = ha + 112 * DEG + eq;          // ear axis in sagittal plane (positive = forward)
+    const ed = [Math.cos(ea) * Math.cos(yaw), Math.sin(ea), -Math.cos(ea) * Math.sin(yaw)];
+    const latv = [Math.sin(yaw) * sd, 0, Math.cos(yaw) * sd];
+    const base = vadd(vadd(vadd(poll, vmul(dir, 0.05)), vmul(front, 0.07)), vmul(latv, 0.05));
+    const len = robot ? 0.11 : 0.15;
+    const tip = vadd(vadd(base, vmul(ed, len)), vmul(latv, 0.02));
+    const b1 = vadd(base, vmul(dir, 0.035)), b2 = vadd(base, vmul(dir, -0.035));
+    const m1 = vadd(vlerp(b1, tip, 0.5), vmul(dir, 0.018)), m2 = vadd(vlerp(b2, tip, 0.5), vmul(dir, -0.018));
+    const pts = [b1, m1, tip, m2, b2].map(p => proj(toWorld(H, p)));
+    const z = pts[2].z + (sd > 0 ? -0.02 : 0.03);
+    if (robot) {
+      pushPoly(pts, z, rgbs(shadeRGB(STEEL.joint, mvec(H.M, latv), toWorld(H, base))));
+      const tp = pts[2];
+      pushRaw(z - 0.01, '<circle cx="' + f1(tp.x) + '" cy="' + f1(tp.y) + '" r="' + f1(0.012 * tp.s) + '" fill="#ffb240" fill-opacity="' + (0.25 + 0.75 * H.glow).toFixed(2) + '"/>');
+    } else {
+      pushPoly(pts, z, rgbs(shadeRGB(BAY.coat, mvec(H.M, latv), toWorld(H, base))), alpha < 1 ? ' fill-opacity="' + alpha + '"' : '');
+      const inner = [b1, m1, tip, m2, b2].map(p => proj(toWorld(H, vadd(vlerp(p, vlerp(b1, b2, 0.5), 0.35), vmul(latv, 0.004)))));
+      pushPoly(inner, z - 0.002, '#3a2418');
+    }
+  }
+  if (robot) {
+    // LiDAR puck on the crown, spinning
+    const c = vadd(vadd(poll, vmul(dir, 0.22)), vmul(front, 0.125));
+    const cw = toWorld(H, c), upw = mvec(H.M, front);
+    const r1 = ring(cw, lat, vnorm(vcross(upw, lat)), 0.075, 0.075, 16, 2);
+    const r2 = ring(vadd(cw, vmul(upw, 0.07)), lat, vnorm(vcross(upw, lat)), 0.075, 0.075, 16, 2);
+    loft([r1, r2], (i, k) => (k + Math.floor((H.lidar || 0) * 16)) % 8 === 0 ? [255, 120, 90, 1.2 * H.glow] : [34, 38, 46], { capEnd: true, capColor: [120, 130, 146] });
+    H.lidarPos = vadd(cw, vmul(upw, 0.03));
+  } else {
+    // forelock
+    const fl0 = toWorld(H, vadd(vadd(poll, vmul(dir, 0.04)), vmul(front, 0.10)));
+    const fl1 = toWorld(H, vadd(vadd(poll, vmul(dir, 0.20)), vmul(front, 0.12)));
+    strand([fl0, vlerp(fl0, fl1, 0.5), fl1], [0.05, 0.04, 0.008], BAY.mane, proj(fl0).z - 0.08);
+  }
+  H.nosePos = toWorld(H, vadd(poll, vmul(dir, RIG.headLen)));
+  H.headDir = mvec(H.M, dir);
+}
+
+/* camera-facing tapered strip through world points */
+function strand(pts, widths, col, z, op = 1) {
+  const P = pts.map(proj), L = [], R = [];
+  for (let i = 0; i < P.length; i++) {
+    const a = P[Math.max(0, i - 1)], b = P[Math.min(P.length - 1, i + 1)];
+    let dx = b.x - a.x, dy = b.y - a.y; const dl = Math.hypot(dx, dy) || 1; dx /= dl; dy /= dl;
+    const w = widths[i] * P[i].s * 0.5;
+    L.push({ x: P[i].x - dy * w, y: P[i].y + dx * w }); R.unshift({ x: P[i].x + dy * w, y: P[i].y - dx * w });
+  }
+  const n = [0.2, 0.9, 0.3];
+  const c = rgbs(shadeRGB(col, vnorm(n), pts[0]));
+  pushPoly(L.concat(R), z, c, op < 1 ? ' fill-opacity="' + op + '"' : '');
+}
+function drawTail(H, robot) {
+  const T = H.tail; if (!T) return;
+  const P = T.p;
+  if (robot) {
+    const pp = P.map(proj);
+    let d = 'M' + f1(pp[0].x) + ' ' + f1(pp[0].y);
+    for (let i = 1; i < 6; i++) d += 'L' + f1(pp[i].x) + ' ' + f1(pp[i].y);
+    const tip = pp[5];
+    pushRaw(pp[0].z + 0.02, '<path d="' + d + '" fill="none" stroke="#8d99a8" stroke-width="' + f1(0.014 * pp[0].s) + '" stroke-linecap="round"/>' +
+      '<circle cx="' + f1(tip.x) + '" cy="' + f1(tip.y) + '" r="' + f1(0.016 * tip.s) + '" fill="#ff5a4a" fill-opacity="' + (0.25 + 0.75 * H.glow * (0.6 + 0.4 * Math.sin(H.blink || 0))).toFixed(2) + '"/>');
+    return;
+  }
+  // dock (fleshy) + three hair locks
+  const z = proj(P[3]).z + 0.06;
+  strand(P.slice(0, 4), [0.085, 0.075, 0.065, 0.06], BAY.coat, z - 0.005);
+  const side = mvec(H.M, [0, 0, 1]);
+  for (let s = -1; s <= 1; s++) {
+    const pts = P.slice(1).map((p, i) => vadd(p, vmul(side, s * 0.018 * i / 10)));
+    const w = pts.map((p, i) => { const u = i / (pts.length - 1); return (0.05 + 0.11 * Math.sin(Math.PI * Math.pow(u, 0.7))) * (s === 0 ? 1 : 0.7); });
+    strand(pts, w, s === 0 ? [34, 28, 26] : BAY.mane, z + s * 0.004);
+  }
+}
+function drawMane(H, nk) {
+  const M = H.mane; if (!M || !M[0].p) return;
+  for (let i = 0; i < M.length - 1; i++) {
+    const a = M[i], b = M[i + 1];
+    const pts = [proj(a.root), proj(b.root), proj(b.p), proj(vlerp(a.p, b.p, 0.5)), proj(a.p)];
+    pts[3] = { x: pts[3].x + (hash(i) - 0.5) * 3, y: pts[3].y + 2 + hash(i + 7) * 4, z: pts[3].z, s: pts[3].s };
+    const c = rgbs(shadeRGB(BAY.mane, vnorm([0, 0.5, 1]), a.root));
+    pushPoly(pts, Math.min(pts[0].z, pts[1].z) - 0.12, c);
+  }
+}
+
+/* ground shadow of an animal: a strip under the body plus thick strokes for limbs */
+function horseShadow(H, W, op) {
+  const L = LIGHT.dir;
+  if (L[1] < 0.08) return '';
+  const sh = p => [p[0] - L[0] * p[1] / L[1], 0.002, p[2] - L[2] * p[1] / L[1]];
+  const BS = H.kind === 'robot' ? BODY_ROBOT : BODY_REAL;
+  const left = [], right = [];
+  for (const s of BS) {
+    let mn = null, mx = null;
+    for (const [yy, zz] of [[s[1], 0], [s[2], 0], [(s[1] + s[2]) / 2, s[3]], [(s[1] + s[2]) / 2, -s[3]], [s[1] * 0.7, s[3] * 0.7], [s[1] * 0.7, -s[3] * 0.7]]) {
+      const g = sh(toWorld(H, [s[0], yy, zz]));
+      if (!mn || g[2] < mn[2]) mn = g; if (!mx || g[2] > mx[2]) mx = g;
+    }
+    left.push(proj(mn)); right.unshift(proj(mx));
+  }
+  const pts = left.concat(right);
+  let h = '<path d="M' + pts.map(p => f1(p.x) + ' ' + f1(p.y)).join('L') + 'Z"/>';
+  const nk = neckChain(H);
+  const neck = nk.pts.map(p => proj(sh(toWorld(H, p))));
+  h += '<path d="M' + neck.map(p => f1(p.x) + ' ' + f1(p.y)).join('L') + '" fill="none" stroke-width="' + f1(0.2 * neck[1].s) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+  for (const w of W) {
+    const pp = w.pts.slice(1).map(p => proj(sh(p)));
+    h += '<path d="M' + pp.map(p => f1(p.x) + ' ' + f1(p.y)).join('L') + '" fill="none" stroke-width="' + f1(0.075 * pp[0].s) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+  }
+  if (H.tail) { const tp = H.tail.p.map(p => proj(sh(p))); h += '<path d="M' + tp.map(p => f1(p.x) + ' ' + f1(p.y)).join('L') + '" fill="none" stroke-width="' + f1(0.07 * tp[2].s) + '" stroke-linecap="round"/>'; }
+  return '<g fill="#000" stroke="#000" opacity="' + op.toFixed(2) + '">' + h + '</g>';
+}
+
+/* =====================================================================
+   DIRECTOR — everything here is a pure function of song time.
+   ===================================================================== */
+const PDT = 1 / 120, PN = Math.ceil((SONG.dur + 6) / PDT);
+function buildPath(vfn, x0) { const a = new Float64Array(PN + 1); let x = x0; for (let i = 0; i <= PN; i++) { a[i] = x; x += vfn(i * PDT) * PDT; } return a; }
+const pathAt = (a, t) => { const i = clamp(t / PDT, 0, PN - 1.001), k = Math.floor(i); return lerp(a[k], a[k + 1], i - k); };
+
+const robotV = t => VWALK * sstep(9.08, 10.3, t) * (1 - sstep(51.45, 53.5, t));
+const horseV = t => VWALK * sstep(70.0, 70.9, t) * (1 - sstep(75.55, 76.45, t))
+  + VWALK * sstep(78.7, 79.6, t) * (1 - sstep(153.85, 154.9, t))
+  + VTROT * sstep(158.05, 159.1, t);
+const ROBP = buildPath(robotV, 0);
+const ROB_STOP = pathAt(ROBP, 60);
+const HRS_APPROACH = (() => { let d = 0; for (let t = 70; t < 76.6; t += PDT) d += horseV(t) * PDT; return d; })();
+const HRSP = buildPath(horseV, ROB_STOP - 2.15 - HRS_APPROACH);
+const robotX = t => pathAt(ROBP, t), horseX = t => pathAt(HRSP, t);
+const HZ = 1.05;   // the living horse walks a little nearer the lens
+
+/* where the camera looks (x, z) */
+function camSubject(t) {
+  const rx = robotX(t) + 0.45;
+  if (t < 69.5) return [rx, 0];
+  const wide = ROB_STOP - 1.9;
+  if (t < 77.6) return [lerp(rx, wide, sstep(69.5, 72.5, t)), HZ * 0.4 * sstep(69.5, 72.5, t)];
+  const ht = Math.min(t, 176.5);
+  const hx = horseX(ht) + 0.55 + 0.25 * sstep(158, 162, ht);
+  const w = sstep(77.6, 80.8, t);
+  return [lerp(wide, hx, w), lerp(HZ * 0.4, HZ, w)];
+}
+const CAMK = {
+  az: KF([[0, 52], [2.5, 46], [7.6, 12], [9.5, 8], [26.3, 10], [28.8, 34], [35.6, 30], [37.4, 5], [39.2, 5], [39.9, 24], [41.3, 22], [42.3, 7], [50.8, 6], [53.5, 0], [56, -6], [68, -15], [70.5, -6], [76, 3], [80.5, 8], [105.6, 8], [108, -27], [113.2, -24], [115.6, 6], [129.6, 6], [130.7, 33], [132.1, 30], [133.5, 6], [141, 6], [143.6, -22], [148.6, -18], [150.2, 4], [157, 4], [160, 11], [172, 24], [183, 30]]),
+  el: KF([[0, 9], [7.6, 5], [9.5, 4], [26.3, 4], [28.8, 10], [35.6, 9], [37.4, 0.5], [39.2, 0.5], [39.9, 7], [41.3, 7], [42.3, 4], [52, 4], [56, 6], [68, 17], [71, 7], [80.5, 4], [108, 8], [113.2, 8], [115.6, 4], [130.7, -1.2], [132.1, -0.8], [133.5, 4], [143.6, 8], [148.6, 8], [150.2, -3.2], [153.2, -2.6], [154.6, 3], [160, 5], [172, 8], [183, 12]]),
+  dist: KF([[0, 4.4], [2.5, 5.0], [7.6, 9.2], [9.5, 9.0], [26.3, 9.0], [28.8, 8.0], [35.6, 8.4], [37.4, 10.8], [39.2, 10.8], [39.9, 5.6], [41.3, 5.8], [42.3, 9.0], [50.8, 9.0], [54, 7.6], [56, 7.4], [68, 11.8], [71, 12.6], [76, 10.4], [80.5, 9.2], [105.6, 9.2], [108, 8.6], [113.2, 8.8], [115.6, 9.6], [130.7, 6.4], [132.1, 6.6], [133.5, 9.6], [143.6, 8.4], [148.6, 8.6], [150.2, 10.4], [153.2, 10.8], [154.6, 10], [158, 9.6], [166, 11.2], [183, 13.6]]),
+  ty: KF([[0, 1.55], [7.6, 1.05], [9.5, 0.95], [37.4, 1.75], [39.2, 1.75], [39.9, 0.62], [41.3, 0.62], [42.3, 0.95], [53, 0.85], [56, 0.62], [68, 1.25], [71, 1.0], [80.5, 0.95], [130.7, 1.15], [133.5, 0.95], [148.6, 1.0], [150.2, 2.05], [153.2, 2.0], [154.6, 1.0], [183, 1.25]]),
+  roll: KF([[50.9, 0], [53.2, 0.028], [57, 0.018], [69, 0]]),
+};
+
+/* acts and moods */
+const actB = t => sstep(70.5, 79.5, t);                                  // 0 blueprint → 1 farm
+const nightB = t => sstep(51.32, 52.3, t) * (1 - sstep(69.6, 77.5, t));  // the blackout
+const hex2 = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+function CKF(list) { const L = list.map(([t, c]) => [t, hex2(c)]); return t => { const f = i => KF(L.map(([tt, c]) => [tt, c[i]])); return [f(0)(t), f(1)(t), f(2)(t)]; }; }
+// cache KF closures (CKF above rebuilds; do it once)
+function CK(list) { const L = list.map(([t, c]) => [t, hex2(c)]); const fs = [0, 1, 2].map(i => KF(L.map(([tt, c]) => [tt, c[i]]))); return t => [fs[0](t), fs[1](t), fs[2](t)]; }
+const PAL = {
+  top: CK([[0, '#061426'], [1.5, '#0c2646'], [51.3, '#0c2646'], [52.4, '#02060d'], [69.6, '#02060d'], [73, '#24395f'], [78, '#4b6f9f'], [90, '#4a82c0'], [138, '#4f7fb8'], [150, '#5b78ad'], [160, '#3a3d6c'], [172, '#232552'], [183, '#141838']]),
+  mid: CK([[0, '#0a1d36'], [1.5, '#173f69'], [51.3, '#173f69'], [52.4, '#050c18'], [69.6, '#050c18'], [72.5, '#6b5873'], [75, '#c98d86'], [80, '#a9bcd2'], [90, '#88b6dc'], [138, '#97b8d4'], [150, '#e2b37f'], [160, '#d2786a'], [172, '#8e4d63'], [183, '#4d3156']]),
+  hor: CK([[0, '#0e2440'], [1.5, '#2a5e8e'], [51.3, '#2a5e8e'], [52.4, '#0a1626'], [69.6, '#0a1626'], [72.5, '#c88a74'], [75, '#f6bf8f'], [80, '#e9dcc8'], [90, '#d6e5ea'], [138, '#e8e0c6'], [150, '#f8d08e'], [160, '#f8a35e'], [172, '#e5784e'], [183, '#a5543f']]),
+  gfar: CK([[0, '#0d2440'], [1.5, '#1d4a78'], [51.3, '#1d4a78'], [52.4, '#0e1f33'], [69.6, '#0e1f33'], [74, '#6d6a4c'], [80, '#8d9a62'], [138, '#93a35f'], [150, '#a89c58'], [165, '#7d5f40'], [183, '#3f2f2a']]),
+  gnear: CK([[0, '#081a30'], [1.5, '#0f2c4d'], [51.3, '#0f2c4d'], [52.4, '#060e18'], [69.6, '#060e18'], [74, '#45472c'], [80, '#5d7434'], [138, '#627834'], [150, '#6f6a2f'], [165, '#4d3b24'], [183, '#241c18']]),
+};
+const LK = {
+  dx: KF([[0, -0.5], [69, -0.5], [74, -0.95], [90, -0.45], [125, 0.1], [150, 0.75], [160, 0.9], [183, 0.95]]),
+  dy: KF([[0, 0.8], [69, 0.8], [74, 0.22], [90, 0.75], [125, 0.95], [150, 0.4], [160, 0.16], [183, 0.07]]),
+  dz: KF([[0, 0.6], [69, 0.6], [74, 0.25], [90, 0.5], [125, 0.35], [150, 0.15], [160, -0.25], [183, -0.3]]),
+  col: CK([[0, '#e6eefc'], [51.3, '#e6eefc'], [52.4, '#3b4a6a'], [69.6, '#3b4a6a'], [74, '#ffb88a'], [82, '#fff1dc'], [138, '#fff4e2'], [150, '#ffd29a'], [160, '#ff9a62'], [183, '#c86a4a']]),
+  amb: CK([[0, '#4a5b7a'], [51.3, '#4a5b7a'], [52.4, '#121a2c'], [69.6, '#121a2c'], [74, '#5d5060'], [82, '#6b7484'], [138, '#6e7686'], [150, '#7a6a64'], [165, '#5a4256'], [183, '#2c2440']]),
+  rim: CK([[0, '#79d6ff'], [51.3, '#79d6ff'], [52.4, '#4c6aa8'], [69.6, '#4c6aa8'], [74, '#ffc79a'], [82, '#ffe6c2'], [150, '#ffcf8a'], [165, '#ff9a6a'], [183, '#c06a8a']]),
+  rimK: KF([[0, 0.55], [51.3, 0.55], [52.4, 0.35], [69.6, 0.35], [74, 0.9], [84, 0.42], [140, 0.45], [160, 0.95], [183, 0.8]]),
+};
+// sun direction (Act III) as azimuth/elevation; rises behind, sets ahead
+const SUNK = { az: KF([[70, -1.25], [100, -0.55], [130, 0.1], [155, 0.55], [183, 0.78]]), el: KF([[70, -0.04], [76, 0.06], [100, 0.55], [125, 0.75], [150, 0.28], [165, 0.08], [178, 0.0], [183, -0.04]]) };
+
+/* robot boot probes (Muscle Dance calibration homage) */
+const PROBE = new Float64Array(NDOF);
+function probeAt(t) {
+  PROBE.fill(0);
+  if (t < 2 || t > 8.4) return PROBE;
+  for (let i = 0; i < NDOF; i++) {
+    const t0 = 2.1 + (i % 15) * 0.36 + (i >= 15 ? 0.18 : 0);
+    const u = (t - t0) / 0.55;
+    if (u > 0 && u < 1) PROBE[i] = 0.16 * Math.sin(u * TAU * 1.5) * Math.sin(u * Math.PI);
+  }
+  return PROBE;
+}
+
+function robotIntent(t) {
+  const P = { x: robotX(t), z: 0, gaitW: 0, neck: [0, 0, 0, 0, 0], ears: [0.1, 0.1], tail: 0.2 };
+  if (t < 9) { P.probe = probeAt(t); P.tone = 0.55 + 0.45 * sstep(2, 8.5, t); P.neck = [-0.05 + 0.1 * sstep(4.4, 6, t), 0, 0, 0.25 * Math.sin(Math.max(0, t - 5) * 1.3) * (1 - sstep(7.8, 9, t)), 0]; }
+  // plug pulled: a one-beat flinch
+  const fl = sstep(23.5, 23.62, t) * (1 - sstep(23.62, 24.2, t));
+  P.neck[0] += 0.18 * fl; P.neck[4] -= 0.2 * fl;
+  // grid drops: stagger, a dragging hind leg, head searching
+  const g = sstep(51.4, 51.9, t);
+  if (g > 0) {
+    P.lift = [1, 1 - 0.3 * g, 1, 1 - 0.8 * g];
+    P.neck[0] += g * 0.18 * noise1(t * 7); P.neck[3] += g * 0.35 * noise1(t * 5 + 9); P.neck[4] += g * 0.25 * noise1(t * 6 + 3);
+  }
+  const twitch = 0.45 * sstep(54.95, 55.05, t) * (1 - sstep(55.05, 55.4, t));
+  P.pow = [1 - sstep(53.72, 53.86, t), 1 - sstep(53.58, 53.72, t), clamp(1 - sstep(53.95, 54.2, t) + twitch, 0, 1)];
+  return P;
+}
+function robotGlow(t) {
+  let g = sstep(3.0, 5.2, t);
+  const fl = (t > 23.5 && t < 24.0) ? (hash(Math.floor(t * 30)) > 0.5 ? 0.2 : 1) : 1;
+  g *= fl;
+  if (t > 51.32) g *= (hash(Math.floor(t * 24)) > 0.35 + 0.6 * sstep(51.32, 53.6, t) ? 1 : 0.15) * (1 - 0.6 * sstep(51.32, 53.6, t));
+  if (t > 53.8) g *= 1 - sstep(53.8, 54.4, t);
+  return clamp(g, 0, 1);
+}
+
+function horseIntent(t) {
+  const P = { x: horseX(t), z: HZ, gaitW: t > 158.0 ? 1 : 0, neck: [0, 0, 0, 0, 0], ears: [0, 0], tail: 0.05 };
+  const N = P.neck;
+  // sniffing the fallen machine
+  const S = sstep(75.5, 76.9, t) * (1 - sstep(78.25, 79.0, t));
+  N[0] -= 0.40 * S; N[1] -= 0.26 * S; N[2] -= 0.10 * S; N[3] += 0.55 * S; N[4] -= 0.04 * S;
+  const snort = sstep(77.95, 78.05, t) * (1 - sstep(78.05, 78.45, t));
+  N[0] += 0.16 * snort; N[4] += 0.22 * snort;
+  // a mouthful of what grows
+  const bite = sstep(103.0, 103.7, t) * (1 - sstep(104.2, 104.9, t));
+  N[0] -= 0.36 * bite; N[1] -= 0.22 * bite; N[3] -= 0.18 * bite;
+  // the supersonic jet overhead
+  const boom = sstep(151.55, 151.7, t) * (1 - sstep(151.7, 152.6, t));
+  N[0] += 0.2 * boom; N[4] += 0.12 * boom;
+  // standing at the barn, a look around
+  const st = sstep(154.6, 155.4, t) * (1 - sstep(157.6, 158.1, t));
+  N[3] -= 0.35 * st; N[0] += 0.08 * st;
+  // ears: alert while approaching, back at the boom, little flicks otherwise
+  const alert = sstep(72.8, 74.0, t) * (1 - sstep(79, 81, t)) + 0.6 * st;
+  const fl = n => 0.5 * Math.max(0, noise1(t * 0.9 + n) - 0.55) * 4;
+  P.ears = [0.35 * alert - 0.15 + 0.25 * Math.sin(t * 0.7) * 0.4 - fl(3) - 0.9 * boom, 0.35 * alert - 0.12 + 0.25 * Math.sin(t * 0.6 + 2) * 0.4 - fl(11) - 0.9 * boom];
+  P.tail = 0.05 + 0.22 * noise1(t * 0.8 + 5) + 0.3 * sstep(158, 159.5, t);
+  return P;
+}
+
+/* =====================================================================
+   SCENERY — world-anchored SVG billboards. Blueprint props draw
+   themselves (stroke-dashoffset) when their lyric arrives.
+   ===================================================================== */
+const camXAt = t => camSubject(t)[0];
+const PROPS = [];
+function prop(o) { const p = Object.assign({ y: 0, z: -12, unit: 0.01, t0: -99, t1: 999, fin: 0.6, fout: 0.9, draw: 0, lw: 1.5, layer: 'mid', act: 0, w: 900 }, o); PROPS.push(p); return p; }
+// path helpers (local units, y up is negative)
+const PL = 'pathLength="1"';
+const pth = (d, a = '') => `<path d="${d}" ${PL} ${a}/>`;
+const circD = (x, y, r) => `M${x - r} ${y}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
+const rectD = (x, y, w, h) => `M${x} ${y}h${w}v${h}h${-w}Z`;
+const lab = (x, y, s, size = 20, a = '') => `<text x="${x}" y="${y}" font-size="${size}" ${a}>${s}</text>`;
+function dim(x1, y1, x2, y2, label, off = 0) {
+  const a = Math.atan2(y2 - y1, x2 - x1), nx = -Math.sin(a) * 9, ny = Math.cos(a) * 9;
+  const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+  return pth(`M${x1} ${y1}L${x2} ${y2}M${x1 + nx} ${y1 + ny}L${x1 - nx} ${y1 - ny}M${x2 + nx} ${y2 + ny}L${x2 - nx} ${y2 - ny}`, 'class="thin"') +
+    `<text x="${mx}" y="${my - 8 + off}" font-size="15" text-anchor="middle" class="dimt">${label}</text>`;
+}
+function gearD(cx, cy, r, n, tooth = 9) {
+  let d = '';
+  for (let i = 0; i < n; i++) {
+    const a0 = i / n * TAU, a1 = (i + 0.25) / n * TAU, a2 = (i + 0.5) / n * TAU, a3 = (i + 0.75) / n * TAU;
+    const P = (a, rr) => (cx + Math.cos(a) * rr).toFixed(1) + ' ' + (cy + Math.sin(a) * rr).toFixed(1);
+    d += (i ? 'L' : 'M') + P(a0, r) + 'L' + P(a1, r + tooth) + 'L' + P(a2, r + tooth) + 'L' + P(a3, r);
+  }
+  return d + 'Z' + circD(cx, cy, r * 0.32);
+}
+const rnd = (() => { let s = 7; return () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }; })();
+
+/* ------------------------------ ACT I ------------------------------ */
+// far skyline: a research campus, radar domes, pylons with live cables
+(function skyline() {
+  let d = '', win = Array.from({ length: 14 }, () => ''), cables = '', lights = '';
+  const x0 = -170, x1 = ROB_STOP + 175;
+  let x = x0;
+  while (x < x1) {
+    const w = 6 + rnd() * 12, h = 4 + rnd() * 12, kind = rnd();
+    d += `M${x.toFixed(1)} 0V${(-h).toFixed(1)}H${(x + w).toFixed(1)}V0`;
+    if (kind < 0.18) { const r = Math.min(w * 0.4, 5); d += `M${(x + w / 2 - r).toFixed(1)} ${-h.toFixed(1)}a${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${(2 * r).toFixed(1)} 0`; }
+    else if (kind < 0.34) { const mh = 6 + rnd() * 10; d += `M${(x + w * 0.7).toFixed(1)} ${-h}V${(-h - mh).toFixed(1)}`; lights += `<circle cx="${(x + w * 0.7).toFixed(1)}" cy="${(-h - mh).toFixed(1)}" r=".55" class="avl"/>`; }
+    else if (kind < 0.46) { d += `M${(x + w * 0.3).toFixed(1)} ${-h}l2.2 -3.2M${(x + w * 0.3 - 2.2).toFixed(1)} ${(-h - 2).toFixed(1)}a3.2 1.4 -35 1 0 6 -2.5`; }
+    const bin = clamp(Math.floor((x - x0) / (x1 - x0) * 14), 0, 13);
+    for (let fy = -h + 1.6; fy < -1.2; fy += 2.1) for (let fx = x + 1.1; fx < x + w - 1; fx += 1.9) if (rnd() > 0.38) win[bin] += `M${fx.toFixed(1)} ${fy.toFixed(1)}h.9v.7h-.9z`;
+    x += w + 1 + rnd() * 7;
+  }
+  // pylons
+  for (let px = x0 + 6; px < x1; px += 30) {
+    d += `M${px - 2.6} 0L${px - 0.5} -19L${px + 0.5} -19L${px + 2.6} 0M${px - 2.0} -6L${px + 1.6} -12M${px + 2.0} -6L${px - 1.6} -12M${px - 4} -17H${px + 4}M${px - 3} -14H${px + 3}`;
+    if (px + 30 < x1) for (const [yy, dx] of [[-17, -4], [-17, 4], [-14, -3]]) cables += `M${px + dx} ${yy}Q${px + 15 + dx} ${yy + 3.2} ${px + 30 + dx} ${yy}`;
+  }
+  const svg = `<path d="M${x0} 0H${x1}" class="thin"/><path d="${d}" fill="none"/>` +
+    win.map((w, i) => `<path d="${w}" class="wins" data-bin="${i}"/>`).join('') +
+    `<path d="${cables}" class="cable" fill="none"/>` + lights;
+  prop({ id: 'skyline', x: 0, z: -260, unit: 1, layer: 'far', svg, lw: 1, cls: 'bp', act: 1,
+    anim(el, t) {
+      const n = nightB(t), wave = clamp((t - 51.32) / 0.9, 0, 1);
+      if (!el._w) el._w = el.querySelectorAll('.wins'), el._c = el.querySelector('.cable'), el._l = el.querySelectorAll('.avl');
+      el._w.forEach((w, i) => { const off = t > 51.32 && (13 - i) / 13 < wave * 1.15; w.setAttribute('opacity', off ? 0 : 0.75 * (0.85 + 0.15 * Math.sin(i * 3 + t * 0.7))); });
+      el._c.setAttribute('stroke-opacity', t < 51.32 ? 0.55 + 0.3 * beatPulse(t, 4) : 0.08);
+      const blink = (Math.sin(t * 4) > 0.6 && t < 51.32) ? 1 : 0.1;
+      el._l.forEach(l => l.setAttribute('opacity', blink));
+      el.setAttribute('opacity', 0.62 * (1 - actB(t)) * (1 - 0.6 * n));
+    } });
+})();
+
+// ARPANET 1969: four nodes, packets reroute around a blast on the UCLA–SRI line
+(function arpanet() {
+  const N = { UCLA: [-250, 70], UCSB: [-300, -110], SRI: [-30, -150], UTAH: [260, -40] };
+  const link = (a, b, c = '') => pth(`M${N[a][0]} ${N[a][1]}L${N[b][0]} ${N[b][1]}`, c);
+  let s = lab(-330, -250, 'ARPANET, 1969', 26, 'class="hd"') + pth('M-330 -238H-40', 'class="thin"');
+  s += link('UCLA', 'SRI', 'class="cut"') + link('UCLA', 'UCSB') + link('UCSB', 'SRI') + link('SRI', 'UTAH');
+  for (const [k, [x, y]] of Object.entries(N)) s += pth(circD(x, y, 30)) + pth(rectD(x - 15, y - 10, 30, 20), 'class="thin"') + lab(x + (x > 0 ? 40 : -40), y + 6, k, 20, `text-anchor="${x > 0 ? 'start' : 'end'}"`);
+  s += `<g class="blast" opacity="0"><path d="M-140 -40l14 -36 4 30 30 -22 -18 32 36 4 -36 12 22 28 -32 -14 -6 34 -10 -32 -30 18 18 -30 -34 -6 34 -10z" class="hot"/></g>`;
+  s += `<g class="pk"></g>` + lab(110, 90, 'IMP host interface', 15, 'class="dimt"') + dim(-250, 140, 260, 140, '1 HOP = 1 IMP', 0);
+  const route1 = [N.UCLA, N.SRI, N.UTAH], route2 = [N.UCLA, N.UCSB, N.SRI, N.UTAH];
+  const along = (r, u) => { const L = []; let tot = 0; for (let i = 1; i < r.length; i++) { const l = Math.hypot(r[i][0] - r[i - 1][0], r[i][1] - r[i - 1][1]); L.push(l); tot += l; } let d = u * tot; for (let i = 0; i < L.length; i++) { if (d <= L[i]) { const f = d / L[i]; return [lerp(r[i][0], r[i + 1][0], f), lerp(r[i][1], r[i + 1][1], f)]; } d -= L[i]; } return r[r.length - 1]; };
+  prop({ id: 'arpanet', x: camXAt(11.4) + 3.6, y: 2.85, z: -14, sc: 1.12, t0: 9.1, t1: 13.7, draw: 1, svg: s, cls: 'bp',
+    anim(el, t) {
+      const cut = t > 11.62;
+      el.querySelector('.blast').setAttribute('opacity', cut ? Math.max(0, 1 - (t - 11.62) * 0.7) : 0);
+      el.querySelector('.cut').setAttribute('stroke-dasharray', cut ? '.03 .05' : '1');
+      let pk = '';
+      for (let i = 0; i < 6; i++) {
+        const u = frac((t - 9.5) * 0.55 + i / 6), r = cut ? route2 : route1, [x, y] = along(r, u);
+        pk += `<rect x="${(x - 6).toFixed(1)}" y="${(y - 6).toFixed(1)}" width="12" height="12" class="pkt"/>`;
+      }
+      el.querySelector('.pk').innerHTML = pk;
+    } });
+})();
+
+// protocol stack (one layer per beat) and a turning wireframe web
+(function stackWeb() {
+  let s = lab(-360, -270, 'TCP/IP, 1974–83', 24, 'class="hd"');
+  const names = ['LINK', 'INTERNET', 'TRANSPORT', 'APPLICATION'];
+  names.forEach((n, i) => { const y = 40 - i * 62; s += `<g class="ly" data-i="${i}">` + pth(`M-360 ${y}l90 -32h170l-90 32z`) + pth(`M-360 ${y}v14l90 -32v-14M-100 ${y - 32}v14l-90 32`, 'class="thin"') + lab(-240, y - 8, n, 15, 'text-anchor="middle" class="dimt"') + '</g>'; });
+  s += `<g transform="translate(170 -90)">` + pth(circD(0, 0, 150)) + `<g class="mer"></g>` + pth('M-150 0H150M-130 -75H130M-130 75H130', 'class="thin"') +
+    lab(0, 200, 'WORLD WIDE WEB, 1989', 18, 'text-anchor="middle" class="dimt"') + `<g class="links"></g></g>`;
+  prop({ id: 'stack', x: camXAt(15.8) + 3.5, y: 2.95, z: -13.5, sc: 1.1, t0: 13.8, t1: 17.9, draw: 1, svg: s, cls: 'bp',
+    anim(el, t) {
+      el.querySelectorAll('.ly').forEach((g, i) => g.setAttribute('opacity', t > 13.85 + i * SONG.spb ? 1 : 0));
+      const w = t > 15.84 ? 1 : 0; let m = '';
+      for (let k = 0; k < 4; k++) { const ph = (t * 0.9 + k / 4) % 1, rx = Math.abs(Math.cos(ph * Math.PI)) * 150; m += `<ellipse cx="0" cy="0" rx="${rx.toFixed(1)}" ry="150" class="thin"/>`; }
+      el.querySelector('.mer').innerHTML = m;
+      let l = '';
+      if (w) for (let k = 0; k < 5; k++) { const a = (t * 0.9 + k * 1.3) % TAU, b = a + 1.6 + k * 0.3; const ax = Math.cos(a) * 120, ay = Math.sin(k * 1.7) * 90, bx = Math.cos(b) * 120, by = Math.sin(k * 2.9 + 1) * 90; l += `<path d="M${ax.toFixed(0)} ${ay.toFixed(0)}Q${((ax + bx) / 2).toFixed(0)} ${(Math.min(ay, by) - 70).toFixed(0)} ${bx.toFixed(0)} ${by.toFixed(0)}" class="hot2" fill="none"/><circle cx="${ax.toFixed(0)}" cy="${ay.toFixed(0)}" r="5" class="pkt"/>`; }
+      el.querySelector('.links').innerHTML = l;
+      el.querySelector('.links').parentNode.setAttribute('opacity', w ? 1 : 0);
+    } });
+})();
+
+// Engelbart's mouse, orthographic, with dimensions
+(function mouse() {
+  let s = lab(-300, -250, 'X–Y POSITION INDICATOR, 1968', 22, 'class="hd"');
+  s += pth('M-260 -170h200q30 0 30 30v170q0 30 -30 30h-200q-30 0 -30 -30v-170q0 -30 30 -30z');
+  s += pth(rectD(-110, -160, 60, 34)) + pth('M-160 -170v-50q0 -40 60 -60t140 -10', 'class="cord"');
+  s += pth(circD(-200, -40, 44), 'class="thin dash"') + pth(circD(-110, 40, 30), 'class="thin dash"');
+  s += dim(-290, 90, -30, 90, '4 IN') + dim(20, -170, 20, 60, '3½ IN', 0);
+  s += `<g transform="translate(130 0)">` + pth('M0 60h230v-80q0 -40 -40 -40h-150q-40 0 -40 40z') + pth(circD(70, 60, 26)) + pth(circD(160, 60, 26)) + lab(115, 120, 'SIDE', 15, 'text-anchor="middle" class="dimt"') + '</g>';
+  prop({ id: 'mouse', x: camXAt(19.2) + 3.4, y: 3.0, z: -13, sc: 1.1, t0: 18.0, t1: 20.3, draw: 1, svg: s, cls: 'bp' });
+})();
+// GPS satellites crossing high, pinging down
+(function gps() {
+  const sat = `<g class="sat">` + pth(rectD(-22, -16, 44, 32)) + pth('M-22 0H-60M22 0H60', 'class="thin"') + pth(rectD(-150, -24, 90, 48)) + pth(rectD(60, -24, 90, 48)) +
+    pth('M-135 -24v48M-120 -24v48M-105 -24v48M-90 -24v48M-75 -24v48M75 -24v48M90 -24v48M105 -24v48M120 -24v48M135 -24v48', 'class="thin"') + pth('M0 16v26M-14 42h28', 'class="thin"') + `<g class="ping"></g></g>`;
+  const s = sat + `<g transform="translate(-900 120) scale(.7)">${sat}</g>` + lab(-60, -70, 'NAVSTAR, 1978', 18, 'class="dimt"');
+  prop({ id: 'gps', x: camXAt(19.6) + 1.0, y: 6.6, z: -18, t0: 18.0, t1: 21.6, draw: 1, svg: s, cls: 'bp',
+    anim(el, t) {
+      el.querySelectorAll('.sat').forEach((g, i) => { const dx = (t - 19.6) * -60 * (i ? 0.7 : 1); g.setAttribute('transform', (i ? '' : `translate(${dx.toFixed(0)} 0)`)); });
+      let p = ''; for (let k = 0; k < 3; k++) { const u = frac(t * 1.1 + k / 3); p += `<path d="M${-60 - u * 140} ${40 + u * 120}Q0 ${80 + u * 200} ${60 + u * 140} ${40 + u * 120}" class="hot2" fill="none" stroke-opacity="${(1 - u).toFixed(2)}"/>`; }
+      el.querySelectorAll('.ping').forEach(g => g.innerHTML = p);
+    } });
+})();
+// MEMS gear train and a hyperlink
+(function mems() {
+  let s = lab(-330, -240, 'MEMS GEAR TRAIN', 22, 'class="hd"') + `<g class="g1">${pth(gearD(0, 0, 90, 18, 16))}</g><g class="g2">${pth(gearD(0, 0, 50, 10, 16))}</g><g class="g3">${pth(gearD(0, 0, 66, 13, 16))}</g>`;
+  s += pth('M-330 170h100M-330 162v16M-230 162v16', 'class="thin"') + lab(-280, 200, '100 µm', 16, 'text-anchor="middle" class="dimt"');
+  s += `<g transform="translate(250 -140)">` + pth(rectD(0, 0, 150, 190), 'class="thin"') + pth('M18 30h110M18 52h80M18 74h112M18 96h60', 'class="thin"') + `<text x="18" y="132" font-size="18" class="lnk">hypertext</text>` + pth('M18 138h92', 'class="hot2"') +
+    pth('M110 136q90 40 60 150', 'class="hot2 dash"') + '</g>';
+  prop({ id: 'mems', x: camXAt(21.6) + 3.4, y: 3.05, z: -12.5, sc: 1.1, t0: 20.35, t1: 22.8, draw: 1, svg: s, cls: 'bp',
+    anim(el, t) {
+      const a = t * 60;
+      el.querySelector('.g1').setAttribute('transform', `translate(-120 -20) rotate(${a.toFixed(1)})`);
+      el.querySelector('.g2').setAttribute('transform', `translate(25 -20) rotate(${(-a * 1.8 + 9).toFixed(1)})`);
+      el.querySelector('.g3').setAttribute('transform', `translate(-25 118) rotate(${(-a * 1.38 + 4).toFixed(1)})`);
+    } });
+})();
+// the plug: pulled on the beat
+(function plug() {
+  const s = `<g class="wall">${pth(rectD(-240, -150, 170, 260))}${pth('M-180 -60v40M-130 -60v40', 'class="hot"')}${pth(circD(-155, 40, 14), 'class="thin"')}</g>` +
+    `<g class="plug">${pth('M-70 -80h80q30 0 30 30v40q0 30 -30 30h-80z')}${pth('M-70 -60h-40M-70 -20h-40', 'class="thin"')}${pth('M40 -30q160 0 220 90t180 60', 'class="cord"')}</g>` +
+    `<g class="spark" opacity="0">${pth('M-115 -40l-30 -40M-115 -40l-46 0M-115 -40l-30 40M-115 -40l-10 -50', 'class="hot"')}</g>` + lab(-240, -180, 'MAINS, 120 V', 20, 'class="hd"');
+  prop({ id: 'plug', x: camXAt(23.8) + 3.1, y: 2.55, z: -9, sc: 1.0, t0: 22.85, t1: 24.8, draw: 1, svg: s, cls: 'bp',
+    anim(el, t) {
+      const k = sstep(23.57, 23.72, t), dx = k * 190 + Math.max(0, t - 23.72) * 40;
+      el.querySelector('.plug').setAttribute('transform', `translate(${dx.toFixed(1)} ${(-k * 12).toFixed(1)}) rotate(${(k * 8).toFixed(1)})`);
+      el.querySelector('.spark').setAttribute('opacity', t > 23.57 && t < 23.9 ? 1 - (t - 23.57) / 0.33 : 0);
+    } });
+})();
+// the Pentagon, reclassified
+(function pentagon() {
+  const pg = r => { let d = ''; for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + i / 5 * TAU; d += (i ? 'L' : 'M') + (Math.cos(a) * r).toFixed(1) + ' ' + (Math.sin(a) * r).toFixed(1); } return d + 'Z'; };
+  let s = lab(-260, -250, 'ARLINGTON, VA', 22, 'class="hd"');
+  for (const r of [200, 172, 144, 116, 60]) s += pth(pg(r), r === 60 ? 'class="thin"' : '');
+  for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + (i + 0.5) / 5 * TAU; s += pth(`M${(Math.cos(a) * 60).toFixed(0)} ${(Math.sin(a) * 60).toFixed(0)}L${(Math.cos(a) * 200).toFixed(0)} ${(Math.sin(a) * 200).toFixed(0)}`, 'class="thin"'); }
+  s += `<g class="stamp" opacity="0" transform="rotate(-11)"><rect x="-210" y="-48" width="420" height="96" rx="8" class="stampR"/><text x="0" y="18" font-size="52" text-anchor="middle" class="stampT">RECLASSIFIED</text></g>`;
+  prop({ id: 'pentagon', x: camXAt(25.9) + 3.3, y: 3.0, z: -13, sc: 1.1, t0: 24.84, t1: 26.9, draw: 1, svg: s, cls: 'bp',
+    anim(el, t) {
+      const k = sstep(25.84, 25.95, t);
+      el.querySelector('.stamp').setAttribute('opacity', k);
+      el.querySelector('.stamp').setAttribute('transform', `rotate(-11) scale(${(1.6 - 0.6 * k).toFixed(3)})`);
+    } });
+})();
+// radar station: the beam sweeps but the faceted jet returns nothing
+(function radar() {
+  let s = pth('M-30 0L0 -160L30 0M-18 -60H18M-24 -30H24') + `<g class="dish" transform="translate(0 -170)">${pth('M-70 -10Q0 60 70 -10')}${pth('M0 18V-40', 'class="thin"')}</g>`;
+  s += `<g class="beam"><path d="M0 -170L1400 -900L1400 -560Z" class="beamF"/></g>` + `<g class="nr" opacity="0">${lab(60, -260, 'NO RETURN', 30, 'class="hotT"')}</g>` + lab(-120, 40, 'AN/FPS-117 LONG RANGE RADAR', 15, 'class="dimt"');
+  prop({ id: 'radar', x: camXAt(37.9) + 6.0, y: 0, z: -22, sc: 2.1, t0: 36.9, t1: 39.5, draw: 1, svg: s, cls: 'bp',
+    anim(el, t) {
+      const a = -6 + 14 * Math.sin((t - 36.9) * 1.6);
+      el.querySelector('.beam').setAttribute('transform', `rotate(${a.toFixed(1)} 0 -170)`);
+      el.querySelector('.dish').setAttribute('transform', `translate(0 -170) rotate(${(a - 22).toFixed(1)})`);
+      el.querySelector('.nr').setAttribute('opacity', t > 37.6 && t < 39.3 && Math.sin(t * 14) > 0 ? 1 : 0);
+    } });
+})();
+// Mojave: mesas, Joshua trees and a sensor-crowned truck heading the other way
+(function mojave() {
+  const jt = (x, h, s) => pth(`M${x} 0V${-h}m0 ${h * 0.35}l${-30 * s} ${-28 * s}l${-6 * s} ${-26 * s}m${36 * s} ${54 * s - h * 0.35 + h * 0.2}l${34 * s} ${-36 * s}l${4 * s} ${-24 * s}M${x} ${-h}l${-18 * s} ${-20 * s}M${x} ${-h}l${16 * s} ${-22 * s}`);
+  let s = pth('M-900 0H900', 'class="thin"') + pth('M-900 -170L-760 -170L-720 -230L-560 -235L-520 -170L-300 -165L-260 -200L-120 -205L-90 -150', 'class="thin"');
+  s += jt(-520, 120, 1) + jt(-260, 90, 0.8) + jt(330, 140, 1.1) + jt(620, 100, 0.9) + lab(-860, -300, 'MOJAVE, 2005', 24, 'class="hd"');
+  s += `<g class="truck">${pth('M0 -10h190v-60l-40 -40h-110l-40 40z')}${pth(circD(40, -10, 24))}${pth(circD(150, -10, 24))}${pth('M60 -110v-20h80v20M100 -130v-14', 'class="thin"')}<g class="rays"></g></g>`;
+  prop({ id: 'mojave', x: camXAt(42.6) + 3.0, y: 0, z: -14, sc: 1.2, t0: 41.5, t1: 43.6, draw: 1, svg: s, cls: 'bp',
+    anim(el, t) {
+      const tx = 380 - (t - 41.5) * 260;
+      el.querySelector('.truck').setAttribute('transform', `translate(${tx.toFixed(0)} 0)`);
+      let r = ''; for (let k = 0; k < 9; k++) { const a = -2.6 + k * 0.28 + 0.2 * Math.sin(t * 8 + k); r += `<path d="M100 -144l${(Math.cos(a) * 420).toFixed(0)} ${(Math.sin(a) * 60 + 150).toFixed(0)}" class="hot2 dash" fill="none"/>`; }
+      el.querySelector('.rays').innerHTML = r;
+    } });
+})();
+// CALO's thinking strand, driven by the actual loudness of the track
+(function calo() {
+  const s = lab(-320, -230, 'CALO, 2003–08', 22, 'class="hd"') + `<path class="wave hot2" fill="none" d="M0 0"/>` + pth('M210 -140h170q24 0 24 24v70q0 24 -24 24h-100l-40 36v-36h-30q-24 0 -24 -24v-70q0 -24 24 -24z') + lab(298, -74, 'SIRI', 26, 'text-anchor="middle" class="hd"');
+  prop({ id: 'calo', x: camXAt(45.0) + 3.2, y: 2.95, z: -10, sc: 1.05, t0: 43.6, t1: 46.3, draw: 1, svg: s, cls: 'bp',
+    anim(el, t) {
+      let d = 'M-330 40';
+      for (let i = 0; i <= 90; i++) { const x = -330 + i * 6, tt = t - (90 - i) * 0.012; const a = 18 + 110 * loud(tt) * Math.sin(Math.PI * i / 90); d += 'L' + x + ' ' + (40 + Math.sin(i * 0.55 + t * 9) * a * 0.6).toFixed(1); }
+      el.querySelector('.wave').setAttribute('d', d);
+    } });
+})();
+// mRNA strand with codons, and a lipid shell
+(function mrna() {
+  let s = lab(-360, -250, 'mRNA, 2020', 22, 'class="hd"');
+  let bb = 'M-360 0', ticks = '', letters = '';
+  const B = 'AUGGCUUACGAGUCCAAG';
+  for (let i = 0; i <= 36; i++) { const x = -360 + i * 20, y = Math.sin(i * 0.45) * 50; bb += 'L' + x + ' ' + y.toFixed(1); if (i % 2 === 0 && i / 2 < B.length) { ticks += `M${x} ${y.toFixed(1)}v-46`; letters += lab(x, y - 54, B[i / 2], 15, 'text-anchor="middle" class="dimt"'); } }
+  s += pth(bb) + pth(ticks, 'class="thin"') + letters + pth('M-360 70v16M-360 78H-80M-80 70v16', 'class="thin"') + lab(-220, 108, '5′ CAP ... CODING ... 3′', 14, 'text-anchor="middle" class="dimt"');
+  let lp = pth(circD(330, -40, 110), 'class="thin"');
+  for (let i = 0; i < 22; i++) { const a = i / 22 * TAU; lp += pth(circD(330 + Math.cos(a) * 110, -40 + Math.sin(a) * 110, 10)); }
+  s += `<g class="lnp">${lp}</g>` + pth('M300 -40q30 -30 60 0t60 0', 'class="hot2"');
+  prop({ id: 'mrna', x: camXAt(47.3) + 3.3, y: 3.0, z: -12.5, sc: 1.08, t0: 46.35, t1: 48.2, draw: 1, svg: s, cls: 'bp',
+    anim(el, t) { el.querySelector('.lnp').setAttribute('transform', `rotate(${(t * 25).toFixed(1)} 330 -40)`); } });
+})();
+// prosthetic hand meets a fingertip
+(function hand() {
+  let s = lab(-360, -260, 'MODULAR PROSTHETIC LIMB, 2009', 20, 'class="hd"');
+  s += pth('M-360 40h120l40 -30h90q30 0 30 30v80q0 30 -30 30h-130l-40 -20h-80');
+  const fingers = [[-80, -30, 150], [-80, 10, 165], [-80, 50, 150], [-80, 90, 120]];
+  for (const [x, y, l] of fingers) s += pth(`M${x} ${y}h${l * 0.45}m10 0h${l * 0.3}m10 0h${l * 0.18}`) + pth(circD(x + l * 0.45 + 5, y, 6) + circD(x + l * 0.75 + 15, y, 6), 'class="thin"');
+  s += pth('M-150 20q30 -70 90 -90l40 -10');
+  s += `<g class="touch">${pth('M420 30h-150q-30 0 -30 -18v-6q0 -14 30 -14h150', '')}${pth('M250 10q-12 -4 -12 0', 'class="thin"')}</g><g class="rings"></g>`;
+  s += lab(120, 150, 'PRESSURE, VIBRATION, TEMPERATURE', 14, 'text-anchor="middle" class="dimt"');
+  prop({ id: 'hand', x: camXAt(49.6) + 3.4, y: 2.95, z: -12, sc: 1.3, t0: 48.2, t1: 50.85, draw: 1, svg: s, cls: 'bp',
+    anim(el, t) {
+      const k = sstep(48.6, 49.75, t);
+      el.querySelector('.touch').setAttribute('transform', `translate(${((1 - k) * 160).toFixed(1)} 0)`);
+      let r = ''; if (t > 49.75) for (let i = 0; i < 3; i++) { const u = frac((t - 49.75) * 1.3 + i / 3); r += `<circle cx="215" cy="10" r="${(10 + u * 90).toFixed(1)}" class="hot2" fill="none" stroke-opacity="${(1 - u).toFixed(2)}"/>`; }
+      el.querySelector('.rings').innerHTML = r;
+    } });
+})();
+
+/* ------------------------------ ACT III ------------------------------ */
+// colour variables are re-tinted every frame for time of day (see tintFarm)
+const FARM_BASE = {
+  barn: '#9a3426', barnD: '#6c2219', trim: '#efe7d7', roof: '#5d5a5a', roofL: '#87837f', wood: '#8a6a48', woodD: '#5e452f',
+  house: '#ece6da', houseD: '#c6bcac', green: '#5f7a35', leaf: '#4f6d2d', leafD: '#34491f', hay: '#d9b35b', hayD: '#a98636',
+  stone: '#a29b90', stoneD: '#716b62', metal: '#97a1aa', metalD: '#5d666f', dark: '#2a2522', ink: '#221d1b', blue: '#3b5c8c',
+  purple: '#5b3f7a', teal: '#2e7774', plum: '#6d3550', shade: '#2f4a3a', glow: '#ffcf6a', fire: '#ff8a2a', solar: '#1f3150', dirt: '#8f7552', wash: '#ddd6c8', washD: '#b2a999',
+};
+const F = k => `var(--${k})`;
+const ACT3 = 70.5;   // farm props exist from dawn onward
+
+// draft-horse silhouette (side view, facing +x), legs animated by phase
+function draftHorse(x, sc, cls) {
+  return `<g class="${cls}" transform="translate(${x} 0) scale(${sc})"><g class="legs"></g>` +
+    `<path d="M-95 -150C-100 -176 -60 -184 -20 -177C20 -172 45 -179 62 -171C80 -192 100 -216 121 -226C133 -230 141 -222 151 -190C153 -182 147 -177 140 -182C128 -194 113 -192 101 -176C92 -160 88 -140 80 -125C75 -108 60 -100 40 -102C0 -98 -50 -100 -80 -108C-95 -115 -97 -130 -95 -150Z" fill="${F('dark')}"/>` +
+    `<path d="M122 -226l-5 -16 11 13zM-93 -152q-22 18 -14 58l10 -2q-6 -32 10 -48z" fill="${F('dark')}"/><path d="M96 -196q-16 26 -2 52" stroke="${F('woodD')}" stroke-width="9" fill="none"/></g>`;
+}
+function draftLegs(phase) {
+  let d = '';
+  for (const [x0, off] of [[60, 0], [44, 0.5], [-68, 0.25], [-52, 0.75]]) {
+    const ph = frac(phase + off), sw = Math.sin(ph * TAU), lift = Math.max(0, Math.sin(ph * TAU)) * 18;
+    const fx = x0 + sw * 22, kx = x0 + sw * 8 + (x0 > 0 ? 6 : -8);
+    d += `M${x0} -112L${kx.toFixed(1)} -58L${fx.toFixed(1)} ${(-lift).toFixed(1)}`;
+  }
+  return `<path d="${d}" stroke="${F('dark')}" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`;
+}
+const farmer = (x, y = 0, sc = 1) => `<g transform="translate(${x} ${y}) scale(${sc})"><path d="M-14 0l4 -70h20l4 70zM-17 -70q0 -50 17 -54q17 4 17 54z" fill="${F('ink')}"/><circle cx="0" cy="-134" r="11" fill="${F('ink')}"/><path d="M-26 -140h52l-6 -4h-10q-2 -14 -10 -14t-10 14h-10z" fill="${F('hayD')}"/></g>`;
+
+// utility line that simply stops
+(function poles() {
+  const last = camXAt(82.6) + 2.2, xs = [];
+  for (let k = 9; k >= 0; k--) xs.push(-k * 750);
+  let s = '', w = '';
+  for (const x of xs) s += `<path d="M${x - 11} 0L${x - 8} -600H${x + 8}L${x + 11} 0Z" fill="${F('woodD')}"/><path d="M${x - 120} -560h240v12h-240z" fill="${F('woodD')}"/>` + [-105, 0, 105].map(dx => `<rect x="${x + dx - 5}" y="-580" width="10" height="20" rx="3" fill="${F('metal')}"/>`).join('');
+  for (let i = 0; i < xs.length - 1; i++) for (const dx of [-105, 0, 105]) w += `M${xs[i] + dx} -576Q${(xs[i] + xs[i + 1]) / 2 + dx} -500 ${xs[i + 1] + dx} -576`;
+  // the copper ends: loose coils on the last pole
+  for (const dx of [-105, 0, 105]) w += `M${dx} -576q30 60 6 120q-20 26 10 34q24 6 6 -14`;
+  s += `<path d="${w}" stroke="${F('ink')}" stroke-width="3.2" fill="none" stroke-opacity=".8"/>`;
+  prop({ id: 'poles', x: last, z: -21, t0: ACT3, svg: s, act: 3 });
+})();
+// farmhouse with a laundry line in Sunday-plain colours
+(function laundry() {
+  const h = `<path d="M-480 0V-520L-220 -720L40 -520V0Z" fill="${F('house')}"/><path d="M-520 -500L-220 -760L80 -500L60 -480L-220 -720L-500 -480Z" fill="${F('roof')}"/>` +
+    `<path d="M40 0V-360L240 -490L440 -360V0Z" fill="${F('houseD')}"/><path d="M20 -350L240 -520L460 -350L445 -336L240 -492L35 -336Z" fill="${F('roof')}"/><path d="M-470 0v-150h500v150" fill="${F('houseD')}" fill-opacity=".55"/>` +
+    [[-420, -460], [-300, -460], [-140, -460], [-20, -460], [-420, -290], [-20, -290], [120, -280], [300, -280]].map(([x, y]) => `<rect x="${x}" y="${y}" width="70" height="110" fill="${F('shade')}"/><rect x="${x}" y="${y}" width="70" height="${y < -400 ? 52 : 46}" fill="${F('teal')}" fill-opacity=".75"/>`).join('') +
+    `<rect x="-250" y="-160" width="80" height="160" fill="${F('woodD')}"/><path d="M-500 -150h560l-30 -22h-500z" fill="${F('roofL')}"/><path d="M-190 -720v-60h40v60" fill="${F('stoneD')}"/>`;
+  prop({ id: 'house', x: camXAt(84.0) + 4.2, z: -27, t0: ACT3, svg: h, act: 3 });
+  const cols = ['blue', 'purple', 'teal', 'ink', 'plum', 'blue', 'trim', 'teal', 'purple', 'ink'];
+  let g = `<path d="M-520 0V-230M520 0V-230" stroke="${F('woodD')}" stroke-width="12"/><path d="M-520 -222Q0 -190 520 -222" stroke="${F('ink')}" stroke-width="2.5" fill="none"/>`;
+  cols.forEach((c, i) => { const x = -450 + i * 98, y = -222 + 32 * (1 - Math.pow((x / 520), 2)) - 0;
+    const shape = i % 3 === 0 ? `M-30 0h60l14 120h-88z` : i % 3 === 1 ? `M-34 0h68v26l-10 4v74h-48v-74l-10 -4z` : `M-28 0h56v96l-14 0-6 -60-6 60h-14z`;
+    g += `<g class="cl" data-i="${i}" transform="translate(${x} ${y.toFixed(0)})"><path d="${shape}" fill="${F(c)}"/><path d="M-6 -6v10M6 -6v10" stroke="${F('woodD')}" stroke-width="5"/></g>`; });
+  prop({ id: 'laundry', x: camXAt(84.3) + 1.6, z: -13, sc: 0.9, t0: ACT3, svg: g, act: 3,
+    anim(el, t) { if (!el._c) el._c = el.querySelectorAll('.cl'); el._c.forEach((c, i) => { const a = 9 * Math.sin(t * 2.3 + i * 0.8) + 5 * Math.sin(t * 4.1 + i); const base = c.getAttribute('transform').split(')')[0] + ')'; c.setAttribute('transform', base + ` skewX(${a.toFixed(1)}) scale(${(1 - 0.08 * Math.sin(t * 3 + i)).toFixed(3)} 1)`); }); } });
+})();
+// the community phone shanty at the end of the lane
+(function shanty() {
+  const s = `<rect x="-70" y="-210" width="140" height="210" fill="${F('wood')}"/><path d="M-90 -205L0 -260L90 -205z" fill="${F('roof')}"/><rect x="-42" y="-180" width="84" height="150" fill="${F('woodD')}"/><rect x="-30" y="-168" width="60" height="56" fill="${F('shade')}"/><rect x="-10" y="-158" width="16" height="30" rx="4" fill="${F('ink')}"/><circle cx="30" cy="-100" r="4" fill="${F('metal')}"/>`;
+  prop({ id: 'shanty', x: camXAt(86.6) + 2.4, z: -3.6, t0: ACT3, svg: s, act: 3 });
+})();
+// sawmill: carbide blade at speed, sawdust in the light
+(function sawmill() {
+  let s = `<path d="M-700 0V-420H700V0Z" fill="${F('woodD')}"/><path d="M-760 -400L0 -600L760 -400L740 -380L0 -575L-740 -380Z" fill="${F('roof')}"/>` +
+    `<rect x="-640" y="-370" width="520" height="370" fill="${F('ink')}"/><rect x="60" y="-370" width="560" height="370" fill="${F('ink')}"/>` +
+    `<rect x="-600" y="-110" width="440" height="40" fill="${F('metalD')}"/><rect x="-560" y="-140" width="300" height="34" rx="16" fill="${F('wood')}"/>` +
+    `<g class="blade" transform="translate(-300 -150)"><path d="${gearD(0, 0, 96, 30, 12).replace(/M[^M]*$/, '')}" fill="${F('metal')}"/><circle r="26" fill="${F('metalD')}"/><path d="M-60 0H60M0 -60V60" stroke="${F('metalD')}" stroke-width="6"/></g><g class="dust"></g>`;
+  for (let k = 0; k < 4; k++) for (let j = 0; j < 6; j++) s += `<rect x="${120 + j * 80}" y="${-60 - k * 44}" width="74" height="36" fill="${F(k % 2 ? 'hay' : 'hayD')}"/>`;
+  s += `<path d="M380 0q60 -90 140 -90t140 90z" fill="${F('hay')}"/>`;
+  prop({ id: 'sawmill', x: camXAt(91.6) + 4.2, z: -17, sc: 0.8, t0: ACT3, svg: s, act: 3,
+    anim(el, t) {
+      el.querySelector('.blade').setAttribute('transform', `translate(-300 -150) rotate(${(t * 720 % 360).toFixed(1)})`);
+      let d = ''; for (let i = 0; i < 26; i++) { const u = frac(t * 1.7 + i * 0.137), a = -0.4 - 0.9 * hash(i); d += `<circle cx="${(-300 + Math.cos(a) * (100 + u * 260)).toFixed(0)}" cy="${(-150 + Math.sin(a) * (60 + u * 120) + u * u * 160).toFixed(0)}" r="${(4 + 5 * hash(i + 3)).toFixed(1)}" fill="${F('hay')}" fill-opacity="${(1 - u).toFixed(2)}"/>`; }
+      el.querySelector('.dust').innerHTML = d;
+    } });
+})();
+// "the cloud": a locked icon that unlocks and becomes weather
+(function cloudLock() {
+  const cd = 'M-260 60q-90 0 -90 -80q0 -80 90 -84q20 -100 130 -100q90 0 130 70q30 -20 70 -20q100 0 110 100q80 10 80 70q0 44 -60 44z';
+  const s = `<path d="${cd}" class="soft" fill="#ffffff"/><path d="${cd}" class="icon" fill="none" stroke="${F('ink')}" stroke-width="10"/>` +
+    `<g class="lock"><rect x="-60" y="80" width="120" height="100" rx="14" fill="${F('ink')}"/><path class="sh" d="M-36 80v-40q0 -40 36 -40t36 40v40" stroke="${F('ink')}" stroke-width="16" fill="none"/><circle cy="122" r="12" fill="${F('house')}"/></g>`;
+  prop({ id: 'cloud', x: camXAt(93.4) + 3.6, y: 6.6, z: -34, t0: 92.3, t1: 97, fin: 0.7, fout: 2.5, svg: s, act: 3,
+    anim(el, t) {
+      const k = sstep(93.35, 93.5, t), fall = Math.max(0, t - 93.5);
+      el.querySelector('.sh').setAttribute('transform', `translate(${(k * 30).toFixed(1)} ${(-k * 18).toFixed(1)}) rotate(${(k * 28).toFixed(1)} 36 80)`);
+      el.querySelector('.lock').setAttribute('transform', `translate(0 ${(fall * fall * 700).toFixed(0)}) rotate(${(fall * 80).toFixed(0)})`);
+      el.querySelector('.lock').setAttribute('opacity', 1 - sstep(93.6, 94.8, t));
+      el.querySelector('.icon').setAttribute('stroke-opacity', 1 - sstep(93.5, 95.0, t));
+      el.querySelector('.soft').setAttribute('fill-opacity', 0.15 + 0.85 * sstep(93.5, 95.5, t));
+      el.setAttribute('data-x', 0);
+    } });
+})();
+// diesel engine house: belts, flywheel, air tank, a puff on every beat
+(function diesel() {
+  let s = `<path d="M-420 0V-300H220V0Z" fill="${F('stone')}"/><path d="M-450 -290L-100 -400L250 -290Z" fill="${F('roof')}"/><rect x="40" y="-560" width="44" height="300" fill="${F('metalD')}"/>` +
+    `<rect x="-380" y="-230" width="250" height="230" fill="${F('ink')}"/><rect x="-350" y="-120" width="140" height="80" fill="${F('blue')}"/><g class="fly" transform="translate(-170 -110)"><circle r="56" fill="none" stroke="${F('metal')}" stroke-width="12"/><path d="M-50 0H50M0 -50V50" stroke="${F('metal')}" stroke-width="6"/></g>` +
+    `<path d="M-170 -166L230 -150M-170 -54L230 -70" stroke="${F('dark')}" stroke-width="7"/>` +
+    `<rect x="230" y="-190" width="420" height="140" rx="70" fill="${F('green')}"/><path d="M250 -50h40v50h-40zM590 -50h40v50h-40z" fill="${F('metalD')}"/>` +
+    `<path d="M440 -190V-260H760M520 -190V-230H760" stroke="${F('metalD')}" stroke-width="10" fill="none"/><g class="puff"></g>`;
+  prop({ id: 'diesel', x: camXAt(95.8) + 3.6, z: -8.5, sc: 0.85, t0: ACT3, svg: s, act: 3,
+    anim(el, t) {
+      el.querySelector('.fly').setAttribute('transform', `translate(-170 -110) rotate(${(t * 300 % 360).toFixed(1)})`);
+      let p = ''; const b = beatOf(t);
+      for (let k = 0; k < 4; k++) { const u = frac(b) + k; const age = u * SONG.spb; if (age > 2.2) continue; p += `<circle cx="${(62 + age * 40).toFixed(0)}" cy="${(-570 - age * 120).toFixed(0)}" r="${(20 + age * 50).toFixed(0)}" fill="${F('stoneD')}" fill-opacity="${(0.55 * (1 - age / 2.2)).toFixed(2)}"/>`; }
+      el.querySelector('.puff').innerHTML = p;
+    } });
+})();
+// solar DC bank on a lean-to roof
+(function solar() {
+  let s = `<path d="M-460 0V-260L460 -380V0Z" fill="${F('wood')}"/><rect x="-420" y="-200" width="160" height="200" fill="${F('woodD')}"/>`;
+  for (let r = 0; r < 2; r++) for (let c = 0; c < 6; c++) { const x0 = -440 + c * 150, y0 = -278 - c * 19.6 - r * 70; s += `<path d="M${x0} ${y0}l140 -18v-62l-140 18z" fill="${F('solar')}" stroke="${F('metal')}" stroke-width="3"/><path d="M${x0 + 47} ${y0 - 6}v-62M${x0 + 94} ${y0 - 12}v-62M${x0} ${y0 - 31}l140 -18" stroke="${F('metalD')}" stroke-width="2"/>`; }
+  s += `<path class="glint" d="M0 0l60 -8v-62l-60 8z" fill="#fff" fill-opacity=".0"/>` + [0, 1, 2].map(i => `<rect x="${120 + i * 90}" y="-110" width="70" height="110" fill="${F('metalD')}"/><circle class="led" cx="${155 + i * 90}" cy="-90" r="7" fill="#7dff8a"/>`).join('');
+  prop({ id: 'solar', x: camXAt(98.3) + 3.6, z: -7.5, sc: 0.55, t0: ACT3, svg: s, act: 3,
+    anim(el, t) {
+      const u = frac(t * 0.45); const x = -440 + u * 900, y = -300 - u * 118 - 30;
+      const gl = el.querySelector('.glint'); gl.setAttribute('transform', `translate(${x.toFixed(0)} ${y.toFixed(0)})`); gl.setAttribute('fill-opacity', (0.5 * Math.sin(u * Math.PI)).toFixed(2));
+      el.querySelectorAll('.led').forEach((l, i) => l.setAttribute('fill-opacity', 0.4 + 0.6 * beatPulse(t + i * 0.1, 3)));
+    } });
+})();
+// hydraulic forecart: a team, a cart with an engine box, a PTO shaft to the baler
+(function forecart() {
+  const s = draftHorse(260, 1, 'h1') + draftHorse(120, 1, 'h2') +
+    `<path d="M-40 -110H40" stroke="${F('ink')}" stroke-width="6"/><rect x="-200" y="-140" width="150" height="90" fill="${F('blue')}"/><rect x="-160" y="-200" width="70" height="60" fill="${F('metalD')}"/>${farmer(-120, -140, 0.8)}` +
+    `<circle cx="-170" cy="-40" r="40" fill="none" stroke="${F('ink')}" stroke-width="10"/><circle cx="-80" cy="-40" r="40" fill="none" stroke="${F('ink')}" stroke-width="10"/>` +
+    `<path class="pto" d="M-200 -80H-300" stroke="${F('fire')}" stroke-width="10" stroke-dasharray="14 10"/><path d="M-560 -10V-190H-300V-10Z" fill="${F('green')}"/><circle cx="-520" cy="-10" r="34" fill="${F('ink')}"/><circle cx="-340" cy="-10" r="34" fill="${F('ink')}"/><path d="M-560 -40h-80v40h80" fill="${F('hayD')}"/>`;
+  prop({ id: 'forecart', x: camXAt(101.4) + 1.6, z: -15, t0: ACT3, svg: s, act: 3, mv: t => (clamp(t, 92, 112) - 100.6) * 0.9,
+    anim(el, t) {
+      const ph = t * 0.85;
+      el.querySelectorAll('.legs').forEach((g, i) => g.innerHTML = draftLegs(ph + i * 0.13));
+      el.querySelector('.pto').setAttribute('stroke-dashoffset', (-t * 220 % 24).toFixed(1));
+    } });
+})();
+// grain behind the fence, swaying in gusts
+(function grain() {
+  let s = '';
+  for (let c = 0; c < 10; c++) {
+    let d = '', hd = '';
+    for (let i = 0; i < 26; i++) { const x = -1300 + c * 260 + i * 10 + hash(c * 31 + i) * 8, h = 80 + hash(i * 7 + c) * 34; d += `M${x.toFixed(0)} 0q4 ${(-h / 2).toFixed(0)} 0 ${(-h).toFixed(0)}`; hd += `M${x.toFixed(0)} ${(-h).toFixed(0)}l-4 -18l4 -10l4 10z`; }
+    s += `<g class="gc" data-c="${c}"><path d="${d}" stroke="${F('hayD')}" stroke-width="3" fill="none"/><path d="${hd}" fill="${F('hay')}"/></g>`;
+  }
+  prop({ id: 'grain', x: camXAt(104.2) + 1.0, z: -3.7, t0: ACT3, svg: s, act: 3,
+    anim(el, t) { if (!el._g) el._g = el.querySelectorAll('.gc'); el._g.forEach((g, c) => g.setAttribute('transform', `skewX(${(10 * Math.sin(t * 1.6 - c * 0.5) + 4).toFixed(1)})`)); } });
+  prop({ id: 'grain2', x: camXAt(104.2) + 26.0, z: -3.7, t0: ACT3, svg: s.replace(/class="gc"/g, 'class="gc"'), act: 3,
+    anim(el, t) { if (!el._g) el._g = el.querySelectorAll('.gc'); el._g.forEach((g, c) => g.setAttribute('transform', `skewX(${(10 * Math.sin(t * 1.6 - c * 0.5 + 2) + 4).toFixed(1)})`)); } });
+})();
+// roadside sign: the refrain, hand-lettered
+(function sign() {
+  const s = `<rect x="-250" y="-150" width="18" height="150" fill="${F('woodD')}"/><rect x="232" y="-150" width="18" height="150" fill="${F('woodD')}"/>` +
+    `<rect x="-290" y="-330" width="580" height="200" rx="6" fill="${F('trim')}"/><rect x="-290" y="-330" width="580" height="200" rx="6" fill="none" stroke="${F('woodD')}" stroke-width="6"/>` +
+    `<text x="-150" y="-255" font-family="'IM Fell English SC','IM Fell English',Georgia,serif" font-size="64" fill="${F('barn')}" letter-spacing="2">Horse Tonic</text>` +
+    `<text x="-150" y="-212" font-family="'IM Fell English',Georgia,serif" font-style="italic" font-size="21" fill="${F('ink')}">phytochemical metabolic adjuvant</text>` +
+    `<text x="-150" y="-184" font-family="'IM Fell English',Georgia,serif" font-style="italic" font-size="21" fill="${F('ink')}">for the polycellular carriage</text>` +
+    `<text x="-150" y="-152" font-family="'IM Fell English',Georgia,serif" font-size="17" fill="${F('woodD')}">ask at the barn</text>` +
+    `<g transform="translate(-220 -170)"><path d="M0 0v-90q0 -14 10 -18v-12h40v12q10 4 10 18v90z" fill="${F('glow')}" fill-opacity=".9"/><path d="M8 -122h44v-12h-44z" fill="${F('metalD')}"/><path d="M6 -60h48" stroke="${F('trim')}" stroke-width="16"/></g>`;
+  prop({ id: 'sign', x: camXAt(109.4) + 1.4, z: -1.1, t0: ACT3, svg: s, act: 3 });
+})();
+// plough team moving the other way, furrows behind
+(function plough() {
+  let s = `<path d="M-1200 0H1200" stroke="${F('woodD')}" stroke-width="5"/>`;
+  for (let k = 0; k < 7; k++) s += `<path d="M-1200 ${-8 - k * 14}H${-200 - k * 30}" stroke="${F('woodD')}" stroke-opacity=".45" stroke-width="4"/>`;
+  s += `<g class="team">` + draftHorse(-260, 1, 'p1').replace('translate(-260 0) scale(1)', 'translate(-260 0) scale(-1 1)') + draftHorse(-110, 1, 'p2').replace('translate(-110 0) scale(1)', 'translate(-110 0) scale(-1 1)') +
+    `<path d="M-40 -110L120 -60M120 -60l60 50l30 -6M150 -40l30 -80" stroke="${F('ink')}" stroke-width="7" fill="none"/>${farmer(230, 0, 0.95)}</g>`;
+  prop({ id: 'plough', x: camXAt(115.2) + 3.4, z: -24, t0: ACT3, svg: s, act: 3,
+    anim(el, t) { el.querySelector('.team').setAttribute('transform', `translate(${(-(t - 115.2) * 70).toFixed(0)} 0)`); el.querySelectorAll('.legs').forEach((g, i) => g.innerHTML = draftLegs(t * 0.8 + i * 0.21)); } });
+})();
+// buggy up on a block; a bearing drops and rolls
+(function buggy() {
+  const s = `<path d="M-220 -150h330v-200q0 -30 -30 -30h-270q-30 0 -30 30z" fill="${F('dark')}"/><path d="M-230 -330q0 -60 60 -60h270q40 0 40 60" fill="${F('ink')}"/>` +
+    `<path d="M60 -330v170" stroke="${F('ink')}" stroke-width="4"/><path d="M-200 -250l34 -58 34 58z" fill="#ff7a1a"/><path d="M-188 -258l22 -36 22 36z" fill="${F('dark')}"/>` +
+    `<circle cx="20" cy="-90" r="88" fill="none" stroke="${F('ink')}" stroke-width="9"/><path d="M20 -178V-2M-68 -90H108M-42 -152L82 -28M-42 -28L82 -152" stroke="${F('ink')}" stroke-width="4"/>` +
+    `<rect x="-200" y="-90" width="70" height="90" fill="${F('woodD')}"/><path d="M-165 -150v-60" stroke="${F('metalD')}" stroke-width="12"/>` +
+    `<g transform="translate(-330 -40) rotate(-12)"><circle r="88" fill="none" stroke="${F('ink')}" stroke-width="9"/><path d="M0 -88V88M-88 0H88M-62 -62L62 62M-62 62L62 -62" stroke="${F('ink')}" stroke-width="4"/></g>` +
+    `<path d="M110 -150q120 10 170 70" stroke="${F('ink')}" stroke-width="7" fill="none"/><g class="brg"><circle r="16" fill="none" stroke="${F('metal')}" stroke-width="6"/><circle r="6" fill="${F('metalD')}"/></g>`;
+  prop({ id: 'buggy', x: camXAt(117.9) + 1.6, z: -3.4, sc: 0.62, t0: ACT3, svg: s, act: 3,
+    anim(el, t) {
+      // falls from the hub, two bounces, then rolls toward the lane
+      let x = -165, y = -200;
+      if (t > 117.3) {
+        const g = 2600, u = t - 117.3, t1 = Math.sqrt(2 * 184 / g), v1 = g * t1 * 0.45, t2 = 2 * v1 / g, v2 = v1 * 0.4, t3 = 2 * v2 / g;
+        if (u < t1) y = -200 + 0.5 * g * u * u;
+        else if (u < t1 + t2) { const w = u - t1; y = -16 - (v1 * w - 0.5 * g * w * w); }
+        else if (u < t1 + t2 + t3) { const w = u - t1 - t2; y = -16 - (v2 * w - 0.5 * g * w * w); }
+        else y = -16;
+        x = -165 + Math.min(u, 2.2) * 150;
+      }
+      el.querySelector('.brg').setAttribute('transform', `translate(${x.toFixed(0)} ${y.toFixed(0)}) rotate(${(t * 400 % 360).toFixed(0)})`);
+    } });
+})();
+// smithy: the hammer lands on every beat
+(function smithy() {
+  const s = `<path d="M-520 0V-380H520V0Z" fill="${F('stone')}"/><path d="M-560 -370L0 -520L560 -370Z" fill="${F('roof')}"/><rect x="-460" y="-640" width="90" height="270" fill="${F('stoneD')}"/>` +
+    `<rect x="-470" y="-320" width="940" height="320" fill="${F('ink')}"/><g class="forge"><ellipse cx="-300" cy="-130" rx="120" ry="70" fill="${F('fire')}" fill-opacity=".9"/><ellipse cx="-300" cy="-130" rx="60" ry="34" fill="${F('glow')}"/></g><rect x="-420" y="-110" width="240" height="110" fill="${F('stoneD')}"/>` +
+    `<path d="M40 0l30 -80h-40v-40h200v40h-40l30 80z" fill="${F('metalD')}"/><path d="M80 -126q30 -16 60 0" stroke="${F('fire')}" stroke-width="9" fill="none" class="shoe"/>` +
+    `<g transform="translate(250 0)">${farmer(0, 0, 1.3).replace(/fill="var\(--ink\)"/g, `fill="${F('dark')}"`)}<g class="arm"><path d="M-10 -150L-110 -170" stroke="${F('dark')}" stroke-width="22" stroke-linecap="round"/><path d="M-110 -170l-10 -40" stroke="${F('woodD')}" stroke-width="10"/><rect x="-150" y="-232" width="60" height="30" fill="${F('metalD')}"/></g></g><g class="sparks"></g>`;
+  prop({ id: 'smithy', x: camXAt(121.4) + 3.4, z: -10, sc: 0.85, t0: ACT3, svg: s, act: 3,
+    anim(el, t) {
+      const b = beatOf(t), f = frac(b), up = f < 0.7 ? sstep(0.05, 0.7, f) : 1 - sstep(0.85, 1, f);
+      el.querySelector('.arm').setAttribute('transform', `rotate(${(up * 58).toFixed(1)} -10 -150)`);
+      let sp = ''; const age = f * SONG.spb;
+      if (age < 0.4) for (let i = 0; i < 14; i++) { const a = -Math.PI * (0.15 + 0.7 * hash(Math.floor(b) * 13 + i)), v = 300 + 300 * hash(i * 5 + Math.floor(b)); sp += `<circle cx="${(110 + Math.cos(a) * v * age).toFixed(0)}" cy="${(-132 + Math.sin(a) * v * age + 900 * age * age).toFixed(0)}" r="4" fill="${F('glow')}" fill-opacity="${(1 - age / 0.4).toFixed(2)}"/>`; }
+      el.querySelector('.sparks').innerHTML = sp;
+      el.querySelector('.forge').setAttribute('opacity', (0.75 + 0.25 * noise1(t * 6)).toFixed(2));
+    } });
+})();
+// an oak, a brittle thread, an hourglass of sand
+(function oak() {
+  let s = `<path d="M-40 0q-10 -200 -6 -420q-120 -60 -230 -40M-30 -330q120 -60 260 -30M-38 -260q-90 -30 -150 -110" stroke="${F('woodD')}" stroke-width="44" stroke-linecap="round" fill="none"/>`;
+  for (let i = 0; i < 16; i++) { const a = i / 16 * TAU; s += `<circle cx="${(-30 + Math.cos(a) * 250 * (0.7 + 0.3 * hash(i))).toFixed(0)}" cy="${(-520 + Math.sin(a) * 160 * (0.7 + 0.3 * hash(i + 4))).toFixed(0)}" r="${(110 + 50 * hash(i + 9)).toFixed(0)}" fill="${F(i % 3 ? 'leaf' : 'leafD')}"/>`; }
+  s += `<g class="pend"><path d="M200 -368V-170" stroke="${F('ink')}" stroke-width="2"/><g transform="translate(200 -140)"><path d="M-26 -30h52M-26 30h52" stroke="${F('woodD')}" stroke-width="8"/><path d="M-20 -26q0 20 20 26q20 -6 20 -26zM-20 26q0 -20 20 -26q20 6 20 26z" fill="#e8eef0" fill-opacity=".55" stroke="${F('ink')}" stroke-width="2"/><path class="sandT" d="M-14 -22h28q-4 14 -14 20q-10 -6 -14 -20z" fill="${F('hay')}"/><path class="sandB" d="M-16 24h32q-6 -10 -16 -12q-10 2 -16 12z" fill="${F('hay')}"/></g></g>`;
+  prop({ id: 'oak', x: camXAt(126.0) + 3.0, z: -9, t0: ACT3, svg: s, act: 3,
+    anim(el, t) {
+      el.querySelector('.pend').setAttribute('transform', `rotate(${(14 * Math.sin(t * 2.2)).toFixed(1)} 200 -368)`);
+      const u = clamp((t - 123.6) / 4.6, 0, 1);
+      el.querySelector('.sandT').setAttribute('transform', `translate(0 ${(-2 + u * 18).toFixed(1)}) scale(${(1 - u * 0.7).toFixed(2)} ${(1 - u * 0.8).toFixed(2)})`);
+      el.querySelector('.sandB').setAttribute('transform', `translate(0 ${(24 - 24 * (0.3 + u)).toFixed(1)}) scale(1 ${(0.3 + u).toFixed(2)}) translate(0 -24)`);
+    } });
+})();
+// farm windmill: leverage on a pump rod
+(function windmill() {
+  let s = `<path d="M-120 0L-18 -820H18L120 0M-100 -160H100M-80 -330H80M-58 -500H58M-38 -660H38M-100 -160L80 -330M100 -160L-80 -330M-80 -330L58 -500M80 -330L-58 -500" stroke="${F('metalD')}" stroke-width="10" fill="none"/>` +
+    `<path d="M0 -840h260l60 -40v120l-60 -40h-260z" fill="${F('metal')}"/><g class="wheel" transform="translate(-20 -840)"></g><path class="rod" d="M0 -800V-40" stroke="${F('ink')}" stroke-width="7"/>` +
+    `<path d="M160 0v-90h360v90z" fill="${F('metalD')}"/><ellipse class="rip" cx="340" cy="-90" rx="170" ry="12" fill="#a8c8dc"/>`;
+  let blades = ''; for (let i = 0; i < 18; i++) { const a = i / 18 * 360; blades += `<path d="M0 -40L-18 -210L18 -210Z" transform="rotate(${a})" fill="${F('metal')}" stroke="${F('metalD')}" stroke-width="3"/>`; }
+  s = s.replace('<g class="wheel" transform="translate(-20 -840)"></g>', `<g class="wheel" transform="translate(-20 -840)">${blades}<circle r="40" fill="${F('metalD')}"/></g>`);
+  prop({ id: 'windmill', x: camXAt(129.3) + 3.6, z: -18, t0: ACT3, svg: s, act: 3,
+    anim(el, t) {
+      el.querySelector('.wheel').setAttribute('transform', `translate(-20 -840) rotate(${(t * 140 % 360).toFixed(1)})`);
+      el.querySelector('.rod').setAttribute('transform', `translate(0 ${(16 * Math.sin(t * 140 * DEG * 1)).toFixed(1)})`);
+      el.querySelector('.rip').setAttribute('rx', (150 + 20 * Math.sin(t * 2.4)).toFixed(0));
+    } });
+})();
+// bank barn; through the door one mason jar holds the light
+function barnSVG(jar, wash) {
+  const B = wash ? 'wash' : 'barn', BD = wash ? 'washD' : 'barnD';
+  return `<path d="M-700 0V-520L-560 -760L0 -900L560 -760L700 -520V0Z" fill="${F(B)}"/><path d="M-730 -510L-580 -770L0 -930L580 -770L730 -510L700 -490L560 -745L0 -880L-560 -745L-700 -490Z" fill="${F('roof')}"/>` +
+    `<path d="M-700 -40H700" stroke="${F('stone')}" stroke-width="80"/>` +
+    `<rect x="-240" y="-460" width="480" height="420" fill="${F('ink')}"/><path d="M-260 -470h520v-20h-520zM-250 -40V-470M250 -40V-470" stroke="${F('trim')}" stroke-width="16" fill="none"/>` +
+    `<path d="M-680 -440h300v300h-300zM380 -440h300v300h-300z" fill="${F(BD)}"/><path d="M-680 -440l300 300M-380 -440l-300 300M380 -440l300 300M680 -440l-300 300" stroke="${F('trim')}" stroke-width="12"/>` +
+    `<path d="M-90 -760h180v130h-180z" fill="${F('trim')}"/><path d="M-80 -750h160v110h-160z" fill="${F('ink')}"/>` +
+    (jar ? `<g class="jar"><circle cx="40" cy="-250" r="150" fill="url(#jarGlow)"/><path d="M-200 -200h420" stroke="${F('woodD')}" stroke-width="14"/><path d="M10 -207v-80q0 -12 8 -16v-12h44v12q8 4 8 16v80z" fill="${F('glow')}"/><path d="M14 -244h52" stroke="${F('trim')}" stroke-width="14"/><path d="M16 -318h48v-14h-48z" fill="${F('metal')}"/><path d="M24 -280q8 -14 14 0t14 0" stroke="${F('green')}" stroke-width="3" fill="none"/>` +
+      `<path d="M-150 -207h80v-40h-80zM100 -207h90v-50h-90z" fill="${F('hayD')}"/></g>` : `<path d="M-200 -40h400v-150h-400z" fill="${F('hayD')}"/>`) +
+    `<path d="M-760 0h340v-120h-340zM480 0h300v-120h-300z" fill="${F('hay')}"/><path d="M-760 -60h340M480 -60h300" stroke="${F('hayD')}" stroke-width="4"/>`;
+}
+prop({ id: 'barn', x: camXAt(134.6) + 2.8, z: -12, sc: 0.9, t0: ACT3, svg: barnSVG(true), act: 3,
+  anim(el, t) { const j = el.querySelector('.jar'); if (j) j.setAttribute('opacity', (0.85 + 0.15 * Math.sin(t * 3)).toFixed(2)); } });
+// home place: barn, silo, house, where the horse finally stands
+(function home() {
+  const sx = horseX(156) + 1.4;
+  prop({ id: 'homebarn', x: sx + 2.0, z: -15, sc: 0.78, t0: ACT3, svg: barnSVG(false, true), act: 3 });
+  prop({ id: 'silo', x: sx + 10.5, z: -14, t0: ACT3, act: 3, svg: `<rect x="-160" y="-1100" width="320" height="1100" fill="${F('stone')}"/><path d="M-160 -1100q160 -170 320 0z" fill="${F('roofL')}"/>` + [0, 1, 2, 3, 4, 5, 6].map(i => `<path d="M-160 ${-140 - i * 140}h320" stroke="${F('stoneD')}" stroke-width="6"/>`).join('') });
+})();
+// trees and round bales scattered along the lane to keep the eye moving
+(function scatter() {
+  const x0 = ROB_STOP - 10, x1 = horseX(183) + 30;
+  let k = 0;
+  for (let x = x0; x < x1; x += 9 + hash(k) * 10, k++) {
+    const busy = PROPS.some(p => p.act === 3 && Math.abs(p.x - x) < 4.5 && p.z > -18);
+    if (busy) continue;
+    const z = -7 - hash(k + 3) * 8, type = hash(k + 11);
+    if (type < 0.62) {
+      let s = `<path d="M-20 0q-6 -160 0 -300M0 -220q60 -40 100 -40M-4 -180q-60 -30 -90 -70" stroke="${F('woodD')}" stroke-width="26" stroke-linecap="round" fill="none"/>`;
+      for (let i = 0; i < 9; i++) s += `<circle cx="${(-10 + Math.cos(i * 0.7) * 120 * hash(k * 9 + i)).toFixed(0)}" cy="${(-360 - Math.sin(i * 1.3) * 90 * hash(k * 5 + i)).toFixed(0)}" r="${(80 + 40 * hash(k * 3 + i)).toFixed(0)}" fill="${F(i % 3 ? 'leaf' : 'leafD')}"/>`;
+      prop({ id: 'tree' + k, x, z, t0: ACT3, svg: s, act: 3, sc: 0.8 + hash(k + 5) * 0.6 });
+    } else {
+      const s = `<ellipse cx="0" cy="-70" rx="80" ry="70" fill="${F('hay')}"/><ellipse cx="-50" cy="-70" rx="26" ry="70" fill="${F('hayD')}"/><path d="M-50 -110a20 40 0 1 0 0 80" stroke="${F('hay')}" stroke-width="4" fill="none"/>`;
+      prop({ id: 'bale' + k, x, z: z * 0.8, t0: ACT3, svg: s, act: 3 });
+    }
+  }
+})();
+
+/* far landscape: contour-strip hills drawn in metres */
+function stripHill(x0, x1, base, amp, seed, strips, cls) {
+  const pts = [];
+  for (let x = x0; x <= x1; x += 6) pts.push([x, base - amp * (0.55 + 0.45 * Math.sin(x * 0.011 + seed) * Math.cos(x * 0.004 + seed * 2)) - amp * 0.25 * Math.sin(x * 0.031 + seed * 3)]);
+  let top = 'M' + x0 + ' 40'; for (const [x, y] of pts) top += 'L' + x + ' ' + y.toFixed(1); top += 'L' + x1 + ' 40Z';
+  let s = `<path d="${top}" fill="var(--${cls}a)"/>`;
+  for (let k = 1; k < strips; k += 2) {
+    const f0 = k / strips, f1 = (k + 1) / strips;
+    let d = '';
+    for (let i = 0; i < pts.length; i++) { const [x, y] = pts[i]; d += (i ? 'L' : 'M') + x + ' ' + lerp(y, 30, f0).toFixed(1); }
+    for (let i = pts.length - 1; i >= 0; i--) { const [x, y] = pts[i]; d += 'L' + x + ' ' + lerp(y, 30, f1).toFixed(1); }
+    s += `<path d="${d}Z" fill="var(--${cls}${k % 4 === 1 ? 'b' : 'c'})"/>`;
+  }
+  return s;
+}
+(function landscape() {
+  const x0 = ROB_STOP - 700, x1 = ROB_STOP + 1100;
+  let ridge = 'M' + x0 + ' 60';
+  for (let x = x0; x <= x1; x += 20) ridge += 'L' + x + ' ' + (-28 - 22 * Math.sin(x * 0.006) - 10 * Math.sin(x * 0.017 + 1)).toFixed(1);
+  ridge += 'L' + x1 + ' 60Z';
+  prop({ id: 'ridge', x: 0, z: -900, unit: 1, layer: 'far', svg: `<path d="${ridge}" fill="var(--ridge)"/>`, act: 3, t0: 69 });
+  prop({ id: 'hillsFar', x: 0, z: -420, unit: 1, layer: 'far', svg: stripHill(x0, x1, 6, 34, 1.7, 9, 'hf'), act: 3, t0: 69 });
+  let farms = '';
+  for (let x = x0 + 40, k = 0; x < x1; x += 70 + hash(k) * 90, k++) {
+    const y = 4 - 18 * (0.55 + 0.45 * Math.sin(x * 0.013 + 0.6) * Math.cos(x * 0.005 + 1.2));
+    farms += `<path d="M${x} ${y}v-6l4 -3l4 3v6z" fill="var(--fb)"/><rect x="${x + 9}" y="${y - 10}" width="2.4" height="10" fill="var(--fs)"/><path d="M${x - 6} ${y}v-4h4v4z" fill="var(--fh)"/>`;
+    for (let i = 0; i < 4; i++) farms += `<circle cx="${(x - 14 - i * 4).toFixed(1)}" cy="${(y - 2).toFixed(1)}" r="${(2.6 + hash(k * 4 + i) * 1.6).toFixed(1)}" fill="var(--ft)"/>`;
+  }
+  prop({ id: 'hillsNear', x: 0, z: -190, unit: 1, layer: 'far', svg: stripHill(x0, x1, 4, 18, 0.6, 11, 'hn') + farms, act: 3, t0: 69 });
+  let hedge = '';
+  for (let x = x0 + 300; x < x1 - 300; x += 2.2) hedge += `<circle cx="${x.toFixed(1)}" cy="${(-2.4 - 1.6 * hash(x)).toFixed(1)}" r="${(2.2 + 1.8 * hash(x * 3)).toFixed(1)}"/>`;
+  prop({ id: 'hedge', x: 0, z: -70, unit: 1, layer: 'far', svg: `<g fill="var(--ht)">${hedge}</g><rect x="${x0 + 300}" y="-1" width="${x1 - x0 - 600}" height="3" fill="var(--ht)"/>`, act: 3, t0: 69 });
+})();
+
+/* =====================================================================
+   SYSTEMS — sky, ground, jets, particles, HUD, captions
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const LY = {};
+const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function initProps() {
+  ['sky', 'stars', 'sun', 'gfill', 'far', 'jets', 'gbase', 'mid', 'shadow', 'actors', 'fx', 'near', 'hud', 'cap'].forEach(k => LY[k] = $('L-' + k));
+  // the fence lives among the props so depth order works
+  prop({ id: 'fence', x: 0, z: -2.4, unit: 1, svg: '', act: 3, t0: ACT3, dyn: 1 });
+  const sorted = PROPS.slice().sort((a, b) => a.z - b.z);
+  for (const p of sorted) {
+    const g = el('g', { class: 'prop ' + (p.cls || '') + (p.draw ? ' draw' : '') });
+    g.innerHTML = p.svg;
+    (p.layer === 'far' ? LY.far : LY.mid).appendChild(g);
+    p.el = g; p.on = true;
+  }
+  for (const p of PROPS) { try { const b = p.el.getBBox(); p.bx0 = b.x; p.bx1 = b.x + b.width; } catch (e) { p.bx0 = -2000; p.bx1 = 2000; } }
+}
+function updateProps(t) {
+  const A = actB(t), rollDeg = CAM.roll / DEG;
+  for (const p of PROPS) {
+    let a = p.act === 1 ? 1 - A : p.act === 3 ? A : 1;
+    if (t < p.t0 - p.fin || t > p.t1 + p.fout) a = 0;
+    else a *= sstep(p.t0 - p.fin, p.t0, t) * (1 - sstep(p.t1, p.t1 + p.fout, t));
+    if (p.dyn) { updateFence(p, t, a); continue; }
+    let show = a > 0.004;
+    let pp, s;
+    if (show) {
+      pp = proj([p.x + (p.mv ? p.mv(t) : 0), p.y, p.z]);
+      s = pp.s * p.unit * (p.sc || 1);
+      if (pp.z < 0.6 || pp.x + p.bx1 * s < -60 || pp.x + p.bx0 * s > VW + 60) show = false;
+    }
+    if (!show) { if (p.on) { p.el.style.display = 'none'; p.on = false; } continue; }
+    if (!p.on) { p.el.style.display = ''; p.on = true; }
+    p.el.setAttribute('transform', 'translate(' + f1(pp.x) + ' ' + f1(pp.y) + ')' + (rollDeg ? ' rotate(' + rollDeg.toFixed(2) + ')' : '') + ' scale(' + s.toFixed(5) + ')');
+    p.el.setAttribute('opacity', a.toFixed(3));
+    if (p.cls === 'bp') p.el.setAttribute('stroke-width', (p.lw / s).toFixed(3));
+    if (p.draw) p.el.style.setProperty('--d', (1 - sstep(p.t0, p.t0 + 0.95, t)).toFixed(3));
+    if (p.anim) p.anim(p.el, t);
+  }
+}
+
+/* ---------- colour grading of the farm world ---------- */
+const mixc = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
+const css = c => 'rgb(' + (c[0] | 0) + ',' + (c[1] | 0) + ',' + (c[2] | 0) + ')';
+const HILL = { a: hex2('#7d9645'), b: hex2('#c8ad5b'), c: hex2('#5a7a34'), ridge: hex2('#6f8aa0'), farm: hex2('#9a3426'), silo: hex2('#cfc8bb'), house: hex2('#efe8dc'), tree: hex2('#3f5a28') };
+function tintFarm(t, root) {
+  const hz = PAL.hor(t), amb = LIGHT.amb, col = LIGHT.col;
+  const k = [0, 1, 2].map(i => clamp((amb[i] * 0.95 + col[i] * 0.62) / (0.43 * 0.95 + 0.95 * 0.62), 0.12, 1.35));
+  const tint = c => [clamp(c[0] * k[0], 0, 255), clamp(c[1] * k[1], 0, 255), clamp(c[2] * k[2], 0, 255)];
+  for (const key in FARM_BASE) { if (key === 'glow' || key === 'fire') continue; root.style.setProperty('--' + key, css(tint(hex2(FARM_BASE[key])))); }
+  root.style.setProperty('--glow', FARM_BASE.glow); root.style.setProperty('--fire', FARM_BASE.fire);
+  const fog = (c, f) => css(mixc(tint(c), hz, f));
+  root.style.setProperty('--ridge', fog(HILL.ridge, 0.55));
+  root.style.setProperty('--hfa', fog(HILL.a, 0.46)); root.style.setProperty('--hfb', fog(HILL.b, 0.46)); root.style.setProperty('--hfc', fog(HILL.c, 0.46));
+  root.style.setProperty('--hna', fog(HILL.a, 0.22)); root.style.setProperty('--hnb', fog(HILL.b, 0.22)); root.style.setProperty('--hnc', fog(HILL.c, 0.22));
+  root.style.setProperty('--fb', fog(HILL.farm, 0.25)); root.style.setProperty('--fs', fog(HILL.silo, 0.25)); root.style.setProperty('--fh', fog(HILL.house, 0.25)); root.style.setProperty('--ft', fog(HILL.tree, 0.25));
+  root.style.setProperty('--ht', fog(HILL.tree, 0.12));
+}
+
+/* ---------- sky ---------- */
+const STARS = [];
+for (let i = 0; i < 240; i++) { const az = (hash(i * 3.1) - 0.5) * 2.2, el2 = 0.04 + Math.pow(hash(i * 7.7), 0.8) * 0.7; STARS.push({ d: [Math.sin(az) * Math.cos(el2), Math.sin(el2), -Math.cos(az) * Math.cos(el2)], r: 0.6 + hash(i * 1.3) * 1.5, ph: hash(i) * TAU, f: 1 + hash(i + 9) * 3 }); }
+let starEls = null;
+function horizonY() {
+  const fl = vnorm([CAM.f[0], 0, CAM.f[2]]);
+  const p = proj(vadd(CAM.E, [fl[0] * 1e5, -CAM.E[1], fl[2] * 1e5]));
+  return p;
+}
+function atInfinity(d) { return proj(vadd(CAM.E, vmul(d, 5000))); }
+function updateSky(t, hz) {
+  const top = PAL.top(t), mid = PAL.mid(t), hor = PAL.hor(t);
+  const g = $('skyGrad');
+  g.setAttribute('y2', f1(hz.y)); g.setAttribute('y1', f1(hz.y - 900));
+  const st = g.children;
+  st[0].setAttribute('stop-color', css(top)); st[1].setAttribute('stop-color', css(mid)); st[2].setAttribute('stop-color', css(hor));
+  // stars: blackout night and the coda dusk
+  const vis = Math.max(nightB(t) * 0.95, sstep(168, 182, t) * 0.65, (1 - sstep(0.5, 3, t)) * 0.4);
+  if (!starEls) { starEls = STARS.map(s => el('circle', { r: s.r, fill: '#eaf2ff' }, LY.stars)); }
+  LY.stars.setAttribute('opacity', vis.toFixed(3));
+  if (vis > 0.01) STARS.forEach((s, i) => { const p = atInfinity(s.d); starEls[i].setAttribute('cx', f1(p.x)); starEls[i].setAttribute('cy', f1(p.y)); starEls[i].setAttribute('opacity', (0.55 + 0.45 * Math.sin(t * s.f + s.ph)).toFixed(2)); });
+  // moon in the blackout, sun on the farm
+  const n = nightB(t), A = actB(t);
+  let h = '';
+  if (n > 0.01) { const m = atInfinity(vnorm([-0.42, 0.33, -0.85])); h += `<g opacity="${n.toFixed(2)}"><circle cx="${f1(m.x)}" cy="${f1(m.y)}" r="40" fill="#dfe8f5" fill-opacity=".08"/><path d="M${f1(m.x + 10)} ${f1(m.y - 16)}a18 18 0 1 0 6 30a14 14 0 1 1 -6 -30z" fill="#e8eef8"/></g>`; }
+  if (t > 63.4 && t < 64.4) { const u = (t - 63.4); const a = atInfinity(vnorm([0.1 + u * 0.5, 0.42 - u * 0.12, -0.9])); h += `<path d="M${f1(a.x)} ${f1(a.y)}l-90 -22" stroke="#fff" stroke-opacity="${(0.8 * (1 - u)).toFixed(2)}" stroke-width="2" stroke-linecap="round"/>`; }
+  if (A > 0.01) {
+    const az = SUNK.az(t), e = SUNK.el(t), sd = vnorm([Math.sin(az) * Math.cos(e), Math.sin(e), -Math.cos(az) * Math.cos(e)]);
+    const sp = atInfinity(sd);
+    if (sp.z > 1) { const warm = 1 - sstep(0.1, 0.5, e); const c = css(mixc([255, 250, 232], [255, 168, 92], warm)); h += `<g opacity="${A.toFixed(2)}"><circle cx="${f1(sp.x)}" cy="${f1(sp.y)}" r="260" fill="url(#sunGlow)" opacity="${(0.55 + 0.45 * warm).toFixed(2)}"/><circle cx="${f1(sp.x)}" cy="${f1(sp.y)}" r="34" fill="${c}"/></g>`; }
+  }
+  LY.sun.innerHTML = h;
+}
+
+/* ---------- ground ---------- */
+function updateGround(t, hz) {
+  const A = actB(t), N = nightB(t);
+  const tr = Math.tan(CAM.roll), x0 = -500, x1 = VW + 500;
+  const yl = hz.y + (x0 - hz.x) * tr, yr = hz.y + (x1 - hz.x) * tr;
+  const gf = PAL.gfar(t), gn = PAL.gnear(t);
+  const gg = $('gndGrad'); gg.setAttribute('y1', f1(hz.y)); gg.setAttribute('y2', '900');
+  gg.children[0].setAttribute('stop-color', css(gf)); gg.children[1].setAttribute('stop-color', css(gn));
+  LY.gfill.innerHTML = `<path d="M${x0} ${f1(yl)}L${x1} ${f1(yr)}L${x1} 1500L${x0} 1500Z" fill="url(#gndGrad)"/>`;
+  let h = '';
+  const cx = CAM.T[0];
+  // Act I: drafting grid + a measured test track
+  const gridA = (1 - A) * (1 - N) * sstep(0.8, 2.4, t);
+  if (gridA > 0.01) {
+    let d = '', d5 = '';
+    for (let gx = Math.floor(cx - 24); gx <= cx + 24; gx++) { const a = proj([gx, 0, -18]), b = proj([gx, 0, 3.5]); const s = 'M' + f1(a.x) + ' ' + f1(a.y) + 'L' + f1(b.x) + ' ' + f1(b.y); if (gx % 5 === 0) d5 += s; else d += s; }
+    for (let gz = -18; gz <= 3; gz++) { const a = proj([cx - 26, 0, gz]), b = proj([cx + 26, 0, gz]); const s = 'M' + f1(a.x) + ' ' + f1(a.y) + 'L' + f1(b.x) + ' ' + f1(b.y); if (gz % 5 === 0) d5 += s; else d += s; }
+    h += `<g opacity="${gridA.toFixed(3)}"><path d="${d}" stroke="#cfe4ff" stroke-opacity=".13" fill="none"/><path d="${d5}" stroke="#cfe4ff" stroke-opacity=".3" fill="none"/>`;
+    let tk = '', lb = '';
+    for (let k = Math.floor((cx - 14) * 2); k <= (cx + 14) * 2; k++) { const x = k / 2, a = proj([x, 0, 0.75]), b = proj([x, 0, k % 10 === 0 ? 1.15 : 0.92]); tk += 'M' + f1(a.x) + ' ' + f1(a.y) + 'L' + f1(b.x) + ' ' + f1(b.y); if (k % 10 === 0 && x >= 0) { const c = proj([x, 0, 1.45]); lb += `<text x="${f1(c.x)}" y="${f1(c.y)}" font-size="${f1(clamp(c.s * 0.16, 9, 26))}" text-anchor="middle">${x} m</text>`; } }
+    const r0 = proj([cx - 14, 0, 0.75]), r1 = proj([cx + 14, 0, 0.75]);
+    h += `<path d="M${f1(r0.x)} ${f1(r0.y)}L${f1(r1.x)} ${f1(r1.y)}${tk}" stroke="#ffb34a" stroke-opacity=".7" fill="none"/><g class="ruler">${lb}</g></g>`;
+  }
+  // Act III: a dirt lane with buggy ruts and gravel
+  if (A > 0.01) {
+    const road = (z0, z1, fill, op = 1) => { const a = proj([cx - 70, 0, z0]), b = proj([cx + 90, 0, z0]), c = proj([cx + 90, 0, z1]), d = proj([cx - 70, 0, z1]); return `<path d="M${f1(a.x)} ${f1(a.y)}L${f1(b.x)} ${f1(b.y)}L${f1(c.x)} ${f1(c.y)}L${f1(d.x)} ${f1(d.y)}Z" fill="${fill}" fill-opacity="${op}"/>`; };
+    let r = road(HZ - 1.05, HZ + 1.05, 'var(--dirt)') + road(HZ - 0.72, HZ - 0.44, 'var(--woodD)', 0.35) + road(HZ + 0.44, HZ + 0.72, 'var(--woodD)', 0.35) + road(HZ - 0.2, HZ + 0.2, 'var(--green)', 0.35);
+    let pb = '';
+    for (let i = Math.floor((cx - 20) / 0.31); i < (cx + 26) / 0.31; i++) { const x = i * 0.31 + hash(i) * 0.25, z = HZ - 0.95 + hash(i * 3.7) * 1.9; const p = proj([x, 0, z]); pb += 'M' + f1(p.x) + ' ' + f1(p.y) + 'h' + f1(clamp(p.s * 0.035 * (0.5 + hash(i * 5)), 1, 9)); }
+    r += `<path d="${pb}" stroke="var(--stoneD)" stroke-opacity=".55" stroke-width="2.4" stroke-linecap="round"/>`;
+    h += `<g opacity="${A.toFixed(3)}">${r}</g>`;
+  }
+  LY.gbase.innerHTML = h + fxGround(t);
+  // foreground grass (Act III)
+  if (A > 0.01) {
+    let d = '', fl = '';
+    for (let i = Math.floor((cx - 16) / 0.55); i < (cx + 18) / 0.55; i++) {
+      const x = i * 0.55 + hash(i * 1.7) * 0.4, z = 2.65 + hash(i * 2.3) * 1.5, p = proj([x, 0, z]);
+      if (p.x < -80 || p.x > VW + 80) continue;
+      const hgt = (0.14 + 0.2 * hash(i * 9.1)) * p.s, sway = 0.25 * Math.sin(t * 2 + x * 0.6) * hgt;
+      for (let b = -2; b <= 2; b++) { const bx = p.x + b * 0.025 * p.s; d += `M${f1(bx - 0.012 * p.s)} ${f1(p.y)}Q${f1(bx + sway * 0.4 + b * 0.02 * p.s)} ${f1(p.y - hgt * 0.6)} ${f1(bx + sway + b * 0.05 * p.s)} ${f1(p.y - hgt * (0.7 + 0.3 * hash(i + b)))}L${f1(bx + 0.012 * p.s)} ${f1(p.y)}Z`; }
+      if (hash(i * 4.4) > 0.8) fl += `<circle cx="${f1(p.x + sway)}" cy="${f1(p.y - hgt)}" r="${f1(0.022 * p.s)}" fill="${hash(i) > 0.5 ? '#f4efe0' : '#f2c84b'}"/>`;
+    }
+    LY.near.innerHTML = `<g opacity="${A.toFixed(3)}"><path d="${d}" fill="var(--leaf)"/>${fl}</g>`;
+  } else LY.near.innerHTML = '';
+}
+function updateFence(p, t, a) {
+  if (a < 0.004) { if (p.on) { p.el.style.display = 'none'; p.on = false; } return; }
+  if (!p.on) { p.el.style.display = ''; p.on = true; }
+  p.el.removeAttribute('transform');
+  const cx = CAM.T[0], start = ROB_STOP + 0.5;
+  let posts = '', rails = ['', '', ''];
+  const k0 = Math.max(Math.ceil((cx - 16 - start) / 2.6), 0), k1 = Math.floor((cx + 20 - start) / 2.6);
+  let prev = null;
+  for (let k = k0; k <= k1; k++) {
+    const x = start + k * 2.6, b = proj([x, 0, -2.4]), tp = proj([x, 1.25, -2.4]), w = 0.09 * b.s / 2;
+    posts += `M${f1(b.x - w)} ${f1(b.y)}L${f1(tp.x - w)} ${f1(tp.y)}L${f1(tp.x + w)} ${f1(tp.y)}L${f1(b.x + w)} ${f1(b.y)}Z`;
+    const ys = [0.38, 0.76, 1.12].map(y => proj([x, y, -2.4]));
+    if (prev) ys.forEach((q, i) => rails[i] += `M${f1(prev[i].x)} ${f1(prev[i].y)}L${f1(q.x)} ${f1(q.y)}`);
+    prev = ys;
+  }
+  const rw = f1(0.07 * proj([cx, 0, -2.4]).s);
+  p.el.setAttribute('opacity', a.toFixed(3));
+  p.el.innerHTML = `<path d="${rails.join('')}" stroke="var(--trim)" stroke-width="${rw}" fill="none"/><path d="${posts}" fill="var(--house)"/><path d="${posts}" fill="var(--woodD)" fill-opacity=".18"/>`;
+}
+
+/* ---------- jets ---------- */
+const F117 = (() => {
+  const V = [[10, 0, 0], [3.5, 1.3, 0], [-5, 1.0, 0], [-9.2, 0.35, 0], [-1, -0.7, 0]];
+  const side = s => [[6.0, 0.45, s], [2.0, 0.25, 2.6 * s], [-6.0, 0.0, 6.6 * s], [-7.2, 0.1, 3.6 * s], [-8.8, 0.25, 1.7 * s], [-5.0, 0.95, 1.1 * s], [-8.6, 3.4, 3.0 * s], [-8.0, 0.7, 1.3 * s]];
+  const R = side(1), L = side(-1);
+  V.push(...R, ...L);   // R: 5..12, L: 13..20
+  const F = [];
+  for (const o of [5, 13]) {
+    const Cf = o, Wr = o + 1, Wt = o + 2, Tn = o + 3, Ti = o + 4, Vb = o + 5, Vt = o + 6, Vr = o + 7;
+    F.push([0, Cf, 1], [0, Wr, Cf], [1, Cf, Wr], [1, Wr, Wt], [1, Wt, Tn, 2], [2, Tn, Ti], [2, Ti, 3], [0, Wr, 4], [Wr, Wt, 4], [Wt, Tn, 4], [Tn, Ti, 4], [Ti, 3, 4]);
+    F.push([Vb, Vt, Vr, 'fin']);
+  }
+  return { V, F };
+})();
+let JPOLYS = [];
+function drawF117(t) {
+  if (t < 36.3 || t > 40.4) return;
+  const u = t - 36.3, base = camXAt(38.3);
+  const pos = [base + 70 - u * 34, 21 + Math.sin(u * 1.3) * 0.6, -95];
+  const bank = -0.55 + 0.12 * Math.sin(u * 0.9), cb = Math.cos(bank), sb = Math.sin(bank);
+  const W = F117.V.map(([x, y, z]) => { const yy = y * cb - z * sb, zz = y * sb + z * cb; return [pos[0] - x, pos[1] + yy, pos[2] - zz]; });
+  const ctr = vadd(pos, [0, 0.4, 0]);
+  for (const f of F117.F) {
+    const fin = f[3] === 'fin', idx = fin ? f.slice(0, 3) : f;
+    const P = idx.map(i => W[i]);
+    let n = vnorm(vcross(vsub(P[1], P[0]), vsub(P[2], P[0])));
+    const c = vmul(P.reduce((a, b) => vadd(a, b), [0, 0, 0]), 1 / P.length);
+    if (!fin && vdot(n, vsub(c, ctr)) < 0) n = vmul(n, -1);
+    const facing = vdot(n, vsub(CAM.E, c));
+    if (!fin && facing < 0) continue;
+    if (fin && facing < 0) n = vmul(n, -1);
+    const k = 0.35 + 0.65 * Math.max(0, vdot(n, vnorm([-0.3, 0.8, 0.5])));
+    const col = [20 + 52 * k, 24 + 56 * k, 32 + 66 * k];
+    const pp = P.map(proj);
+    let d = 'M' + pp.map(p => f1(p.x) + ' ' + f1(p.y)).join('L') + 'Z';
+    JPOLYS.push({ z: pp.reduce((s, p) => s + p.z, 0) / pp.length, h: `<path d="${d}" fill="${css(col)}" stroke="#9fd7ff" stroke-opacity=".35" stroke-width=".8" stroke-linejoin="round"/>` });
+  }
+}
+function drawX59(t) {
+  if (t < 149.8 || t > 153.4) return '';
+  const u = (t - 149.8) / 3.0;
+  const p = atInfinity(vnorm([0.75 - u * 1.5, 0.25 + 0.02 * Math.sin(u * 3), -0.95]));
+  const x = p.x, y = p.y;
+  let h = `<path d="M${f1(x + 40)} ${f1(y)}L${f1(x + 900)} ${f1(y + 8)}" stroke="#fff" stroke-opacity=".55" stroke-width="3"/>`;
+  const cone = 0.6 + u * 2;
+  h += `<path d="M${f1(x - 70)} ${f1(y)}L${f1(x + 260 * cone)} ${f1(y - 110 * cone)}M${f1(x - 70)} ${f1(y)}L${f1(x + 260 * cone)} ${f1(y + 110 * cone)}" stroke="#fff" stroke-opacity=".35" stroke-width="2"/>`;
+  h += `<g transform="translate(${f1(x)} ${f1(y)})"><path d="M-90 0Q-40 -6 10 -8L40 -26L52 -26L40 -8L70 -6L80 -18L88 -18L84 -4Q90 0 84 4L60 6L36 26L24 26L32 8Q-40 6 -90 0Z" fill="#2a2f3a"/></g>`;
+  if (t > 151.55 && t < 152.6) { const k = (t - 151.55) / 1.05; h += `<circle cx="${f1(x + 120)}" cy="${f1(y)}" r="${f1(40 + k * 900)}" fill="none" stroke="#fff" stroke-opacity="${(0.6 * (1 - k)).toFixed(2)}" stroke-width="${f1(8 * (1 - k) + 1)}"/>`; }
+  return h;
+}
+
+/* ---------- particles ---------- */
+const PARTS = [];
+function spawnFromEvents(Hs, t) {
+  for (const H of Hs) {
+    for (const ev of H.events) {
+      const [et, li, x, z, lf] = ev;
+      if (actB(et) < 0.5) PARTS.push({ k: 'ring', x, z, t0: et, life: 0.9, s: 0.5 + 0.5 * lf });
+      else for (let i = 0; i < 5; i++) PARTS.push({ k: 'dust', p: [x + (hash(et * 9 + i) - 0.5) * 0.1, 0.02, z + (hash(et * 3 + i) - 0.5) * 0.1], v: [(hash(i + et) - 0.6) * 0.5, 0.25 + hash(i * 2 + et) * 0.35, (hash(i * 5 + et) - 0.5) * 0.4], t0: et, life: 0.8 + hash(i) * 0.5, r: 0.03 + 0.03 * hash(i * 7) });
+    }
+    if (H.impact > 2.2 && H.kind === 'robot' && t > 53) for (let i = 0; i < 10; i++) PARTS.push({ k: 'dust', p: [H.x + (hash(t + i) - 0.5) * 1.6, 0.05, H.z + (hash(t * 2 + i) - 0.5) * 0.6], v: [(hash(i) - 0.5) * 1.2, 0.4 + hash(i + 3) * 0.6, (hash(i * 3) - 0.5)], t0: t, life: 1.4, r: 0.06, cold: 1 });
+  }
+  if (PARTS.length > 400) PARTS.splice(0, PARTS.length - 400);
+}
+function breathe(H, t) {
+  if (!H.nosePos || t < 70.5 || t > 88) return;
+  const b = beatOf(t), k = Math.floor(b / 2);
+  if (H._br !== k) { H._br = k; const d = H.headDir || [1, -1, 0]; for (let i = 0; i < 4; i++) PARTS.push({ k: 'breath', p: vadd(H.nosePos, [0, -0.03, 0]), v: vadd(vmul(d, 0.25 + 0.1 * i), [0, 0.08, (hash(k + i) - 0.5) * 0.1]), t0: t, life: 1.6, r: 0.05 + 0.02 * i }); }
+  if (t > 77.95 && t < 78.05 && !H._sn) { H._sn = 1; const d = H.headDir || [1, -1, 0]; for (let i = 0; i < 9; i++) PARTS.push({ k: 'breath', p: H.nosePos.slice(), v: vadd(vmul(d, 0.9), [(hash(i) - 0.5) * 0.4, (hash(i + 1) - 0.3) * 0.3, (hash(i + 2) - 0.5) * 0.4]), t0: t, life: 1.3, r: 0.06 }); }
+}
+function fxGround(t) {
+  let h = '';
+  for (const p of PARTS) {
+    if (p.k !== 'ring') continue;
+    const u = (t - p.t0) / p.life; if (u < 0 || u > 1) continue;
+    const r = (0.08 + 0.4 * u) * p.s, c = proj([p.x, 0.003, p.z]), ex = proj([p.x + r, 0.003, p.z]), ez = proj([p.x, 0.003, p.z + r]);
+    h += `<ellipse cx="${f1(c.x)}" cy="${f1(c.y)}" rx="${f1(Math.abs(ex.x - c.x))}" ry="${f1(Math.max(1, Math.abs(ez.y - c.y)))}" fill="none" stroke="#7fe6ff" stroke-opacity="${(0.8 * (1 - u)).toFixed(2)}" stroke-width="1.6"/>`;
+  }
+  return h;
+}
+function updateFX(t, dt) {
+  let h = '';
+  const A = actB(t);
+  for (const p of PARTS) {
+    if (p.k === 'ring') continue;
+    const u = (t - p.t0) / p.life; if (u < 0 || u > 1) { p.dead = 1; continue; }
+    const age = t - p.t0;
+    const pos = [p.p[0] + p.v[0] * age, Math.max(0.01, p.p[1] + p.v[1] * age - (p.k === 'dust' ? 0.25 * age * age : -0.03 * age)), p.p[2] + p.v[2] * age];
+    const q = proj(pos), r = p.r * (1 + 2.5 * u) * q.s;
+    const col = p.k === 'breath' ? '#f4f1ec' : p.cold ? '#b8c4d8' : 'var(--hay)';
+    const op = (p.k === 'breath' ? 0.32 : 0.45) * (1 - u) * (p.k === 'breath' ? sstep(0, 0.15, u) : 1);
+    h += `<circle cx="${f1(q.x)}" cy="${f1(q.y)}" r="${f1(r)}" fill="${col}" fill-opacity="${op.toFixed(2)}"/>`;
+  }
+  for (let i = PARTS.length - 1; i >= 0; i--) if (PARTS[i].dead || t - PARTS[i].t0 > 3 || t < PARTS[i].t0 - 0.5) PARTS.splice(i, 1);
+  // meadow fluff and dusk fireflies are functions of time, so scrubbing keeps them
+  const cx = CAM.T[0];
+  const fluff = sstep(134.2, 135.2, t) * (1 - sstep(141, 143, t));
+  if (fluff > 0.01) for (let i = 0; i < 40; i++) { const x = cx - 9 + frac(hash(i) + t * 0.03) * 20, y = 0.4 + 2.6 * hash(i * 3) + 0.25 * Math.sin(t * 0.8 + i), z = -3 + 6 * hash(i * 7); const q = proj([x + 0.3 * Math.sin(t * 0.5 + i), y, z]); h += `<g transform="translate(${f1(q.x)} ${f1(q.y)})" opacity="${(fluff * 0.85).toFixed(2)}"><path d="M0 0l${f1(0.04 * q.s)} 0M0 0l${f1(-0.03 * q.s)} ${f1(0.03 * q.s)}M0 0l${f1(-0.02 * q.s)} ${f1(-0.035 * q.s)}" stroke="#fffaf0" stroke-width="1.2"/></g>`; }
+  const ff = sstep(167, 175, t);
+  if (ff > 0.01) for (let i = 0; i < 46; i++) { const x = cx - 10 + 22 * hash(i * 1.9), y = 0.3 + 1.8 * hash(i * 4.1) + 0.3 * Math.sin(t * 0.9 + i * 2), z = -4 + 7.5 * hash(i * 6.3); const q = proj([x + 0.4 * Math.sin(t * 0.4 + i), y, z]); const bl = Math.max(0, Math.sin(t * (1.2 + hash(i) * 1.5) + i * 3)); h += `<circle cx="${f1(q.x)}" cy="${f1(q.y)}" r="${f1(2 + 0.03 * q.s)}" fill="#fff3a0" fill-opacity="${(ff * bl * 0.9).toFixed(2)}"/>`; }
+  // dawn and golden-hour birds
+  const birds = (t0, t1, n, y0) => { let s = ''; if (t < t0 || t > t1) return s; const u = (t - t0) / (t1 - t0); for (let i = 0; i < n; i++) { const q = atInfinity(vnorm([0.9 - u * 1.9 + i * 0.035, y0 + 0.02 * Math.sin(i * 2.1) + i * 0.006, -1])); const w = 7 + 3 * hash(i), f = Math.sin(t * 9 + i * 1.7) * 5; s += `<path d="M${f1(q.x - w)} ${f1(q.y - f)}Q${f1(q.x - w / 2)} ${f1(q.y - 2)} ${f1(q.x)} ${f1(q.y)}Q${f1(q.x + w / 2)} ${f1(q.y - 2)} ${f1(q.x + w)} ${f1(q.y - f)}" stroke="#2a2522" stroke-width="1.6" fill="none"/>`; } return s; };
+  h += birds(72, 80, 7, 0.16) + birds(141.5, 149.5, 9, 0.2);
+  LY.fx.innerHTML = h;
+}
+
+/* ---------- HUD: title block, calibration, callouts, stamps, label ---------- */
+function hudText(x, y, s, size, a = '') { return `<text x="${f1(x)}" y="${f1(y)}" font-size="${size}" ${a}>${s}</text>`; }
+function titleBlock(t) {
+  const a = sstep(0.9, 1.6, t) * (1 - sstep(8.2, 9.2, t));
+  if (a < 0.01) return '';
+  const dr = sstep(1.0, 2.6, t), X = 1052, Y = 650, W = 470, H = 176;
+  const L = (x1, y1, x2, y2, k) => { const p = sstep(k, k + 0.3, dr * 1.3); return `<path d="M${x1} ${y1}L${lerp(x1, x2, p)} ${lerp(y1, y2, p)}"/>`; };
+  let s = `<g class="tblock" opacity="${a.toFixed(3)}"><g fill="none" stroke="#e3f0ff" stroke-width="1.4">` + L(X, Y, X + W, Y, 0) + L(X + W, Y, X + W, Y + H, 0.15) + L(X + W, Y + H, X, Y + H, 0.3) + L(X, Y + H, X, Y, 0.45) + L(X, Y + 70, X + W, Y + 70, 0.55) + L(X, Y + 124, X + W, Y + 124, 0.65) + L(X + 290, Y + 70, X + 290, Y + H, 0.75) + `</g>`;
+  const ta = sstep(1.8, 2.6, t);
+  s += `<g fill="#e3f0ff" opacity="${ta.toFixed(2)}" font-family="B612,system-ui,sans-serif" letter-spacing="2">` +
+    hudText(X + 18, Y + 24, 'TITLE', 11, 'fill-opacity=".6"') + hudText(X + 18, Y + 56, 'HORSE TONIC', 30, 'font-weight="700" letter-spacing="5"') +
+    hudText(X + 18, Y + 88, 'SUBJECT', 11, 'fill-opacity=".6"') + hudText(X + 18, Y + 112, 'POLYCELLULAR CARRIAGE, MK I', 14) +
+    hudText(X + 306, Y + 88, 'SCALE', 11, 'fill-opacity=".6"') + hudText(X + 306, Y + 112, '1 : 12', 14) +
+    hudText(X + 18, Y + 144, 'DWG NO.', 11, 'fill-opacity=".6"') + hudText(X + 18, Y + 164, 'XQ-69', 14) + hudText(X + 306, Y + 144, 'SHEET', 11, 'fill-opacity=".6"') + hudText(X + 306, Y + 164, '1 OF 2', 14) + `</g></g>`;
+  return s;
+}
+function calibPanel(t) {
+  const a = sstep(1.8, 2.3, t) * (1 - sstep(8.4, 9.0, t));
+  if (a < 0.01) return '';
+  const p = clamp((t - 2.0) / 6.4, 0, 1);
+  const phase = t < 3.4 ? 'Balancing opposing muscle tone' : t < 6.8 ? 'Measuring each joint’s response' : 'Tuning damping for natural settling';
+  return `<g opacity="${a.toFixed(3)}" font-family="B612,system-ui,sans-serif"><rect x="72" y="70" width="372" height="104" rx="6" fill="#071a2e" fill-opacity=".72" stroke="#7fe6ff" stroke-opacity=".45"/>` +
+    hudText(92, 102, 'Neural calibration', 17, 'fill="#bff3ff" font-weight="700"') + hudText(424, 102, Math.floor(p * 100) + '%', 15, 'fill="#bff3ff" text-anchor="end"') +
+    hudText(92, 130, phase, 14, 'fill="#cfe2f2"') + `<rect x="92" y="148" width="332" height="5" rx="2.5" fill="#28465c"/><rect x="92" y="148" width="${f1(332 * p)}" height="5" rx="2.5" fill="#7fe6ff"/></g>`;
+}
+function callout(anchor, tx, ty, label, a, size = 26, sub = '') {
+  const p = proj(anchor);
+  const ex = tx + (tx < p.x ? 14 : -14);
+  return `<g opacity="${a.toFixed(3)}"><circle cx="${f1(p.x)}" cy="${f1(p.y)}" r="5" fill="none" stroke="#ffb34a" stroke-width="2"/><path d="M${f1(p.x)} ${f1(p.y)}L${f1(ex)} ${f1(ty - 8)}H${f1(tx)}" fill="none" stroke="#ffb34a" stroke-width="1.4"/>` +
+    `<text x="${f1(tx)}" y="${f1(ty)}" font-size="${size}" text-anchor="${tx < p.x ? 'end' : 'start'}" fill="#f3f8ff" font-family="B612,system-ui,sans-serif" letter-spacing="1">${label}</text>` + (sub ? `<text x="${f1(tx)}" y="${f1(ty + 22)}" font-size="13" text-anchor="${tx < p.x ? 'end' : 'start'}" fill="#9fc3df" font-family="B612,system-ui,sans-serif" letter-spacing="1.5">${sub}</text>` : '') + `</g>`;
+}
+function refrainCallouts(t, R) {
+  if (t < 27.3 || t > 37.6) return '';
+  const fade = 1 - sstep(36.6, 37.4, t);
+  const at = (b) => sstep(beatTime(b) - 0.08, beatTime(b) + 0.12, t) * fade;
+  let s = '';
+  const pack = toWorld(R, [-0.1, 0.36, 0]), leg = legWorld(R, 1).pts[3], head = R.nosePos ? vlerp(R.nosePos, toWorld(R, [0.9, 0.6, 0]), 0.35) : toWorld(R, [1.2, 0.9, 0]);
+  const pp = proj(pack), pl = proj(leg), ph = proj(head);
+  s += callout(pack, pp.x - 150, pp.y - 140, 'Phytochemical', at(48), 28, 'FUEL CELL, NOT FITTED');
+  s += callout(leg, pl.x + 190, pl.y + 70, 'metabolic', at(50), 28, 'HYDRAULIC, 3000 PSI');
+  s += callout(head, ph.x + 120, ph.y - 120, 'adjuvant', at(52), 28, 'SENSOR HEAD');
+  const k = at(54.6);
+  if (k > 0.01) {
+    const a = proj(toWorld(R, [-1.15, -0.05, 0])), b = proj(R.nosePos || toWorld(R, [1.4, 0.4, 0]));
+    const y = Math.max(a.y, b.y) + 0.0 + proj([R.x, 0, R.z]).y - Math.max(a.y, b.y) + 46;
+    const w = (b.x - a.x) * sstep(beatTime(54.6), beatTime(56), t);
+    s += `<g opacity="${k.toFixed(3)}" stroke="#ffb34a" fill="none" stroke-width="1.4"><path d="M${f1(a.x)} ${f1(y - 14)}v28M${f1(a.x + w)} ${f1(y - 14)}v28M${f1(a.x)} ${f1(y)}H${f1(a.x + w)}"/></g>` +
+      `<text x="${f1((a.x + b.x) / 2)}" y="${f1(y + 40)}" text-anchor="middle" font-size="27" fill="#f3f8ff" opacity="${sstep(beatTime(55.2), beatTime(56), t) * fade}" font-family="B612,system-ui,sans-serif" letter-spacing="1.5">For the polycellular carriage</text>`;
+  }
+  return s;
+}
+function jointScope(t, R) {
+  const a = sstep(39.35, 39.8, t) * (1 - sstep(41.4, 41.9, t));
+  if (a < 0.01) return '';
+  const W1 = legWorld(R, 1), W3 = legWorld(R, 3);
+  const items = [[W1.pts[2], DI['RF.el'], 'Elbow'], [W1.pts[3], DI['RF.ca'], 'Carpus'], [W3.pts[1], DI['RH.st'], 'Stifle'], [W3.pts[2], DI['RH.ho'], 'Hock']];
+  let s = `<g opacity="${a.toFixed(3)}" font-family="B612,system-ui,sans-serif">`;
+  items.forEach(([p, i, name], k) => {
+    const q = proj(p), x = q.x + (k % 2 ? 60 : -230), y = q.y - 30;
+    s += `<path d="M${f1(q.x)} ${f1(q.y)}L${f1(x + (k % 2 ? 0 : 170))} ${f1(y + 16)}" stroke="#7fe6ff" stroke-opacity=".7" fill="none"/>` +
+      `<rect x="${f1(x)}" y="${f1(y - 14)}" width="170" height="58" rx="5" fill="#071a2e" fill-opacity=".78" stroke="#7fe6ff" stroke-opacity=".45"/>` +
+      hudText(x + 10, y + 4, name, 13, 'fill="#bff3ff" font-weight="700"') + hudText(x + 160, y + 4, (R.q[i] / DEG).toFixed(1) + '°', 13, 'fill="#e3f0ff" text-anchor="end"') +
+      `<rect x="${f1(x + 10)}" y="${f1(y + 14)}" width="150" height="6" rx="3" fill="#28465c"/><rect x="${f1(x + 10)}" y="${f1(y + 14)}" width="${f1(150 * R.a[i])}" height="6" rx="3" fill="#ffb34a"/>` +
+      `<rect x="${f1(x + 10)}" y="${f1(y + 26)}" width="150" height="6" rx="3" fill="#28465c"/><rect x="${f1(x + 10)}" y="${f1(y + 26)}" width="${f1(150 * R.b[i])}" height="6" rx="3" fill="#6ee8f5"/>`;
+  });
+  return s + hudText(96, 120, 'Hydraulic muscle pairs, live', 18, 'fill="#bff3ff"') + hudText(96, 144, 'amber pulls forward, cyan pulls back', 13, 'fill="#9fc3df"') + '</g>';
+}
+function stamp(t, t0, line1, line2, x, y, rot) {
+  if (t < t0 || t > t0 + 3.2) return '';
+  const k = sstep(t0, t0 + 0.09, t), a = 1 - sstep(t0 + 2.4, t0 + 3.2, t);
+  return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${(1.7 - 0.7 * k).toFixed(3)})" opacity="${(k * a).toFixed(3)}" font-family="B612,system-ui,sans-serif"><rect x="-260" y="-62" width="520" height="${line2 ? 124 : 96}" rx="10" fill="none" stroke="#ff4b4b" stroke-width="7"/>` +
+    `<text x="0" y="${line2 ? -6 : 14}" text-anchor="middle" font-size="50" font-weight="700" fill="#ff4b4b" letter-spacing="4">${line1}</text>` + (line2 ? `<text x="0" y="42" text-anchor="middle" font-size="22" fill="#ff4b4b" letter-spacing="6">${line2}</text>` : '') + `</g>`;
+}
+function tonicLabel(t) {
+  const a = Math.max(sstep(155.0, 155.9, t) * (1 - sstep(158.3, 159.6, t)), sstep(176.5, 178.5, t));
+  if (a < 0.01) return '';
+  const end = t > 170;
+  const sc = end ? 0.9 : 0.8 + 0.06 * sstep(155.0, 156.2, t);
+  const X = end ? 800 : 1270, Y = end ? 400 : 330;
+  return `<g transform="translate(${X} ${Y}) scale(${sc.toFixed(3)}) rotate(-2)" opacity="${a.toFixed(3)}">` +
+    `<rect x="-250" y="-200" width="500" height="400" rx="18" fill="#efe3c4"/><rect x="-232" y="-182" width="464" height="364" rx="10" fill="none" stroke="#3b2a1c" stroke-width="3"/><rect x="-222" y="-172" width="444" height="344" rx="6" fill="none" stroke="#3b2a1c" stroke-width="1"/>` +
+    `<path d="M-180 -122h165M15 -122h165M-180 80h165M15 80h165" stroke="#8c2f23" stroke-width="2"/><path d="M0 -132l9 10-9 10-9-10zM0 70l9 10-9 10-9-10z" fill="#8c2f23"/>` +
+    `<text y="-146" text-anchor="middle" font-family="'IM Fell English SC','IM Fell English',Georgia,serif" font-size="20" fill="#3b2a1c" letter-spacing="5">Lancaster County</text>` +
+    `<text y="-44" text-anchor="middle" font-family="'IM Fell English SC','IM Fell English',Georgia,serif" font-size="92" fill="#8c2f23">Horse</text>` +
+    `<text y="44" text-anchor="middle" font-family="'IM Fell English SC','IM Fell English',Georgia,serif" font-size="92" fill="#8c2f23">Tonic</text>` +
+    `<text y="114" text-anchor="middle" font-family="'IM Fell English',Georgia,serif" font-style="italic" font-size="19" fill="#3b2a1c">a phytochemical metabolic adjuvant</text>` +
+    `<text y="138" text-anchor="middle" font-family="'IM Fell English',Georgia,serif" font-style="italic" font-size="19" fill="#3b2a1c">for the polycellular carriage</text>` +
+    `<text y="166" text-anchor="middle" font-family="'IM Fell English',Georgia,serif" font-size="14" fill="#5b4430" letter-spacing="2">steeped meadow grass and golden hay</text></g>`;
+}
+function updateHUD(t) {
+  const R = SIM.R;
+  let h = titleBlock(t) + calibPanel(t);
+  if (R && t < 70) { h += refrainCallouts(t, R); h += jointScope(t, R); }
+  h += stamp(t, 53.02, 'BLACKOUT', 'BRIEFING', 1140, 250, -7);
+  h += stamp(t, beatTime(247), 'PHASE III', 'APPROVED', 1150, 230, 6);
+  h += tonicLabel(t);
+  LY.hud.innerHTML = h;
+}
+
+/* ---------- captions ---------- */
+let capOn = true;
+function lineAt(t) { for (let i = 0; i < LYRICS.length; i++) { const L = LYRICS[i]; if (t >= L[0] - 0.05 && t < L[1] + 0.35) { const next = LYRICS[i + 1]; if (next && t >= next[0] - 0.05) continue; return L; } } return null; }
+function updateCaptions(t) {
+  const L = capOn ? lineAt(t) : null;
+  if (!L) { LY.cap.innerHTML = ''; return; }
+  const [s, e, text, kind] = L;
+  const machine = s < 70;
+  const out = 1 - sstep(e, e + 0.35, t);
+  // refrains: 1 lives on the robot as callouts, 3 on the roadside sign
+  if (kind === 'R' && (s < 40 || (s > 100 && s < 115))) { LY.cap.innerHTML = ''; return; }
+  if (kind === 'R') {
+    const night = s < 70;
+    const a = sstep(s, s + 0.6, t) * out;
+    LY.cap.innerHTML = night
+      ? `<text x="800" y="190" text-anchor="middle" font-size="30" letter-spacing="6" fill="#cfe0f5" opacity="${(a * 0.8).toFixed(3)}" font-family="B612,system-ui,sans-serif">${text}</text>`
+      : `<text x="800" y="200" text-anchor="middle" font-size="56" font-style="italic" fill="#fff4dc" opacity="${a.toFixed(3)}" class="lp" font-family="'IM Fell English',Georgia,serif">${text}</text>`;
+    return;
+  }
+  if (machine) {
+    const n = Math.floor(text.length * clamp((t - s) / Math.min(0.9, (e - s) * 0.55), 0, 1));
+    const cur = n < text.length || Math.sin(t * 9) > 0 ? '<tspan fill="#7fe6ff">▍</tspan>' : '';
+    LY.cap.innerHTML = `<text x="96" y="812" font-size="30" fill="#eef6ff" opacity="${out.toFixed(3)}" class="mc" font-family="B612,system-ui,sans-serif" letter-spacing=".5">${esc(text.slice(0, n))}${cur}</text>`;
+    if (s > 24 && s < 26) redact(t, text);
+  } else {
+    const words = text.split(' '), span = (e - s) * 0.5;
+    let h = `<text x="96" y="816" font-size="40" fill="#fff8ea" class="lp" font-family="'IM Fell English',Georgia,serif">`;
+    words.forEach((w, i) => { const a = sstep(s + i / words.length * span, s + i / words.length * span + 0.28, t) * out; h += `<tspan opacity="${a.toFixed(3)}">${esc(w)} </tspan>`; });
+    LY.cap.innerHTML = h + '</text>';
+  }
+}
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+function redact(t, text) {
+  if (t < 25.84) return;
+  const tx = LY.cap.querySelector('text'); if (!tx) return;
+  const k = sstep(25.84, 26.1, t);
+  let h = '';
+  for (const w of ['Pentagon', 'reclassify']) {
+    const i = text.indexOf(w); if (i < 0) continue;
+    try {
+      const n = tx.getNumberOfChars(); if (i + w.length > n) continue;
+      const x0 = tx.getStartPositionOfChar(i).x, wd = tx.getSubStringLength(i, w.length) * k;
+      h += `<rect x="${f1(x0 - 3)}" y="788" width="${f1(wd + 6)}" height="34" fill="#000"/>`;
+    } catch (e) {}
+  }
+  LY.cap.insertAdjacentHTML('beforeend', h);
+}
+
+/* =====================================================================
+   MAIN — fixed-step physics (120 Hz) locked to the song clock.
+   Checkpoints every 2 s make scrubbing exact: the same muscles, the same fall.
+   ===================================================================== */
+const DT = 1 / 120;
+const CKPT = new Map();
+function newState() { const R = makeHorse('robot', robotX(0), 0); R.lidar = 0; R.blink = 0; R.glow = 0; return { k: 0, R, H: null }; }
+let S = newState();
+function simStep(St, live) {
+  const t = St.k / 120;
+  const R = St.R;
+  if (t < 96) { R.glow = robotGlow(t); R.lidar += DT * (0.25 + 2.4 * R.glow); R.blink += DT * (t > 55 ? 2.4 : 7); stepHorse(R, t, DT, robotIntent(t)); }
+  if (t >= 69.3) { if (!St.H) St.H = makeHorse('real', horseX(t), HZ); stepHorse(St.H, t, DT, horseIntent(t)); }
+  if (live) spawnFromEvents(St.H ? [R, St.H] : [R], t);
+  R.events.length = 0; if (St.H) St.H.events.length = 0;
+  St.k++;
+  if (St.k % 240 === 0 && !CKPT.has(St.k)) CKPT.set(St.k, structuredClone({ k: St.k, R: St.R, H: St.H }));
+}
+function simSeek(T) {
+  const target = Math.max(0, Math.floor(T * 120));
+  if (target < S.k || target - S.k > 240) {
+    let best = -1;
+    for (const k of CKPT.keys()) if (k <= target && k > best) best = k;
+    if (best > S.k || target < S.k) { if (best >= 0) S = structuredClone(CKPT.get(best)); else S = newState(); }
+    PARTS.length = 0;
+  }
+  while (S.k < target) simStep(S, false);
+}
+function simAdvance(T, live) {
+  const target = Math.floor(T * 120);
+  if (target < S.k || target - S.k > 60) { simSeek(T); return; }
+  while (S.k < target) simStep(S, live);
+}
+// fill checkpoints in idle time so any scrub is instant
+(function precompute() {
+  const P = newState();
+  const chunk = () => { const end = P.k + 600; while (P.k < end && P.k < SONG.dur * 120) simStep(P, false); if (P.k < SONG.dur * 120) setTimeout(chunk, 12); };
+  setTimeout(chunk, 400);
+})();
+Object.defineProperty(window, 'SIM', { get: () => S });
+
+/* ------------------------------ render ------------------------------ */
+let xrayOn = false, xrayK = 0;
+const svgRoot = document.getElementById('film');
+function render(t, dt) {
+  const [sx, sz] = camSubject(t);
+  let shx = 0, shy = 0;
+  if (!REDUCED) {
+    const imp = S.R ? clamp(S.R.impact * 2.2, 0, 7) * (t > 53 && t < 56 ? 1 : 0) : 0;
+    const boom = t > 151.55 && t < 152.4 ? 9 * (1 - (t - 151.55) / 0.85) : 0;
+    const st = t > beatTime(247) && t < beatTime(247) + 0.3 ? 6 * (1 - (t - beatTime(247)) / 0.3) : 0;
+    const pl = t > 23.57 && t < 23.85 ? 4 : 0;
+    const k = imp + boom + st + pl;
+    if (k > 0.05) { shx = (hash(t * 91) - 0.5) * k * 2; shy = (hash(t * 53 + 1) - 0.5) * k * 2; }
+  }
+  setCamera([sx, CAMK.ty(t), sz], CAMK.az(t) * DEG, CAMK.el(t) * DEG, CAMK.dist(t), 1650, CAMK.roll(t), shx, shy);
+  LIGHT.dir = vnorm([LK.dx(t), LK.dy(t), LK.dz(t)]);
+  LIGHT.col = LK.col(t).map(v => v / 255); LIGHT.amb = LK.amb(t).map(v => v / 255); LIGHT.gnd = LIGHT.amb.map(v => v * 0.6);
+  LIGHT.rim = LK.rim(t).map(v => v / 255); LIGHT.rimK = LK.rimK(t);
+  xrayK += ((xrayOn ? 1 : 0) - xrayK) * Math.min(1, dt * 8 + (dt === 0 ? 1 : 0));
+  LIGHT.xray = xrayK;
+  if (actB(t) > 0.001) tintFarm(t, svgRoot);
+  const hz = horizonY();
+  updateSky(t, hz); updateProps(t); updateGround(t, hz);
+  JPOLYS = []; drawF117(t); JPOLYS.sort((a, b) => b.z - a.z);
+  LY.jets.innerHTML = JPOLYS.map(p => p.h).join('') + drawX59(t);
+  POLYS = [];
+  let sh = '';
+  const shOp = clamp(0.34 * (1 - nightB(t) * 0.75) * (t < 70 ? 1 : clamp(LIGHT.dir[1] * 1.4, 0.12, 1)), 0.05, 0.4);
+  if (S.R && t < 92) { const W = drawHorse(S.R, {}); sh += horseShadow(S.R, W, shOp); }
+  if (S.H && t >= 69.3) { breathe(S.H, t); const W = drawHorse(S.H, { blaze: true, sock: 3 }); sh += horseShadow(S.H, W, shOp); }
+  POLYS.sort((a, b) => b.z - a.z);
+  LY.actors.innerHTML = POLYS.map(p => p.h).join('');
+  LY.shadow.innerHTML = sh;
+  updateFX(t, dt); updateHUD(t); updateCaptions(t); grade(t);
+  // the room takes on the colour of the sky
+  const amb = mixc(PAL.mid(t), PAL.hor(t), 0.4).map(v => v * 0.28);
+  document.body.style.backgroundColor = css(amb);
+}
+function grade(t) {
+  const black = Math.max(1 - sstep(0.15, 1.5, t), sstep(181.6, 183.1, t) * 0.9);
+  $('gBlack').setAttribute('opacity', black.toFixed(3));
+  const red = t > 51.3 && t < 55.6 ? 0.28 * beatPulse(t, 5) * (1 - sstep(54.6, 55.6, t)) : 0;
+  $('gRed').setAttribute('opacity', red.toFixed(3));
+  const white = !REDUCED && t > 151.55 && t < 152.1 ? 0.32 * (1 - (t - 151.55) / 0.55) : 0;
+  $('gWhite').setAttribute('opacity', white.toFixed(3));
+  $('gVig').setAttribute('opacity', (0.45 + 0.35 * nightB(t)).toFixed(3));
+}
+
+/* ------------------------------ player ------------------------------ */
+const audio = $('track');
+let playing = false, filmT = 0, lastNow = 0, silent = false, dirty = true, ended = false, posterUp = true;
+const fmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+function note(msg) { const n = $('note'); n.textContent = msg; n.hidden = !msg; }
+function goSilent() { if (silent) return; silent = true; note('The soundtrack couldn’t play, so the film is running silently. Check that Tonic.m4a is at dormantone.github.io/presentations/. Safari may also need the AAC copy, Tonic_aac.m4a, uploaded beside it.'); }
+audio.addEventListener('error', goSilent);
+{ const srcs = audio.querySelectorAll('source'); if (srcs.length) srcs[srcs.length - 1].addEventListener('error', goSilent); }
+async function play() {
+  if (ended || filmT >= SONG.dur - 0.05) { filmT = 0; ended = false; $('endCard').hidden = true; }
+  posterUp = false; $('poster').hidden = true;
+  if (!silent) {
+    try { audio.currentTime = filmT; await audio.play(); }
+    catch (e) { if (e && e.name !== 'AbortError') goSilent(); }
+  }
+  setPlaying(true);
+}
+function pause() { audio.pause(); setPlaying(false); }
+function setPlaying(p) {
+  playing = p; dirty = true;
+  const b = $('playBtn');
+  b.setAttribute('aria-label', p ? 'Pause' : 'Play');
+  b.innerHTML = p ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>';
+}
+function seek(t) {
+  filmT = clamp(t, 0, SONG.dur); dirty = true;
+  if (ended && filmT < SONG.dur - 0.05) { ended = false; $('endCard').hidden = true; }
+  if (!silent) { try { audio.currentTime = filmT; } catch (e) {} }
+  if (posterUp) { posterUp = false; $('poster').hidden = true; }
+}
+function showEnd() { ended = true; $('endCard').hidden = false; $('replayBtn').focus(); }
+
+function tick(now) {
+  const dt = lastNow ? Math.min(0.1, (now - lastNow) / 1000) : 0; lastNow = now;
+  if (playing) {
+    const buffering = !silent && !audio.paused && audio.readyState < 3;
+    if (!buffering) filmT += dt;
+    if (!silent && !audio.paused && audio.readyState >= 2) {
+      const d = audio.currentTime - filmT;
+      if (Math.abs(d) > 0.25) filmT = audio.currentTime; else filmT += d * 0.1;
+    }
+    if (filmT >= SONG.dur) { filmT = SONG.dur; pause(); showEnd(); }
+  }
+  if (playing || dirty) {
+    simAdvance(filmT, playing);
+    render(filmT, playing ? dt : 0);
+    updateTransport();
+    dirty = playing;
+  }
+  requestAnimationFrame(tick);
+}
+
+/* transport: sections are the real song structure */
+const scrub = $('scrub');
+SECTIONS.forEach(([a, b, name]) => {
+  const s = document.createElement('span'); s.className = 'seg'; s.style.left = (a / SONG.dur * 100) + '%'; s.style.width = ((b - a) / SONG.dur * 100) + '%';
+  s.title = name; scrub.appendChild(s);
+});
+const fill = document.createElement('span'); fill.className = 'fill'; scrub.appendChild(fill);
+const knob = document.createElement('span'); knob.className = 'knob'; scrub.appendChild(knob);
+function updateTransport() {
+  const p = filmT / SONG.dur * 100;
+  fill.style.width = p + '%'; knob.style.left = p + '%';
+  $('time').textContent = fmt(filmT) + ' / ' + fmt(SONG.dur);
+  const sec = SECTIONS.find(([a, b]) => filmT >= a && filmT < b) || SECTIONS[SECTIONS.length - 1];
+  $('section').textContent = sec[2];
+  scrub.setAttribute('aria-valuenow', Math.round(filmT));
+  scrub.setAttribute('aria-valuetext', fmt(filmT) + ', ' + sec[2]);
+}
+let dragging = false;
+const scrubTo = e => { const r = scrub.getBoundingClientRect(); seek(clamp((e.clientX - r.left) / r.width, 0, 1) * SONG.dur); };
+scrub.addEventListener('pointerdown', e => { dragging = true; scrub.setPointerCapture(e.pointerId); scrubTo(e); });
+scrub.addEventListener('pointermove', e => { if (dragging) scrubTo(e); });
+scrub.addEventListener('pointerup', () => dragging = false);
+scrub.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); seek(filmT + (e.key === 'ArrowRight' ? 5 : -5)); }
+  if (e.key === 'Home') { e.preventDefault(); seek(0); } if (e.key === 'End') { e.preventDefault(); seek(SONG.dur - 0.1); }
+});
+$('playBtn').addEventListener('click', () => playing ? pause() : play());
+$('bigPlay').addEventListener('click', play);
+$('replayBtn').addEventListener('click', () => { seek(0); play(); });
+const toggle = (id, fn) => { const b = $(id); b.addEventListener('click', () => { const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', on); fn(on); dirty = true; }); };
+toggle('xrayBtn', on => xrayOn = on);
+toggle('capBtn', on => capOn = on);
+document.addEventListener('keydown', e => {
+  if (e.target.closest && e.target.closest('input,textarea')) return;
+  if (e.key === ' ' || e.key === 'k') { if (e.target.tagName === 'BUTTON' && e.key === ' ') return; e.preventDefault(); playing ? pause() : play(); }
+  if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && e.target !== scrub) { e.preventDefault(); seek(filmT + (e.key === 'ArrowRight' ? 5 : -5)); }
+  if (e.key === 'm') $('xrayBtn').click();
+  if (e.key === 'c') $('capBtn').click();
+});
+// poster frame: the robot calibrated, title block on the drawing
+initProps();
+setPlaying(false);
+filmT = 7.4; simSeek(7.4); render(7.4, 0); updateTransport(); filmT = 0; dirty = false;
+$('time').textContent = '0:00 / ' + fmt(SONG.dur);
+requestAnimationFrame(tick);
+// test hook
+window.__frame = t => { filmT = t; simSeek(t); render(t, 1 / 60); updateTransport(); return S.k; };
+
+</script>
+</body>
+</html>
