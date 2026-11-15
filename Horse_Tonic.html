@@ -1046,23 +1046,27 @@ function drawMane(H, nk) {
   }
 }
 
+function hull2(P) {
+  P.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lo = [], up = [];
+  for (const p of P) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop(); lo.push(p); }
+  for (let i = P.length - 1; i >= 0; i--) { const p = P[i]; while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop(); up.push(p); }
+  lo.pop(); up.pop(); return lo.concat(up);
+}
 /* ground shadow of an animal: a strip under the body plus thick strokes for limbs */
 function horseShadow(H, W, op) {
   const L = LIGHT.dir;
   if (L[1] < 0.08) return '';
   const sh = p => [p[0] - L[0] * p[1] / L[1], 0.002, p[2] - L[2] * p[1] / L[1]];
-  const BS = H.kind === 'robot' ? BODY_ROBOT : BODY_REAL;
-  const left = [], right = [];
+  // convex hull of the body's ground projection: stable from frame to frame, even under a low sun
+  const BS = H.kind === 'robot' ? BODY_ROBOT : BODY_REAL, gp = [];
   for (const s of BS) {
-    let mn = null, mx = null;
-    for (const [yy, zz] of [[s[1], 0], [s[2], 0], [(s[1] + s[2]) / 2, s[3]], [(s[1] + s[2]) / 2, -s[3]], [s[1] * 0.7, s[3] * 0.7], [s[1] * 0.7, -s[3] * 0.7]]) {
-      const g = sh(toWorld(H, [s[0], yy, zz]));
-      if (!mn || g[2] < mn[2]) mn = g; if (!mx || g[2] > mx[2]) mx = g;
-    }
-    left.push(proj(mn)); right.unshift(proj(mx));
+    const yc = (s[1] + s[2]) / 2, ry = (s[1] - s[2]) / 2;
+    for (let k = 0; k < 8; k++) { const a = k / 8 * TAU; const g = sh(toWorld(H, [s[0], yc + ry * Math.sin(a), s[3] * Math.cos(a)])); gp.push([g[0], g[2]]); }
   }
-  const pts = left.concat(right);
-  let h = '<path d="M' + pts.map(p => f1(p.x) + ' ' + f1(p.y)).join('L') + 'Z"/>';
+  const hp = hull2(gp).map(([x, z]) => proj([x, 0.002, z]));
+  let h = '<path d="M' + hp.map(p => f1(p.x) + ' ' + f1(p.y)).join('L') + 'Z"/>';
   const nk = neckChain(H);
   const neck = nk.pts.map(p => proj(sh(toWorld(H, p))));
   h += '<path d="M' + neck.map(p => f1(p.x) + ' ' + f1(p.y)).join('L') + '" fill="none" stroke-width="' + f1(0.2 * neck[1].s) + '" stroke-linecap="round" stroke-linejoin="round"/>';
@@ -1262,7 +1266,7 @@ const rnd = (() => { let s = 7; return () => { s = (s * 16807) % 2147483647; ret
       el._c.setAttribute('stroke-opacity', t < 51.32 ? 0.55 + 0.3 * beatPulse(t, 4) : 0.08);
       const blink = (Math.sin(t * 4) > 0.6 && t < 51.32) ? 1 : 0.1;
       el._l.forEach(l => l.setAttribute('opacity', blink));
-      el.setAttribute('opacity', 0.62 * (1 - actB(t)) * (1 - 0.6 * n));
+      el.setAttribute('opacity', 0.62 * (1 - actB(t)) * (1 - 0.6 * sstep(51.32, 52.3, t)));
     } });
 })();
 
@@ -1853,7 +1857,7 @@ function updateGround(t, hz) {
   let h = '';
   const cx = CAM.T[0];
   // Act I: drafting grid + a measured test track
-  const gridA = (1 - A) * (1 - N) * sstep(0.8, 2.4, t);
+  const gridA = (1 - A) * (1 - sstep(51.32, 52.3, t)) * sstep(0.8, 2.4, t);
   if (gridA > 0.01) {
     let d = '', d5 = '';
     for (let gx = Math.floor(cx - 24); gx <= cx + 24; gx++) { const a = proj([gx, 0, -18]), b = proj([gx, 0, 3.5]); const s = 'M' + f1(a.x) + ' ' + f1(a.y) + 'L' + f1(b.x) + ' ' + f1(b.y); if (gx % 5 === 0) d5 += s; else d += s; }
@@ -1972,10 +1976,10 @@ function spawnFromEvents(Hs, t) {
   if (PARTS.length > 400) PARTS.splice(0, PARTS.length - 400);
 }
 function breathe(H, t) {
-  if (!H.nosePos || t < 70.5 || t > 88) return;
-  const b = beatOf(t), k = Math.floor(b / 2);
+  if (!H.nosePos || t < 70.5 || t > 84) return;
+  const b = beatOf(t), k = Math.floor(b / 4);
   if (H._br !== k) { H._br = k; const d = H.headDir || [1, -1, 0]; for (let i = 0; i < 4; i++) PARTS.push({ k: 'breath', p: vadd(H.nosePos, [0, -0.03, 0]), v: vadd(vmul(d, 0.25 + 0.1 * i), [0, 0.08, (hash(k + i) - 0.5) * 0.1]), t0: t, life: 1.6, r: 0.05 + 0.02 * i }); }
-  if (t > 77.95 && t < 78.05 && !H._sn) { H._sn = 1; const d = H.headDir || [1, -1, 0]; for (let i = 0; i < 9; i++) PARTS.push({ k: 'breath', p: H.nosePos.slice(), v: vadd(vmul(d, 0.9), [(hash(i) - 0.5) * 0.4, (hash(i + 1) - 0.3) * 0.3, (hash(i + 2) - 0.5) * 0.4]), t0: t, life: 1.3, r: 0.06 }); }
+  if (t > 77.95 && t < 78.05 && !H._sn) { H._sn = 1; const d = H.headDir || [1, -1, 0]; for (let i = 0; i < 9; i++) PARTS.push({ k: 'breath', sn: 1, p: H.nosePos.slice(), v: vadd(vmul(d, 0.9), [(hash(i) - 0.5) * 0.4, (hash(i + 1) - 0.3) * 0.3, (hash(i + 2) - 0.5) * 0.4]), t0: t, life: 1.3, r: 0.06 }); }
 }
 function fxGround(t) {
   let h = '';
@@ -1997,7 +2001,7 @@ function updateFX(t, dt) {
     const pos = [p.p[0] + p.v[0] * age, Math.max(0.01, p.p[1] + p.v[1] * age - (p.k === 'dust' ? 0.25 * age * age : -0.03 * age)), p.p[2] + p.v[2] * age];
     const q = proj(pos), r = p.r * (1 + 2.5 * u) * q.s;
     const col = p.k === 'breath' ? '#f4f1ec' : p.cold ? '#b8c4d8' : 'var(--hay)';
-    const op = (p.k === 'breath' ? 0.32 : 0.45) * (1 - u) * (p.k === 'breath' ? sstep(0, 0.15, u) : 1);
+    const op = (p.k === 'breath' ? (p.sn ? 0.3 : 0.18) : 0.45) * (1 - u) * (p.k === 'breath' ? sstep(0, 0.15, u) : 1);
     h += `<circle cx="${f1(q.x)}" cy="${f1(q.y)}" r="${f1(r)}" fill="${col}" fill-opacity="${op.toFixed(2)}"/>`;
   }
   for (let i = PARTS.length - 1; i >= 0; i--) if (PARTS[i].dead || t - PARTS[i].t0 > 3 || t < PARTS[i].t0 - 0.5) PARTS.splice(i, 1);
@@ -2051,16 +2055,16 @@ function refrainCallouts(t, R) {
   let s = '';
   const pack = toWorld(R, [-0.1, 0.36, 0]), leg = legWorld(R, 1).pts[3], head = R.nosePos ? vlerp(R.nosePos, toWorld(R, [0.9, 0.6, 0]), 0.35) : toWorld(R, [1.2, 0.9, 0]);
   const pp = proj(pack), pl = proj(leg), ph = proj(head);
-  s += callout(pack, pp.x - 150, pp.y - 140, 'Phytochemical', at(48), 28, 'FUEL CELL, NOT FITTED');
+  s += callout(pack, pp.x - 150, pp.y - 140, 'Redox chemical', at(48), 28, 'LITHIUM-ION PACK');
   s += callout(leg, pl.x + 190, pl.y + 70, 'metabolic', at(50), 28, 'HYDRAULIC, 3000 PSI');
-  s += callout(head, ph.x + 120, ph.y - 120, 'adjuvant', at(52), 28, 'SENSOR HEAD');
+  s += callout(head, ph.x + 120, ph.y - 120, 'adjuvant', at(52), 28, 'FIRMWARE UPDATE');
   const k = at(54.6);
   if (k > 0.01) {
     const a = proj(toWorld(R, [-1.15, -0.05, 0])), b = proj(R.nosePos || toWorld(R, [1.4, 0.4, 0]));
     const y = Math.max(a.y, b.y) + 0.0 + proj([R.x, 0, R.z]).y - Math.max(a.y, b.y) + 46;
     const w = (b.x - a.x) * sstep(beatTime(54.6), beatTime(56), t);
     s += `<g opacity="${k.toFixed(3)}" stroke="#ffb34a" fill="none" stroke-width="1.4"><path d="M${f1(a.x)} ${f1(y - 14)}v28M${f1(a.x + w)} ${f1(y - 14)}v28M${f1(a.x)} ${f1(y)}H${f1(a.x + w)}"/></g>` +
-      `<text x="${f1((a.x + b.x) / 2)}" y="${f1(y + 40)}" text-anchor="middle" font-size="27" fill="#f3f8ff" opacity="${sstep(beatTime(55.2), beatTime(56), t) * fade}" font-family="B612,system-ui,sans-serif" letter-spacing="1.5">For the polycellular carriage</text>`;
+      `<text x="${f1((a.x + b.x) / 2)}" y="${f1(y + 40)}" text-anchor="middle" font-size="27" fill="#f3f8ff" opacity="${sstep(beatTime(55.2), beatTime(56), t) * fade}" font-family="B612,system-ui,sans-serif" letter-spacing="1.5">For the acellular carriage</text>`;
   }
   return s;
 }
@@ -2122,12 +2126,11 @@ function updateCaptions(t) {
   const machine = s < 70;
   const out = 1 - sstep(e, e + 0.35, t);
   // refrains: 1 lives on the robot as callouts, 3 on the roadside sign
-  if (kind === 'R' && (s < 40 || (s > 100 && s < 115))) { LY.cap.innerHTML = ''; return; }
+  if (kind === 'R' && s > 100 && s < 115) { LY.cap.innerHTML = ''; return; }
   if (kind === 'R') {
-    const night = s < 70;
     const a = sstep(s, s + 0.6, t) * out;
-    LY.cap.innerHTML = night
-      ? `<text x="800" y="190" text-anchor="middle" font-size="30" letter-spacing="6" fill="#cfe0f5" opacity="${(a * 0.8).toFixed(3)}" font-family="B612,system-ui,sans-serif">${text}</text>`
+    LY.cap.innerHTML = s < 70
+      ? `<text x="800" y="190" text-anchor="middle" font-size="30" letter-spacing="6" fill="#dbe9f8" opacity="${(a * (s < 40 ? 0.95 : 0.8)).toFixed(3)}" class="mc" font-family="B612,system-ui,sans-serif">${text}</text>`
       : `<text x="800" y="200" text-anchor="middle" font-size="56" font-style="italic" fill="#fff4dc" opacity="${a.toFixed(3)}" class="lp" font-family="'IM Fell English',Georgia,serif">${text}</text>`;
     return;
   }
@@ -2190,7 +2193,8 @@ function simSeek(T) {
 }
 function simAdvance(T, live) {
   const target = Math.floor(T * 120);
-  if (target < S.k || target - S.k > 60) { simSeek(T); return; }
+  if (target < S.k) { if (S.k - target > 24) simSeek(T); return; }   // tiny clock wobble: hold, don't rewind
+  if (target - S.k > 60) { simSeek(T); return; }
   while (S.k < target) simStep(S, live);
 }
 // fill checkpoints in idle time so any scrub is instant
@@ -2274,7 +2278,7 @@ function setPlaying(p) {
   b.innerHTML = p ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>';
 }
 function seek(t) {
-  filmT = clamp(t, 0, SONG.dur); dirty = true;
+  filmT = clamp(t, 0, SONG.dur); dirty = true; simSeek(filmT);
   if (ended && filmT < SONG.dur - 0.05) { ended = false; $('endCard').hidden = true; }
   if (!silent) { try { audio.currentTime = filmT; } catch (e) {} }
   if (posterUp) { posterUp = false; $('poster').hidden = true; }
@@ -2284,12 +2288,15 @@ function showEnd() { ended = true; $('endCard').hidden = false; $('replayBtn').f
 function tick(now) {
   const dt = lastNow ? Math.min(0.1, (now - lastNow) / 1000) : 0; lastNow = now;
   if (playing) {
-    const buffering = !silent && !audio.paused && audio.readyState < 3;
-    if (!buffering) filmT += dt;
-    if (!silent && !audio.paused && audio.readyState >= 2) {
+    // follow the audio by steering the rate, so film time never steps backwards
+    const live = !silent && !audio.paused;
+    let adv = live && audio.readyState < 3 ? 0 : dt;
+    if (live && audio.readyState >= 2) {
       const d = audio.currentTime - filmT;
-      if (Math.abs(d) > 0.25) filmT = audio.currentTime; else filmT += d * 0.1;
+      if (Math.abs(d) > 0.6) { filmT = audio.currentTime; adv = 0; }
+      else adv *= clamp(1 + d * 2, 0.5, 1.5);
     }
+    filmT += adv;
     if (filmT >= SONG.dur) { filmT = SONG.dur; pause(); showEnd(); }
   }
   if (playing || dirty) {
